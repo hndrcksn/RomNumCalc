@@ -1,0 +1,57 @@
+.PHONY : clean all
+
+SHELL        = /bin/sh
+CC           = gcc
+#FLAGS        = -std=gnu99 -Iinclude
+LIBCFLAGS    = -c -Wall -Werror -fPIC
+LIBLDFLAGS   = -shared
+CFLAGS       = -Wall -Werror
+
+LIBSRCDIR  = ./src/lib
+APPSRCDIR  = ./src/app
+TESTSRCDIR = ./src/tests
+
+OBJDIR = ./obj
+BINDIR = ./bin
+
+LIB        = RomNumMath
+APPTARGET  = RomNumCalcApp
+TESTTARGET = TestRomNumCalc
+LIBSRC     = $(LIB).c
+APPSRC     = $(APPTARGET).c
+TESTSRC    = $(TESTTARGET).c
+LIBOBJ     = $(LIB).o
+APPOBJ     = $(APPTARGET).o
+TESTOBJ    = $(TESTTARGET).o
+LIBTARGET  = lib$(LIB).so
+
+clean:
+	rm -f $(OBJDIR)/* $(BINDIR)/*
+
+$(LIBOBJ) : $(LIBSRCDIR)/$(LIBSRC)
+	$(CC) $(LIBCFLAGS) $(LIBSRCDIR)/$(LIBSRC) -o $(OBJDIR)/$(LIBOBJ)
+
+$(OBJDIR)/$(LIBOBJ) : $(LIBSRCDIR)/$(LIBSRC)
+	$(CC) $(LIBCFLAGS) $(LIBSRCDIR)/$(LIBSRC) -o $(OBJDIR)/$(LIBOBJ)
+
+$(LIBTARGET) : $(OBJDIR)/$(LIBOBJ)
+	$(CC) $(LIBLDFLAGS) -o $(BINDIR)/$(LIBTARGET) $(OBJDIR)/$(LIBOBJ)
+
+$(BINDIR)/$(LIBTARGET) : $(OBJDIR)/$(LIBOBJ)
+	$(CC) $(LIBLDFLAGS) -o $(BINDIR)/$(LIBTARGET) $(OBJDIR)/$(LIBOBJ)
+
+$(APPTARGET) : $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGET)
+	$(CC) -L$(BINDIR) $(CFLAGS) $(APPSRCDIR)/$(APPSRC) -o $(BINDIR)/$(APPTARGET) -l$(LIB)
+
+$(BINDIR)/$(APPTARGET) : $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGET)
+	$(CC) -L$(BINDIR) $(CFLAGS) $(APPSRCDIR)/$(APPSRC) -o $(BINDIR)/$(APPTARGET) -l$(LIB)
+
+$(TESTTARGET) : $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
+	$(CC) -L$(BINDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB)
+
+$(BINDIR)/$(TESTTARGET) : $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
+	$(CC) -L$(BINDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB)
+
+all : $(BINDIR)/$(LIBTARGET) $(BINDIR)/$(APPTARGET) $(BINDIR)/$(TESTTARGET)
+	echo "Building all..."
+
