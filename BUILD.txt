@@ -1,6 +1,9 @@
 Currently just running compile/build commands with gcc.
+//// First make output directories if they don't already exist
+mkdir bin
+mkdir obj
 
-//// First build shared lib and main executable
+//// next build shared lib and main executable
 cd src/lib
 
 // compile shared library source to object file
