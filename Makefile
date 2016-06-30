@@ -1,7 +1,8 @@
-.PHONY : clean all
+.PHONY : clean all directories
 
 SHELL        = /bin/sh
 CC           = gcc
+MKDIR_P      = mkdir -p
 #FLAGS        = -std=gnu99 -Iinclude
 LIBCFLAGS    = -c -Wall -Werror -fPIC
 LIBLDFLAGS   = -shared
@@ -25,33 +26,41 @@ APPOBJ     = $(APPTARGET).o
 TESTOBJ    = $(TESTTARGET).o
 LIBTARGET  = lib$(LIB).so
 
-clean:
+clean : directories
 	rm -f $(OBJDIR)/* $(BINDIR)/*
 
-$(LIBOBJ) : $(LIBSRCDIR)/$(LIBSRC)
+directories : $(OBJDIR) $(BINDIR)
+
+$(OBJDIR):
+	$(MKDIR_P) $(OBJDIR)
+
+$(BINDIR):
+	$(MKDIR_P) $(BINDIR)
+
+$(LIBOBJ) : directories $(LIBSRCDIR)/$(LIBSRC)
 	$(CC) $(LIBCFLAGS) $(LIBSRCDIR)/$(LIBSRC) -o $(OBJDIR)/$(LIBOBJ)
 
-$(OBJDIR)/$(LIBOBJ) : $(LIBSRCDIR)/$(LIBSRC)
+$(OBJDIR)/$(LIBOBJ) : directories $(LIBSRCDIR)/$(LIBSRC)
 	$(CC) $(LIBCFLAGS) $(LIBSRCDIR)/$(LIBSRC) -o $(OBJDIR)/$(LIBOBJ)
 
-$(LIBTARGET) : $(OBJDIR)/$(LIBOBJ)
+$(LIBTARGET) : directories $(OBJDIR)/$(LIBOBJ)
 	$(CC) $(LIBLDFLAGS) -o $(BINDIR)/$(LIBTARGET) $(OBJDIR)/$(LIBOBJ)
 
-$(BINDIR)/$(LIBTARGET) : $(OBJDIR)/$(LIBOBJ)
+$(BINDIR)/$(LIBTARGET) : directories $(OBJDIR)/$(LIBOBJ)
 	$(CC) $(LIBLDFLAGS) -o $(BINDIR)/$(LIBTARGET) $(OBJDIR)/$(LIBOBJ)
 
-$(APPTARGET) : $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGET)
+$(APPTARGET) : directories $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGET)
 	$(CC) -L$(BINDIR) $(CFLAGS) $(APPSRCDIR)/$(APPSRC) -o $(BINDIR)/$(APPTARGET) -l$(LIB)
 
-$(BINDIR)/$(APPTARGET) : $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGET)
+$(BINDIR)/$(APPTARGET) : directories $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGET)
 	$(CC) -L$(BINDIR) $(CFLAGS) $(APPSRCDIR)/$(APPSRC) -o $(BINDIR)/$(APPTARGET) -l$(LIB)
 
-$(TESTTARGET) : $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
+$(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
 	$(CC) -L$(BINDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB)
 
-$(BINDIR)/$(TESTTARGET) : $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
+$(BINDIR)/$(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
 	$(CC) -L$(BINDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB)
 
-all : $(BINDIR)/$(LIBTARGET) $(BINDIR)/$(APPTARGET) $(BINDIR)/$(TESTTARGET)
+all : directories $(BINDIR)/$(LIBTARGET) $(BINDIR)/$(APPTARGET) $(BINDIR)/$(TESTTARGET)
 	echo "Building all..."
 
