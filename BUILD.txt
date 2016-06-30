@@ -1,0 +1,29 @@
+Currently just running compile/build commands with gcc.
+
+//// First build shared lib and main executable
+cd src/lib
+
+// compile shared library source to object file
+gcc -c -Wall -Werror -fPIC RomNumMath.c -o ../../obj/RomNumMath.o
+
+// build shared library from object file
+gcc -shared -o ../../bin/libRomNumMath.so ../../obj/RomNumMath.o
+
+// moe to app directory
+cd ../app
+
+// compile and link app with shared library
+gcc -L../../bin -Wall -Werror RomNumCalcApp.c -o ../../bin/RomNumCalcApp -lRomNumMath
+
+// run executable from command line
+LD_LIBRARY_PATH=../../bin ../../bin/RomNumCalcApp
+
+//// Next build test executable
+cd ../tests
+
+// compile and link test executable with shared library
+gcc -L../../bin -Wall -Werror TestRomNumCalc.c -o ../../bin/TestRomNumCalc -lRomNumMath
+
+// run text executable from command line
+LD_LIBRARY_PATH=../../bin ../../bin/TestRomNumCalc
+
