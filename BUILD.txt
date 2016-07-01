@@ -30,3 +30,25 @@ gcc -L../../bin -Wall -Werror TestRomNumCalc.c -o ../../bin/TestRomNumCalc -lRom
 // run text executable from command line
 LD_LIBRARY_PATH=../../bin ../../bin/TestRomNumCalc
 
+// ------------ New Autoconf directives
+// run autoscan
+autoscan
+
+// Compare old configure.ac and configure.scan.
+// Save any differences you like into a new configure.ac
+
+// Run autoreconf to create Makefile.in
+autoreconf --install
+
+// Add a build directory if you like
+mkdir build
+
+// Run configure to get new Makefile
+./configure (or cd build and run ../configure)
+
+// Run make to build the binaries
+make
+
+// Run unit tests
+make check
+
