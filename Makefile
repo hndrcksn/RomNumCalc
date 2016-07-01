@@ -28,6 +28,9 @@ TESTOBJ    = $(TESTTARGET).o
 LIBTARGET  = lib$(LIB).so
 LIBCHECK   = check
 
+all : directories $(BINDIR)/$(LIBTARGET) $(BINDIR)/$(APPTARGET) $(BINDIR)/$(TESTTARGET)
+	echo "Building all..."
+
 clean : directories
 	rm -f $(OBJDIR)/* $(BINDIR)/*
 
@@ -62,7 +65,4 @@ $(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
 
 $(BINDIR)/$(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
 	$(CC) -L$(BINDIR) -L$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK)
-
-all : directories $(BINDIR)/$(LIBTARGET) $(BINDIR)/$(APPTARGET) $(BINDIR)/$(TESTTARGET)
-	echo "Building all..."
 
