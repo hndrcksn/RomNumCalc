@@ -11,6 +11,7 @@ CFLAGS       = -Wall -Werror
 LIBSRCDIR  = ./src/lib
 APPSRCDIR  = ./src/app
 TESTSRCDIR = ./src/tests
+LIBCHECKDIR = /usr/lib/arm-linux-gnueabihf/
 
 OBJDIR = ./obj
 BINDIR = ./bin
@@ -25,6 +26,7 @@ LIBOBJ     = $(LIB).o
 APPOBJ     = $(APPTARGET).o
 TESTOBJ    = $(TESTTARGET).o
 LIBTARGET  = lib$(LIB).so
+LIBCHECK   = check.a
 
 clean : directories
 	rm -f $(OBJDIR)/* $(BINDIR)/*
@@ -56,10 +58,10 @@ $(BINDIR)/$(APPTARGET) : directories $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGE
 	$(CC) -L$(BINDIR) $(CFLAGS) $(APPSRCDIR)/$(APPSRC) -o $(BINDIR)/$(APPTARGET) -l$(LIB)
 
 $(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
-	$(CC) -L$(BINDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB)
+	$(CC) -L$(BINDIR),$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK)
 
 $(BINDIR)/$(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
-	$(CC) -L$(BINDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB)
+	$(CC) -L$(BINDIR),$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK)
 
 all : directories $(BINDIR)/$(LIBTARGET) $(BINDIR)/$(APPTARGET) $(BINDIR)/$(TESTTARGET)
 	echo "Building all..."
