@@ -3,14 +3,9 @@
 
 typedef struct RomNumeral RomNumeral;
 
-RomNumeral *numeralCreate(int romValue, char *romString);
+RomNumeral *numeralCreate(int numValue, char *numString);
 int numeralValue(RomNumeral *rN);
 char *numeralString(RomNumeral *rN);
 void numeralDestroy(RomNumeral *rN);
 
-/*
-#include<stdio.h>
-
-extern unsigned int add(unsigned int a, unsigned int b);
-*/
 #endif /* ROMNUMMATH_H */

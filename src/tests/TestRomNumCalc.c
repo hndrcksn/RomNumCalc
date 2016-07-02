@@ -1,7 +1,8 @@
+#include <stdlib.h>
 #include <check.h>
 #include "../lib/RomNumMath.h"
 
-START_TEST (test_integer_addition)
+START_TEST (testNumeralCreate)
 {
     // Simple test code to verify that check works as expected //
 
@@ -11,16 +12,28 @@ START_TEST (test_integer_addition)
     ck_assert_int_eq(numeralValue(romNum), 4);
     ck_assert_str_eq(numeralString(romNum), "IV");
     numeralDestroy(romNum);
-
-//    unsigned int num1, num2;
-//    num1 = 4;
-//    num2 = 5;
-//    ck_assert_int_eq(add(num1, num2), num1 + num2);
 }
 END_TEST
 
+Suite *romNumTestSuite (void)
+{
+    Suite *s = suite_create ("RomNumeral");
+
+    /* Core test case */
+    TCase *tc_core = tcase_create ("Core");
+    tcase_add_test (tc_core, testNumeralCreate);
+    suite_add_tcase (s, tc_core);
+
+    return s;
+}
+
 int main(void)
 {
-//    printf("Running test suite...\n");
-    return 0;
+    int number_failed;
+    Suite *s = romNumTestSuite ();
+    SRunner *sr = srunner_create (s);
+    srunner_run_all (sr, CK_NORMAL);
+    number_failed = srunner_ntests_failed (sr);
+    srunner_free (sr);
+    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
