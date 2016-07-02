@@ -1,6 +1,14 @@
 #ifndef ROMNUMMATH_H
 #define ROMNUMMATH_H
-/* empty to tutorial step 1
+
+typedef struct RomNumeral RomNumeral;
+
+RomNumeral *numeralCreate(int romValue, char *romString);
+int numeralValue(RomNumeral *rN);
+char *numeralString(RomNumeral *rN);
+void numeralDestroy(RomNumeral *rN);
+
+/*
 #include<stdio.h>
 
 extern unsigned int add(unsigned int a, unsigned int b);
