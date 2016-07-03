@@ -53,6 +53,7 @@ bool char1Is_V(RomNumeral *rN)
 
 bool numeralStringIsClean(RomNumeral *rN)
 {
+    // String is clean if it only contains valid Roman numeral characters
     char *validRomanChars = "IVXLCMD";
     printf("Checking '%s'...\n", rN->nString);
     for (int i = 0; i < strlen(rN->nString); i++)
@@ -69,20 +70,52 @@ bool numeralStringIsClean(RomNumeral *rN)
     return true;
 }
 
-bool iSequenceInStringIsValid(RomNumeral *rN)
+bool sequenceInRomNumeralIsValid(RomNumeral *rN)
 {
-    printf("Checking '%s'...\n", rN->nString);
-    for (int i = 0; i < strlen(rN->nString); i++)
+    return sequenceInStringIsValid(rN->nString);
+}
+
+bool sequenceInStringIsValid(const char *s)
+{
+    // Check for NULL
+    if (s == NULL)
     {
-        printf("i = %d, c = '%c'\n", i, (rN->nString)[i]);
-        if ((rN->nString)[i] == 'I' && i >= 3)
+        return false;
+    }
+
+    // Show string where sequence starts at first character
+    printf("Checking '%s'...\n", s);
+    char firstChar = s[0];
+    int maxChar = 0;
+
+    switch (firstChar) {
+        case 'V' :
+        case 'L' :
+        case 'D' :
+            maxChar = 1;
+            break;
+
+        case 'I' :
+        case 'X' :
+        case 'C' :
+            maxChar = 3;
+            break;
+
+        case 'M' :
+            maxChar = 4;
+            break;
+    }
+
+    for (int i = 0; i < strlen(s) && s[i] != '\0' ; i++)
+    {
+        printf("i = %d, c = '%c'\n", i, s[i]);
+        if (s[i] == firstChar && i >= maxChar)
         {
-            // Too many I's found in a row
-            printf("Exiting after number of I's hit %d\n", i+1);
+            // Too many chars found in a row
+            printf("Exiting after number of chars hit %d\n", i+1);
             return false;
         }
     }
     // Sequence is valid
     return true;
 }
-

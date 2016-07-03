@@ -12,6 +12,7 @@ void numeralDestroy(RomNumeral *rN);
 bool char0Is_I(RomNumeral *rN);
 bool char1Is_V(RomNumeral *rN);
 bool numeralStringIsClean(RomNumeral *rN);
-bool iSequenceInStringIsValid(RomNumeral *rN);
+bool sequenceInRomNumeralIsValid(RomNumeral *rN);
+bool sequenceInStringIsValid(const char *s);
 
 #endif /* ROMNUMMATH_H */

@@ -59,36 +59,95 @@ START_TEST (testFindDirtyCharInNumeralString)
 }
 END_TEST
 
-START_TEST (testIsValidMultipleISequenceInNumeralString)
+START_TEST (testIsSequenceInNumeralStringValid)
 {
     // Is a valid sequence of I's in string?
     RomNumeral *romNum;
 
     romNum = numeralCreate(1, "I");
-    ck_assert(iSequenceInStringIsValid(romNum));
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
     numeralDestroy(romNum);
 
     romNum = numeralCreate(2, "II");
-    ck_assert(iSequenceInStringIsValid(romNum));
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
     numeralDestroy(romNum);
 
     romNum = numeralCreate(3, "III");
-    ck_assert(iSequenceInStringIsValid(romNum));
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
     numeralDestroy(romNum);
 
     romNum = numeralCreate(0, "IIII");
-    ck_assert(!iSequenceInStringIsValid(romNum));
+    ck_assert(!sequenceInRomNumeralIsValid(romNum));
     numeralDestroy(romNum);
-}
-END_TEST
 
-START_TEST (testIsValid5ISequenceInNumeralString)
-{
     // Is a sequence of 5 I's valid?
-    RomNumeral *romNum;
-
     romNum = numeralCreate(0, "IIIII");
-    ck_assert(!iSequenceInStringIsValid(romNum));
+    ck_assert(!sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    // Is a sequence of X's C's or M's valid?
+    romNum = numeralCreate(10, "X");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(20, "XX");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(30, "XXX");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(100, "C");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(200, "CC");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(300, "CCC");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(1000, "M");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(2000, "MM");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(3000, "MMM");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "XXXX");
+    ck_assert(!sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(5, "V");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "VV");
+    ck_assert(!sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(50, "L");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "LL");
+    ck_assert(!sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(500, "D");
+    ck_assert(sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "DD");
+    ck_assert(!sequenceInRomNumeralIsValid(romNum));
     numeralDestroy(romNum);
 }
 END_TEST
@@ -104,8 +163,7 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
     tcase_add_test (tc_core, testEachCharInNumeralStringIsClean);
     tcase_add_test (tc_core, testFindDirtyCharInNumeralString);
-    tcase_add_test (tc_core, testIsValidMultipleISequenceInNumeralString);
-    tcase_add_test (tc_core, testIsValid5ISequenceInNumeralString);
+    tcase_add_test (tc_core, testIsSequenceInNumeralStringValid);
     suite_add_tcase (s, tc_core);
 
     return s;
