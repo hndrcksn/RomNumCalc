@@ -51,3 +51,20 @@ bool char1Is_V(RomNumeral *rN)
     return !strncmp(&(rN->nString)[1], "V", 1);
 }
 
+bool numeralStringIsClean(RomNumeral *rN)
+{
+    char *validRomanChars = "IVXLCMD";
+    for (int i = 0; i < strlen(rN->nString); i++)
+    {
+        printf("i = %d, c = '%c'\n", i, (rN->nString)[i]);
+        if (strchr(validRomanChars, (rN->nString)[i]) == NULL)
+        {
+            // Invalid char found
+            printf("Invalid char = '%c'\n", (rN->nString)[i]);
+            return false;
+        }
+    }
+    // All chars are valid
+    return true;
+}
+

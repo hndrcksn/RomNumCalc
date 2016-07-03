@@ -37,6 +37,17 @@ START_TEST (testSecondCharInNumeralStringIs_V)
 }
 END_TEST
 
+START_TEST (testEachCharInNumeralStringIsClean)
+{
+    // Test that every character in the numeral string is a I, V, X, L, C, D or M and nothing else
+    RomNumeral *romNum;
+
+    romNum = numeralCreate(0, "IVXLCDMMDCLXVIIVXLCDM");
+    ck_assert(numeralStringIsClean(romNum));
+    numeralDestroy(romNum);
+}
+END_TEST
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -46,6 +57,7 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_core, testNumeralCreate);
     tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
     tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
+    tcase_add_test (tc_core, testEachCharInNumeralStringIsClean);
     suite_add_tcase (s, tc_core);
 
     return s;
@@ -61,3 +73,4 @@ int main(void)
     srunner_free (sr);
     return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
+
