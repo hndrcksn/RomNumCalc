@@ -127,12 +127,12 @@ bool sequenceInStringIsValid(const char *s)
     return true;
 }
 
-bool subtractiveISequenceInRomNumeralIsValid(RomNumeral *rN)
+bool subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN)
 {
-    return subtractiveISequenceInStringIsValid(rN->nString);
+    return subtractiveSequenceInStringIsValid(rN->nString);
 }
 
-bool subtractiveISequenceInStringIsValid(const char *s)
+bool subtractiveSequenceInStringIsValid(const char *s)
 {
     // Check for NULL
     if (s == NULL)
@@ -143,19 +143,44 @@ bool subtractiveISequenceInStringIsValid(const char *s)
     // Show string where sequence starts and get first character
     printf("Checking '%s'...\n", s);
     char firstChar = s[0];
-    if (firstChar != 'I')
+
+    if (strlen(s) >= 2)
     {
-        // Only checking for I's here
-        return false;
-    }
-    else if (strlen(s) >= 2)
-    {
-        // Check next char
-        switch (s[1]) {
-            case 'V':
-            case 'X':
-                return true;
+        // For  'I'
+        switch (firstChar) {
+            case 'I':
+                if (strchr("VX", s[1]) != NULL)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
                 break;
+
+            case 'X':
+                if (strchr("LC", s[1]) != NULL)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                break;
+
+            case 'C':
+                if (strchr("DM", s[1]) != NULL)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                break;
+
             default:
                 printf("... not a valid subtractive sequence!\n");
                 return false;

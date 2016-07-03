@@ -14,7 +14,7 @@ bool char1Is_V(RomNumeral *rN);
 bool numeralStringIsClean(RomNumeral *rN);
 bool sequenceInRomNumeralIsValid(RomNumeral *rN);
 bool sequenceInStringIsValid(const char *s);
-bool subtractiveISequenceInRomNumeralIsValid(RomNumeral *rN);
-bool subtractiveISequenceInStringIsValid(const char *s);
+bool subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN);
+bool subtractiveSequenceInStringIsValid(const char *s);
 
 #endif /* ROMNUMMATH_H */
