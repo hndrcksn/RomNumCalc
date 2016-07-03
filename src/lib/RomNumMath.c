@@ -138,8 +138,12 @@ int subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN)
 
 int subtractiveSequenceInStringIsValid(const char *s)
 {
-    // Check for NULL
+    // Check for empty string or single char (neither can be subtractive)
     if (s == NULL)
+    {
+        return 0;
+    }
+    else if (strlen(s) == 1)
     {
         return 0;
     }
@@ -240,10 +244,16 @@ int parseToInt(const char *s)
 
     // Setup variables for parsing
     // Setup magnitude counters
-    int ones = 0;
+    int ones      = 0;
+    int tens      = 0;
+    int hundreds  = 0;
+    int thousands = 0;
 
     // Setup magnitude markers
-    bool inOnes = false;
+    bool inOnes      = false;
+    bool inTens      = false;
+    bool inHundreds  = false;
+    bool inThousands = false;
 
     char prevChar = '\0';
     char currChar = '\0';
@@ -251,7 +261,7 @@ int parseToInt(const char *s)
 
     int length = strlen(s);
     int charCount = 0;
-//    for (int i = 0; i < length; i++)
+
     while (charCount < length)
     {
         int seqCount = 0;
@@ -282,6 +292,31 @@ int parseToInt(const char *s)
             ones += 5;
             charCount++;
         }
+        else if (currChar == 'X')
+        {
+            inTens = true;
+bool sub = false;
+bool seq = false;
+
+            if ((seqCount = subtractiveSequenceInStringIsValid(&s[charCount])) != 0)
+            {
+sub = true;
+                tens += seqCount;
+                charCount += 2;
+            }
+            else if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
+            {
+seq = true;
+                tens += seqCount * 10;
+                charCount += seqCount;
+            }
+            else
+            {
+printf("Returning, sub = %d, seq = %d, seqCount = %d, charCount = %d, retVal = %d\n", sub, seq, seqCount, charCount, retVal);
+                return retVal;
+            }
+printf("Not returning, sub = %d, seq = %d, seqCount = %d, charCount = %d, retVal = %d\n", sub, seq, seqCount, charCount, retVal);
+        }
         else
         {
             // Continue to avoid infinite loop
@@ -289,7 +324,7 @@ int parseToInt(const char *s)
         }
     }
 
-    retVal = ones;
+    retVal = thousands + hundreds + tens + ones;
     printf("%s = %d\n", s, retVal);
     return retVal;
 }
