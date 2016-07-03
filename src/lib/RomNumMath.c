@@ -45,3 +45,9 @@ bool char0Is_I(RomNumeral *rN)
 {
     return !strncmp(&(rN->nString)[0], "I", 1);
 }
+
+bool char1Is_V(RomNumeral *rN)
+{
+    return !strncmp(&(rN->nString)[1], "V", 1);
+}
+

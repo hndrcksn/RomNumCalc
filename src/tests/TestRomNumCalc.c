@@ -26,6 +26,17 @@ START_TEST (testFirstCharInNumeralStringIs_I)
 }
 END_TEST
 
+START_TEST (testSecondCharInNumeralStringIs_V)
+{
+    // Test if second character in the numeral string "V"
+    RomNumeral *romNum;
+
+    romNum = numeralCreate(4, "IV");
+    ck_assert(char1Is_V(romNum));
+    numeralDestroy(romNum);
+}
+END_TEST
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -34,6 +45,7 @@ Suite *romNumTestSuite (void)
     TCase *tc_core = tcase_create ("Core");
     tcase_add_test (tc_core, testNumeralCreate);
     tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
+    tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
     suite_add_tcase (s, tc_core);
 
     return s;

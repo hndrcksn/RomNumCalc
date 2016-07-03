@@ -10,5 +10,6 @@ int numeralValue(RomNumeral *rN);
 char *numeralString(RomNumeral *rN);
 void numeralDestroy(RomNumeral *rN);
 bool char0Is_I(RomNumeral *rN);
+bool char1Is_V(RomNumeral *rN);
 
 #endif /* ROMNUMMATH_H */
