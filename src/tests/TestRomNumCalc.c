@@ -222,11 +222,14 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_core, testNumeralCreate);
     tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
     tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
-    tcase_add_test (tc_core, testEachCharInNumeralStringIsClean);
-    tcase_add_test (tc_core, testFindDirtyCharInNumeralString);
-    tcase_add_test (tc_core, testIsSequenceInNumeralStringValid);
-    tcase_add_test (tc_core, testIsSubtractiveSequenceInNumeralStringValid);
     suite_add_tcase (s, tc_core);
+
+    TCase *tc_parsing = tcase_create ("Parsing");
+    tcase_add_test (tc_parsing, testEachCharInNumeralStringIsClean);
+    tcase_add_test (tc_parsing, testFindDirtyCharInNumeralString);
+    tcase_add_test (tc_parsing, testIsSequenceInNumeralStringValid);
+    tcase_add_test (tc_parsing, testIsSubtractiveSequenceInNumeralStringValid);
+    suite_add_tcase (s, tc_parsing);
 
     return s;
 }
