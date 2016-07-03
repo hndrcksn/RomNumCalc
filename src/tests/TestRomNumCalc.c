@@ -15,6 +15,17 @@ START_TEST (testNumeralCreate)
 }
 END_TEST
 
+START_TEST (testFirstCharInNumeralStringIs_I)
+{
+    // Test if first character in the numeral string "I"
+    RomNumeral *romNum;
+
+    romNum = numeralCreate(1, "I");
+    ck_assert(char0Is_I(romNum));
+    numeralDestroy(romNum);
+}
+END_TEST
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -22,6 +33,7 @@ Suite *romNumTestSuite (void)
     /* Core test case */
     TCase *tc_core = tcase_create ("Core");
     tcase_add_test (tc_core, testNumeralCreate);
+    tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
     suite_add_tcase (s, tc_core);
 
     return s;

@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "RomNumMath.h"
 
 struct RomNumeral
@@ -39,3 +41,7 @@ void numeralDestroy(RomNumeral *rN)
     return;
 }
 
+bool char0Is_I(RomNumeral *rN)
+{
+    return !strncmp(&(rN->nString)[0], "I", 1);
+}
