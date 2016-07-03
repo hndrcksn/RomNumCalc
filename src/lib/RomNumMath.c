@@ -55,7 +55,7 @@ bool numeralStringIsClean(RomNumeral *rN)
 {
     // String is clean if it only contains valid Roman numeral characters
     char *validRomanChars = "IVXLCMD";
-    printf("Checking '%s'...\n", rN->nString);
+    printf("Checking if '%s' is clean...\n", rN->nString);
     for (int i = 0; i < strlen(rN->nString); i++)
     {
         printf("i = %d, c = '%c'\n", i, (rN->nString)[i]);
@@ -70,21 +70,21 @@ bool numeralStringIsClean(RomNumeral *rN)
     return true;
 }
 
-bool sequenceInRomNumeralIsValid(RomNumeral *rN)
+int sequenceInRomNumeralIsValid(RomNumeral *rN)
 {
     return sequenceInStringIsValid(rN->nString);
 }
 
-bool sequenceInStringIsValid(const char *s)
+int sequenceInStringIsValid(const char *s)
 {
     // Check for NULL
     if (s == NULL)
     {
-        return false;
+        return 0;
     }
 
     // Show string where sequence starts and get first character
-    printf("Checking '%s'...\n", s);
+    printf("Checking if '%s' is valid...\n", s);
     char firstChar = s[0];
     int maxChar = 0;
 
@@ -109,39 +109,43 @@ bool sequenceInStringIsValid(const char *s)
         default:
             // Oops invalid character found!
             printf("Invalid character (%d:%c) found!\n", firstChar, firstChar);
-            return false;
+            return 0;
             break;
     }
 
+    int seqCount = 0;
     for (int i = 0; i < strlen(s) && s[i] != '\0' ; i++)
     {
         printf("i = %d, c = '%c'\n", i, s[i]);
+        seqCount++;
         if (s[i] == firstChar && i >= maxChar)
         {
             // Too many chars found in a row
             printf("Exiting after number of chars hit %d\n", i+1);
-            return false;
+            return 0;
         }
     }
+
     // Sequence is valid
-    return true;
+    printf("%d chars in sequence\n", seqCount);
+    return seqCount;
 }
 
-bool subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN)
+int subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN)
 {
     return subtractiveSequenceInStringIsValid(rN->nString);
 }
 
-bool subtractiveSequenceInStringIsValid(const char *s)
+int subtractiveSequenceInStringIsValid(const char *s)
 {
     // Check for NULL
     if (s == NULL)
     {
-        return false;
+        return 0;
     }
 
     // Show string where sequence starts and get first character
-    printf("Checking '%s'...\n", s);
+    printf("Checking if '%s' is subtractive...\n", s);
     char firstChar = s[0];
 
     if (strlen(s) >= 2)
@@ -149,41 +153,53 @@ bool subtractiveSequenceInStringIsValid(const char *s)
         // For  'I'
         switch (firstChar) {
             case 'I':
-                if (strchr("VX", s[1]) != NULL)
+                if (s[1] == 'V')
                 {
-                    return true;
+                    return 4;
+                }
+                else if (s[1] == 'X')
+                {
+                    return 9;
                 }
                 else
                 {
-                    return false;
+                    return 0;
                 }
                 break;
 
             case 'X':
-                if (strchr("LC", s[1]) != NULL)
+                if (s[1] == 'L')
                 {
-                    return true;
+                    return 40;
+                }
+                else if (s[1] == 'C')
+                {
+                    return 90;
                 }
                 else
                 {
-                    return false;
+                    return 0;
                 }
                 break;
 
             case 'C':
-                if (strchr("DM", s[1]) != NULL)
+                if (s[1] == 'D')
                 {
-                    return true;
+                    return 400;
+                }
+                else if (s[1] == 'M')
+                {
+                    return 900;
                 }
                 else
                 {
-                    return false;
+                    return 0;
                 }
                 break;
 
             default:
                 printf("... not a valid subtractive sequence!\n");
-                return false;
+                return 0;
                 break;
         }
     }
@@ -223,8 +239,10 @@ int parseToInt(const char *s)
     }
 
     // Setup variables for parsing
+    // Setup magnitude counters
     int ones = 0;
 
+    // Setup magnitude markers
     bool inOnes = false;
 
     char prevChar = '\0';
@@ -232,14 +250,31 @@ int parseToInt(const char *s)
     char nextChar = '\0';
 
     int length = strlen(s);
-    for (int i = 0; i < length; i++)
+    int charCount = 0;
+//    for (int i = 0; i < length; i++)
+    while (charCount < length)
     {
+        int seqCount = 0;
         currChar = prevChar;
-        currChar = s[i];
+        currChar = s[charCount];
         if (currChar == 'I')
         {
             inOnes = true;
-            ones += 1;
+
+            if ((seqCount = subtractiveSequenceInStringIsValid(&s[charCount])) != 0)
+            {
+                ones += seqCount;
+                charCount += 2;
+            }
+            else if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
+            {
+                ones += seqCount;
+                charCount += seqCount;
+            }
+            else
+            {
+                return retVal;
+            }
         }
     }
 
