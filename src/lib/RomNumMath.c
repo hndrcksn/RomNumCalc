@@ -69,3 +69,20 @@ bool numeralStringIsClean(RomNumeral *rN)
     return true;
 }
 
+bool iSequenceInStringIsValid(RomNumeral *rN)
+{
+    printf("Checking '%s'...\n", rN->nString);
+    for (int i = 0; i < strlen(rN->nString); i++)
+    {
+        printf("i = %d, c = '%c'\n", i, (rN->nString)[i]);
+        if ((rN->nString)[i] == 'I' && i >= 3)
+        {
+            // Too many I's found in a row
+            printf("Exiting after number of I's hit %d\n", i+1);
+            return false;
+        }
+    }
+    // Sequence is valid
+    return true;
+}
+

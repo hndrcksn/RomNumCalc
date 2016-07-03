@@ -59,6 +59,40 @@ START_TEST (testFindDirtyCharInNumeralString)
 }
 END_TEST
 
+START_TEST (testIsValidMultipleISequenceInNumeralString)
+{
+    // Is a valid sequence of I's in string?
+    RomNumeral *romNum;
+
+    romNum = numeralCreate(1, "I");
+    ck_assert(iSequenceInStringIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(2, "II");
+    ck_assert(iSequenceInStringIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(3, "III");
+    ck_assert(iSequenceInStringIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "IIII");
+    ck_assert(!iSequenceInStringIsValid(romNum));
+    numeralDestroy(romNum);
+}
+END_TEST
+
+START_TEST (testIsValid5ISequenceInNumeralString)
+{
+    // Is a sequence of 5 I's valid?
+    RomNumeral *romNum;
+
+    romNum = numeralCreate(0, "IIIII");
+    ck_assert(!iSequenceInStringIsValid(romNum));
+    numeralDestroy(romNum);
+}
+END_TEST
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -70,6 +104,8 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
     tcase_add_test (tc_core, testEachCharInNumeralStringIsClean);
     tcase_add_test (tc_core, testFindDirtyCharInNumeralString);
+    tcase_add_test (tc_core, testIsValidMultipleISequenceInNumeralString);
+    tcase_add_test (tc_core, testIsValid5ISequenceInNumeralString);
     suite_add_tcase (s, tc_core);
 
     return s;
