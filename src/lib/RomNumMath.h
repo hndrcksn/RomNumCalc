@@ -6,6 +6,7 @@
 typedef struct RomNumeral RomNumeral;
 
 RomNumeral *numeralCreate(int numValue, char *numString);
+void numeralReplace(RomNumeral *rN, int newValue, char *newStrPtr);
 int numeralValue(RomNumeral *rN);
 char *numeralString(RomNumeral *rN);
 void numeralDestroy(RomNumeral *rN);

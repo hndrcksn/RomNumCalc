@@ -25,6 +25,12 @@ RomNumeral *numeralCreate(int numValue, char *numString)
     }
 }
 
+void numeralReplace(RomNumeral *rN, int newValue, char *newStrPtr)
+{
+    rN->value = newValue;
+    rN->nString = newStrPtr;
+}
+
 int numeralValue(RomNumeral *rN)
 {
     return rN->value;

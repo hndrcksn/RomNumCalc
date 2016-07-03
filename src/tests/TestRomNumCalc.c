@@ -66,102 +66,79 @@ START_TEST (testIsSequenceInNumeralStringValid)
 
     romNum = numeralCreate(1, "I");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(2, "II");
+    numeralReplace(romNum, 2, "II");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 2);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(3, "III");
+    numeralReplace(romNum, 3, "III");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 3);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "IIII");
+    numeralReplace(romNum, 0, "IIII");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
     // Is a sequence of 5 I's valid?
-    romNum = numeralCreate(0, "IIIII");
+    numeralReplace(romNum, 0, "IIIII");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
     // Start with invalid character
-    romNum = numeralCreate(0, "AII");
+    numeralReplace(romNum, 0, "AII");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
     // Invalid character in the middle
-    romNum = numeralCreate(0, "IAI");
+    numeralReplace(romNum, 0, "IAI");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
     // Invalid character at the end
-    romNum = numeralCreate(0, "IIA");
+    numeralReplace(romNum, 0, "IIA");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
     // Is a sequence of X's C's or M's valid?
-    romNum = numeralCreate(10, "X");
+    numeralReplace(romNum, 10, "X");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(20, "XX");
+    numeralReplace(romNum, 20, "XX");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 2);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(30, "XXX");
+    numeralReplace(romNum, 30, "XXX");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 3);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(100, "C");
+    numeralReplace(romNum, 100, "C");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(200, "CC");
+    numeralReplace(romNum, 200, "CC");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 2);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(300, "CCC");
+    numeralReplace(romNum, 300, "CCC");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 3);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(1000, "M");
+    numeralReplace(romNum, 1000, "M");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(2000, "MM");
+    numeralReplace(romNum, 2000, "MM");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 2);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(3000, "MMM");
+    numeralReplace(romNum, 3000, "MMM");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 3);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "XXXX");
+    numeralReplace(romNum, 0, "XXXX");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(5, "V");
+    numeralReplace(romNum, 5, "V");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "VV");
+    numeralReplace(romNum, 0, "VV");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(50, "L");
+    numeralReplace(romNum, 50, "L");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "LL");
+    numeralReplace(romNum, 0, "LL");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(500, "D");
+    numeralReplace(romNum, 500, "D");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "DD");
+    numeralReplace(romNum, 0, "DD");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
     numeralDestroy(romNum);
 }
@@ -175,49 +152,38 @@ START_TEST (testIsSubtractiveSequenceInNumeralStringValid)
 
     romNum = numeralCreate(4, "IV");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 4);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(9, "IX");
+    numeralReplace(romNum, 9, "IX");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 9);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "IL");
+    numeralReplace(romNum, 0, "IL");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "IC");
+    numeralReplace(romNum, 0, "IC");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "ID");
+    numeralReplace(romNum, 0, "ID");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "IM");
+    numeralReplace(romNum, 0, "IM");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(40, "XL");
+    numeralReplace(romNum, 40, "XL");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 40);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(90, "XC");
+    numeralReplace(romNum, 90, "XC");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 90);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "XD");
+    numeralReplace(romNum, 0, "XD");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "XM");
+    numeralReplace(romNum, 0, "XM");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(400, "CD");
+    numeralReplace(romNum, 400, "CD");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 400);
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(900, "CM");
+    numeralReplace(romNum, 900, "CM");
     ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 900);
     numeralDestroy(romNum);
 }
@@ -231,177 +197,135 @@ START_TEST (testIsNumeralStringValid)
 
     romNum = numeralCreate(1, "I");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(2, "II");
+    numeralReplace(romNum, 2, "II");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(3, "III");
+    numeralReplace(romNum, 3, "III");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(0, "IIII");
+    numeralReplace(romNum, 0, "IIII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(4, "IV");
+    numeralReplace(romNum, 4, "IV");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(5, "V");
+    numeralReplace(romNum, 5, "V");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(6, "VI");
+    numeralReplace(romNum, 6, "VI");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(7, "VII");
+    numeralReplace(romNum, 7, "VII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(8, "VIII");
+    numeralReplace(romNum, 8, "VIII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(9, "IX");
+    numeralReplace(romNum, 9, "IX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(10, "X");
+    numeralReplace(romNum, 10, "X");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(11, "XI");
+    numeralReplace(romNum, 11, "XI");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(12, "XII");
+    numeralReplace(romNum, 12, "XII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(13, "XIII");
+    numeralReplace(romNum, 13, "XIII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(14, "XIV");
+    numeralReplace(romNum, 14, "XIV");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(15, "XV");
+    numeralReplace(romNum, 15, "XV");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(16, "XVI");
+    numeralReplace(romNum, 16, "XVI");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(17, "XVII");
+    numeralReplace(romNum, 17, "XVII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(18, "XVIII");
+    numeralReplace(romNum, 18, "XVIII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(19, "XIX");
+    numeralReplace(romNum, 19, "XIX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(20, "XX");
+    numeralReplace(romNum, 20, "XX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(21, "XXI");
+    numeralReplace(romNum, 21, "XXI");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(22, "XXII");
+    numeralReplace(romNum, 22, "XXII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(23, "XXIII");
+    numeralReplace(romNum, 23, "XXIII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(24, "XXIV");
+    numeralReplace(romNum, 24, "XXIV");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(25, "XXV");
+    numeralReplace(romNum, 25, "XXV");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(26, "XXVI");
+    numeralReplace(romNum, 26, "XXVI");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(27, "XXVII");
+    numeralReplace(romNum, 27, "XXVII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(28, "XXVIII");
+    numeralReplace(romNum, 28, "XXVIII");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(29, "XXIX");
+    numeralReplace(romNum, 29, "XXIX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(30, "XXX");
+    numeralReplace(romNum, 30, "XXX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
     // Skip to more complicated numbers
-    romNum = numeralCreate(39, "XXXIX");
+    numeralReplace(romNum, 39, "XXXIX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(40, "XL");
+    numeralReplace(romNum, 40, "XL");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(41, "XLI");
+    numeralReplace(romNum, 41, "XLI");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
     // Skip to more complicated numbers
-    romNum = numeralCreate(49, "XLIX");
+    numeralReplace(romNum, 49, "XLIX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(50, "L");
+    numeralReplace(romNum, 50, "L");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(51, "LI");
+    numeralReplace(romNum, 51, "LI");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
     // Skip to more complicated numbers
-    romNum = numeralCreate(89, "LXXXIX");
+    numeralReplace(romNum, 89, "LXXXIX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(90, "XC");
+    numeralReplace(romNum, 90, "XC");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(91, "XCI");
+    numeralReplace(romNum, 91, "XCI");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
     // Skip to more complicated number
-    romNum = numeralCreate(99, "XCIX");
+    numeralReplace(romNum, 99, "XCIX");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(100, "C");
+    numeralReplace(romNum, 100, "C");
     ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
 
-    romNum = numeralCreate(101, "CI");
+    numeralReplace(romNum, 101, "CI");
     ck_assert(isValid(romNum));
     numeralDestroy(romNum);
 }
