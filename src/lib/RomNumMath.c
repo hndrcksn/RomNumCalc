@@ -83,11 +83,12 @@ bool sequenceInStringIsValid(const char *s)
         return false;
     }
 
-    // Show string where sequence starts at first character
+    // Show string where sequence starts and get first character
     printf("Checking '%s'...\n", s);
     char firstChar = s[0];
     int maxChar = 0;
 
+    // Assign maximum number of chars per sequence
     switch (firstChar) {
         case 'V' :
         case 'L' :
@@ -102,7 +103,13 @@ bool sequenceInStringIsValid(const char *s)
             break;
 
         case 'M' :
-            maxChar = 4;
+            maxChar = 3;
+            break;
+
+        default:
+            // Oops invalid character found!
+            printf("Invalid character (%d:%c) found!\n", firstChar, firstChar);
+            return false;
             break;
     }
 
@@ -118,4 +125,41 @@ bool sequenceInStringIsValid(const char *s)
     }
     // Sequence is valid
     return true;
+}
+
+bool subtractiveISequenceInRomNumeralIsValid(RomNumeral *rN)
+{
+    return subtractiveISequenceInStringIsValid(rN->nString);
+}
+
+bool subtractiveISequenceInStringIsValid(const char *s)
+{
+    // Check for NULL
+    if (s == NULL)
+    {
+        return false;
+    }
+
+    // Show string where sequence starts and get first character
+    printf("Checking '%s'...\n", s);
+    char firstChar = s[0];
+    if (firstChar != 'I')
+    {
+        // Only checking for I's here
+        return false;
+    }
+    else if (strlen(s) >= 2)
+    {
+        // Check next char
+        switch (s[1]) {
+            case 'V':
+            case 'X':
+                return true;
+                break;
+            default:
+                printf("... not a valid subtractive sequence!\n");
+                return false;
+                break;
+        }
+    }
 }

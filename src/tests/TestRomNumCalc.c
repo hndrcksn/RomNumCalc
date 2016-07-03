@@ -85,6 +85,11 @@ START_TEST (testIsSequenceInNumeralStringValid)
     ck_assert(!sequenceInRomNumeralIsValid(romNum));
     numeralDestroy(romNum);
 
+    // Start with invalid character"
+    romNum = numeralCreate(0, "AII");
+    ck_assert(!sequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
     // Is a sequence of X's C's or M's valid?
     romNum = numeralCreate(10, "X");
     ck_assert(sequenceInRomNumeralIsValid(romNum));
@@ -152,6 +157,37 @@ START_TEST (testIsSequenceInNumeralStringValid)
 }
 END_TEST
 
+START_TEST (testIsSubtractiveISequenceInNumeralStringValid)
+{
+    // Handle sequences where a lower character modifies a higher one
+    RomNumeral *romNum;
+
+    romNum = numeralCreate(4, "IV");
+    ck_assert(subtractiveISequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(9, "IX");
+    ck_assert(subtractiveISequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "IL");
+    ck_assert(!subtractiveISequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "IC");
+    ck_assert(!subtractiveISequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "ID");
+    ck_assert(!subtractiveISequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(0, "IM");
+    ck_assert(!subtractiveISequenceInRomNumeralIsValid(romNum));
+    numeralDestroy(romNum);
+}
+END_TEST
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -164,6 +200,7 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_core, testEachCharInNumeralStringIsClean);
     tcase_add_test (tc_core, testFindDirtyCharInNumeralString);
     tcase_add_test (tc_core, testIsSequenceInNumeralStringValid);
+    tcase_add_test (tc_core, testIsSubtractiveISequenceInNumeralStringValid);
     suite_add_tcase (s, tc_core);
 
     return s;
