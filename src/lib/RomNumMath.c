@@ -188,3 +188,62 @@ bool subtractiveSequenceInStringIsValid(const char *s)
         }
     }
 }
+
+bool isValid(RomNumeral *rN)
+{
+    if (numeralStringIsClean(rN))
+    {
+        // No foreign characters detected
+        if (parseToInt(rN->nString) == rN->value)
+        {
+            // Entered test value matches parsed value
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+bool isValidString(const char *s)
+{
+    // Not used yet
+    return false;
+}
+
+int parseToInt(const char *s)
+{
+    int retVal = 0;
+
+    // Return 0 for NULL strings
+    if (s == NULL)
+    {
+        return retVal;
+    }
+
+    // Setup variables for parsing
+    int ones = 0;
+
+    bool inOnes = false;
+
+    char prevChar = '\0';
+    char currChar = '\0';
+    char nextChar = '\0';
+
+    int length = strlen(s);
+    for (int i = 0; i < length; i++)
+    {
+        currChar = prevChar;
+        currChar = s[i];
+        if (currChar == 'I')
+        {
+            inOnes = true;
+            ones += 1;
+        }
+    }
+
+    retVal = ones;
+    printf("%s = %d\n", s, retVal);
+    return retVal;
+}

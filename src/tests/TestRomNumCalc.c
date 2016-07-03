@@ -213,6 +213,26 @@ START_TEST (testIsSubtractiveSequenceInNumeralStringValid)
 }
 END_TEST
 
+START_TEST (testIsNumeralStringValid)
+{
+    // Validate a RomNumeral as having a proper Roman numeral
+    // string with a matching integer
+    RomNumeral *romNum;
+
+    romNum = numeralCreate(1, "I");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(2, "II");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(3, "III");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+}
+END_TEST
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -229,6 +249,7 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_parsing, testFindDirtyCharInNumeralString);
     tcase_add_test (tc_parsing, testIsSequenceInNumeralStringValid);
     tcase_add_test (tc_parsing, testIsSubtractiveSequenceInNumeralStringValid);
+    tcase_add_test (tc_parsing, testIsNumeralStringValid);
     suite_add_tcase (s, tc_parsing);
 
     return s;
