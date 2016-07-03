@@ -77,6 +77,7 @@ int sequenceInRomNumeralIsValid(RomNumeral *rN)
 
 int sequenceInStringIsValid(const char *s)
 {
+    // Seeking uniform sequence of chars (III, XXX, etc.)
     // Check for NULL
     if (s == NULL)
     {
@@ -122,6 +123,12 @@ int sequenceInStringIsValid(const char *s)
         {
             // Too many chars found in a row
             printf("Exiting after number of chars hit %d\n", i+1);
+            return 0;
+        }
+        else if (s[i] != firstChar)
+        {
+            // Sequence has ended early
+            printf("Sequence ended %c != %c\n", s[i], firstChar);
             return 0;
         }
     }
@@ -313,7 +320,9 @@ seq = true;
             else
             {
 printf("Returning, sub = %d, seq = %d, seqCount = %d, charCount = %d, retVal = %d\n", sub, seq, seqCount, charCount, retVal);
-                return retVal;
+                // Lone character
+                tens += 10;
+                charCount++;
             }
 printf("Not returning, sub = %d, seq = %d, seqCount = %d, charCount = %d, retVal = %d\n", sub, seq, seqCount, charCount, retVal);
         }

@@ -85,8 +85,18 @@ START_TEST (testIsSequenceInNumeralStringValid)
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
     numeralDestroy(romNum);
 
-    // Start with invalid character"
+    // Start with invalid character
     romNum = numeralCreate(0, "AII");
+    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
+    numeralDestroy(romNum);
+
+    // Invalid character in the middle
+    romNum = numeralCreate(0, "IAI");
+    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
+    numeralDestroy(romNum);
+
+    // Invalid character at the end
+    romNum = numeralCreate(0, "IIA");
     ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
     numeralDestroy(romNum);
 
@@ -260,6 +270,26 @@ START_TEST (testIsNumeralStringValid)
     numeralDestroy(romNum);
 
     romNum = numeralCreate(10, "X");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(11, "XI");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(12, "XII");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(13, "XIII");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(14, "XIV");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(15, "XV");
     ck_assert(isValid(romNum));
     numeralDestroy(romNum);
 }
