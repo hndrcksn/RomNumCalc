@@ -238,6 +238,10 @@ START_TEST (testIsNumeralStringValid)
     romNum = numeralCreate(4, "IV");
     ck_assert(isValid(romNum));
     numeralDestroy(romNum);
+
+    romNum = numeralCreate(5, "V");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
 }
 END_TEST
 

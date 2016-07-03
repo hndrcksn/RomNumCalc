@@ -276,6 +276,17 @@ int parseToInt(const char *s)
                 return retVal;
             }
         }
+        else if (currChar == 'V')
+        {
+            inOnes = true;
+            ones += 5;
+            charCount++;
+        }
+        else
+        {
+            // Continue to avoid infinite loop
+            charCount++;
+        }
     }
 
     retVal = ones;
