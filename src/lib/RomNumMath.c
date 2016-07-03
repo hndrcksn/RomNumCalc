@@ -302,29 +302,48 @@ int parseToInt(const char *s)
         else if (currChar == 'X')
         {
             inTens = true;
-bool sub = false;
-bool seq = false;
-
             if ((seqCount = subtractiveSequenceInStringIsValid(&s[charCount])) != 0)
             {
-sub = true;
                 tens += seqCount;
                 charCount += 2;
             }
             else if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
             {
-seq = true;
                 tens += seqCount * 10;
                 charCount += seqCount;
             }
             else
             {
-printf("Returning, sub = %d, seq = %d, seqCount = %d, charCount = %d, retVal = %d\n", sub, seq, seqCount, charCount, retVal);
                 // Lone character
                 tens += 10;
                 charCount++;
             }
-printf("Not returning, sub = %d, seq = %d, seqCount = %d, charCount = %d, retVal = %d\n", sub, seq, seqCount, charCount, retVal);
+        }
+        else if (currChar == 'L')
+        {
+            inTens = true;
+            tens += 50;
+            charCount++;
+        }
+        else if (currChar == 'C')
+        {
+            inHundreds = true;
+            if ((seqCount = subtractiveSequenceInStringIsValid(&s[charCount])) != 0)
+            {
+                hundreds += seqCount;
+                charCount += 2;
+            }
+            else if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
+            {
+                hundreds += seqCount * 100;
+                charCount += seqCount;
+            }
+            else
+            {
+                // Lone character
+                hundreds += 100;
+                charCount++;
+            }
         }
         else
         {

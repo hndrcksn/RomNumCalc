@@ -292,6 +292,118 @@ START_TEST (testIsNumeralStringValid)
     romNum = numeralCreate(15, "XV");
     ck_assert(isValid(romNum));
     numeralDestroy(romNum);
+
+    romNum = numeralCreate(16, "XVI");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(17, "XVII");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(18, "XVIII");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(19, "XIX");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(20, "XX");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(21, "XXI");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(22, "XXII");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(23, "XXIII");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(24, "XXIV");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(25, "XXV");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(26, "XXVI");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(27, "XXVII");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(28, "XXVIII");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(29, "XXIX");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(30, "XXX");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    // Skip to more complicated numbers
+    romNum = numeralCreate(39, "XXXIX");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(40, "XL");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(41, "XLI");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    // Skip to more complicated numbers
+    romNum = numeralCreate(49, "XLIX");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(50, "L");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(51, "LI");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    // Skip to more complicated numbers
+    romNum = numeralCreate(89, "LXXXIX");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(90, "XC");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(91, "XCI");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    // Skip to more complicated number
+    romNum = numeralCreate(99, "XCIX");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(100, "C");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
+
+    romNum = numeralCreate(101, "CI");
+    ck_assert(isValid(romNum));
+    numeralDestroy(romNum);
 }
 END_TEST
 
