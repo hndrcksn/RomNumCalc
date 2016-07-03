@@ -48,6 +48,17 @@ START_TEST (testEachCharInNumeralStringIsClean)
 }
 END_TEST
 
+START_TEST (testFindDirtyCharInNumeralString)
+{
+    // Find an invalid character in the numeral string (not I, V, X, L, C, D or M)
+    RomNumeral *romNum;
+
+    romNum = numeralCreate(0, "IVXLCDMAMDCLXVIIVXLCDM");
+    ck_assert(!numeralStringIsClean(romNum));
+    numeralDestroy(romNum);
+}
+END_TEST
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -58,6 +69,7 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
     tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
     tcase_add_test (tc_core, testEachCharInNumeralStringIsClean);
+    tcase_add_test (tc_core, testFindDirtyCharInNumeralString);
     suite_add_tcase (s, tc_core);
 
     return s;

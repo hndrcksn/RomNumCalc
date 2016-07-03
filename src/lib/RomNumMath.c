@@ -54,6 +54,7 @@ bool char1Is_V(RomNumeral *rN)
 bool numeralStringIsClean(RomNumeral *rN)
 {
     char *validRomanChars = "IVXLCMD";
+    printf("Checking '%s'...\n", rN->nString);
     for (int i = 0; i < strlen(rN->nString); i++)
     {
         printf("i = %d, c = '%c'\n", i, (rN->nString)[i]);
