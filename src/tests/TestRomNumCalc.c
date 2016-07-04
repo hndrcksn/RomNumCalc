@@ -414,6 +414,129 @@ START_TEST (testIsNumeralStringValid)
 }
 END_TEST
 
+START_TEST (testIntToRomNumStringConversion)
+{
+    char output[255];
+    char *outValue = NULL;
+    int input = 1332;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "MCCCXXXII");
+
+    input = 1;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "I");
+
+    input = 2;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "II");
+
+    input = 3;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "III");
+
+    input = 4;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "IV");
+
+    input = 5;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "V");
+
+    input = 6;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "VI");
+
+    input = 7;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "VII");
+
+    input = 8;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "VIII");
+
+    input = 9;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "IX");
+
+    input = 10;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "X");
+
+    input = 11;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XI");
+
+    input = 14;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XIV");
+
+    input = 19;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XIX");
+
+    input = 20;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XX");
+
+    input = 21;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XXI");
+
+    input = 25;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XXV");
+
+    input = 29;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XXIX");
+
+    input = 30;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XXX");
+
+    input = 31;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XXXI");
+
+    input = 39;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XXXIX");
+
+    input = 40;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XL");
+
+    input = 41;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XLI");
+
+    input = 49;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XLIX");
+
+    input = 50;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "L");
+
+    input = 51;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "LI");
+
+    input = 99;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "XCIX");
+
+    input = 100;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "C");
+
+    input = 101;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert_str_eq(outValue, "CI");
+}
+END_TEST
+
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -431,6 +554,8 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_parsing, testIsSequenceInNumeralStringValid);
     tcase_add_test (tc_parsing, testIsSubtractiveSequenceInNumeralStringValid);
     tcase_add_test (tc_parsing, testIsNumeralStringValid);
+    // String output attempt
+    tcase_add_test (tc_parsing, testIntToRomNumStringConversion);
     suite_add_tcase (s, tc_parsing);
 
     return s;

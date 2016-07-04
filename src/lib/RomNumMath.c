@@ -227,7 +227,7 @@ bool isValid(RomNumeral *rN)
     if (numeralStringIsClean(rN))
     {
         // No foreign characters detected
-        if (parseToInt(rN->nString) == rN->value)
+        if (romNumToInt(rN->nString) == rN->value)
         {
             // Entered test value matches parsed value
             return true;
@@ -245,7 +245,7 @@ bool isValidString(const char *s)
     return false;
 }
 
-int parseToInt(const char *s)
+int romNumToInt(const char *s)
 {
     int retVal = 0;
 
@@ -382,4 +382,139 @@ int parseToInt(const char *s)
     retVal = thousands + hundreds + tens + ones;
     printf("%s = %d\n", s, retVal);
     return retVal;
+}
+
+char *intToRomNum(int num, char *s)
+{
+    // Create a Roman numeral string in an existing buffer
+    // from an integer < 4000
+    if (s == NULL)
+    {
+        printf("String buffer is empty! Exiting...\n");
+        return NULL;
+    }
+
+    if (num > 3999)
+    {
+        printf("Invalid input (>3999)! Exiting...\n");
+        return NULL;
+    }
+    s[0] = '\0';
+    int thousands = num / 1000;
+    int hundreds = (num - (thousands * 1000)) / 100;
+    int tens = (num - (thousands * 1000) - (hundreds * 100)) / 10;
+    int ones = (num - (thousands * 1000) - (hundreds * 100) - (tens * 10));
+    int i = 0;
+    printf("num = %d, T = %d, H = %d, t = %d, o = %d\n", num, thousands, hundreds, tens, ones);
+    if (thousands > 0)
+    {
+        for (i = 0; i < thousands; i++)
+        {
+            strcat(s, "M");
+        }
+    }
+    if (hundreds > 0)
+    {
+        if (hundreds < 4)
+        {
+            for (i = 0; i < hundreds; i++)
+            {
+                strcat(s, "C");
+            }
+        }
+        else if (hundreds == 4)
+        {
+            strcat(s, "CD");
+        }
+        else if (hundreds == 5)
+        {
+            strcat(s, "D");
+        }
+        else if (hundreds == 6)
+        {
+            strcat(s, "DC");
+        }
+        else if (hundreds == 7)
+        {
+            strcat(s, "DCC");
+        }
+        else if (hundreds == 8)
+        {
+            strcat(s, "DCCC");
+        }
+        else if (hundreds == 9)
+        {
+            strcat(s, "CM");
+        }
+    }
+    if (tens > 0)
+    {
+        if (tens < 4)
+        {
+            for (i = 0; i < tens; i++)
+            {
+                strcat(s, "X");
+            }
+        }
+        else if (tens == 4)
+        {
+            strcat(s, "XL");
+        }
+        else if (tens == 5)
+        {
+            strcat(s, "L");
+        }
+        else if (tens == 6)
+        {
+            strcat(s, "LX");
+        }
+        else if (tens == 7)
+        {
+            strcat(s, "LXX");
+        }
+        else if (tens == 8)
+        {
+            strcat(s, "LXXX");
+        }
+        else if (tens == 9)
+        {
+            strcat(s, "XC");
+        }
+    }
+    if (ones > 0)
+    {
+        if (ones < 4)
+        {
+            for (i = 0; i < ones; i++)
+            {
+                strcat(s, "I");
+            }
+        }
+        else if (ones == 4)
+        {
+            strcat(s, "IV");
+        }
+        else if (ones == 5)
+        {
+            strcat(s, "V");
+        }
+        else if (ones == 6)
+        {
+            strcat(s, "VI");
+        }
+        else if (ones == 7)
+        {
+            strcat(s, "VII");
+        }
+        else if (ones == 8)
+        {
+            strcat(s, "VIII");
+        }
+        else if (ones == 9)
+        {
+            strcat(s, "IX");
+        }
+    }
+    printf("num = %d, s = %s\n", num, s);
+    return s;
 }

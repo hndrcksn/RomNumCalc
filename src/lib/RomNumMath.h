@@ -19,6 +19,7 @@ int subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN);
 int subtractiveSequenceInStringIsValid(const char *s);
 bool isValid(RomNumeral *rN);
 bool isValidString(const char *s);
-int parseToInt(const char *s);
+int romNumToInt(const char *s);
+char *intToRomNum(int num, char *s);
 
 #endif /* ROMNUMMATH_H */
