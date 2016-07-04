@@ -327,6 +327,89 @@ START_TEST (testIsNumeralStringValid)
 
     numeralReplace(romNum, 101, "CI");
     ck_assert(isValid(romNum));
+
+    // Skip to more complicated number
+    numeralReplace(romNum, 149, "CXLIX");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 150, "CL");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 151, "CLI");
+    ck_assert(isValid(romNum));
+
+    // Skip to more complicated number
+    numeralReplace(romNum, 199, "CXCIX");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 200, "CC");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 201, "CCI");
+    ck_assert(isValid(romNum));
+
+    // Skip to more complicated number
+    numeralReplace(romNum, 499, "CDXCIX");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 500, "D");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 501, "DI");
+    ck_assert(isValid(romNum));
+
+    // Skip to more complicated number
+    numeralReplace(romNum, 599, "DXCIX");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 550, "DL");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 551, "DLI");
+    ck_assert(isValid(romNum));
+
+    // Skip to more complicated number
+    numeralReplace(romNum, 999, "CMXCIX");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 1000, "M");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 1001, "MI");
+    ck_assert(isValid(romNum));
+
+    // Skip to more complicated number
+    numeralReplace(romNum, 1999, "MCMXCIX");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 2000, "MM");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 2001, "MMI");
+    ck_assert(isValid(romNum));
+
+    // Skip to more complicated number
+    numeralReplace(romNum, 2999, "MMCMXCIX");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 3000, "MMM");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 3001, "MMMI");
+    ck_assert(isValid(romNum));
+
+    // Skip to more complicated number
+    numeralReplace(romNum, 3997, "MMMCMXCVII");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 3998, "MMMCMXCVIII");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 3999, "MMMCMXCIX");
+    ck_assert(isValid(romNum));
+
+    numeralReplace(romNum, 54, "LIV");
+    ck_assert(isValid(romNum));
     numeralDestroy(romNum);
 }
 END_TEST

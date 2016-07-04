@@ -351,6 +351,27 @@ int parseToInt(const char *s)
                 charCount++;
             }
         }
+        else if (currChar == 'D')
+        {
+            inHundreds = true;
+            hundreds += 500;
+            charCount++;
+        }
+        else if (currChar == 'M')
+        {
+            inThousands = true;
+            if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
+            {
+                thousands += seqCount * 1000;
+                charCount += seqCount;
+            }
+            else
+            {
+                // Lone character
+                thousands += 1000;
+                charCount++;
+            }
+        }
         else
         {
             // Continue to avoid infinite loop
