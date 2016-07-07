@@ -536,6 +536,74 @@ START_TEST (testIntToRomNumStringConversion)
 }
 END_TEST
 
+START_TEST (testStringValidation)
+{
+    char output[255];
+    char *outValue = NULL;
+    memset(output, 0, 255);
+//    int input = 1332;
+//    outValue = intToRomNum(input,  &output[0]);
+//    ck_assert(valString("MCCCXXXII"));
+//    ck_assert(valString("MCDLXXVIII"));
+//    ck_assert(valString("MMCMXCIX"));
+//    ck_assert(valString("I"));
+//    ck_assert(valString("X"));
+
+//addition("XX", "II", output);
+//addition("II", "XX", output);
+//addition("XIX", "C", output);
+addition("VI", "V", output);
+//addition("V", "VI", output);
+addition("IV", "V", output);
+//addition("V", "IV", output);
+addition("IV", "IV", output);
+addition("I", "III", output);
+addition("VIII", "VIII", output);
+addition("VIII", "VII", output);
+addition("VII", "VII", output);
+/*
+//addition("CC", "XX", output);
+//addition("XX", "CC", output);
+//addition("CXC", "M", output);
+addition("LX", "L", output);
+//addition("L", "LX", output);
+addition("XL", "L", output);
+//addition("L", "XL", output);
+addition("XL", "XL", output);
+addition("X", "XXX", output);
+addition("LXXX", "LXXX", output);
+addition("LXXX", "LXX", output);
+addition("LXX", "LXX", output);
+
+//addition("MM", "CC", output);
+//addition("CC", "MM", output);
+//addition("MCM", "M", output);
+addition("DC", "D", output);
+//addition("D", "DC", output);
+addition("CD", "D", output);
+//addition("D", "CD", output);
+addition("CD", "CD", output);
+addition("C", "CCC", output);
+addition("DCCC", "DCCC", output);
+addition("DCCC", "DCC", output);
+addition("DCC", "DCC", output);
+
+//addition("XX", "MM", output);
+//addition("MM", "XX", output);
+//addition("MXIX", "C", output);
+addition("MVI", "V", output);
+//addition("V", "MVI", output);
+addition("IMV", "V", output);
+//addition("V", "MV", output);
+addition("MV", "MV", output);
+addition("M", "MMC", output);
+addition("MMVIII", "MCVIII", output);
+addition("MMVIII", "MMLXXVII", output);
+addition("MVII", "MCMLXVII", output);
+*/
+    ck_assert(valString("LCCX"));
+}
+END_TEST
 
 Suite *romNumTestSuite (void)
 {
@@ -544,18 +612,19 @@ Suite *romNumTestSuite (void)
     /* Core test case */
     TCase *tc_core = tcase_create ("Core");
     tcase_add_test (tc_core, testNumeralCreate);
-    tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
-    tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
+//    tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
+//    tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
     suite_add_tcase (s, tc_core);
 
     TCase *tc_parsing = tcase_create ("Parsing");
-    tcase_add_test (tc_parsing, testEachCharInNumeralStringIsClean);
-    tcase_add_test (tc_parsing, testFindDirtyCharInNumeralString);
-    tcase_add_test (tc_parsing, testIsSequenceInNumeralStringValid);
-    tcase_add_test (tc_parsing, testIsSubtractiveSequenceInNumeralStringValid);
-    tcase_add_test (tc_parsing, testIsNumeralStringValid);
+//    tcase_add_test (tc_parsing, testEachCharInNumeralStringIsClean);
+//    tcase_add_test (tc_parsing, testFindDirtyCharInNumeralString);
+//    tcase_add_test (tc_parsing, testIsSequenceInNumeralStringValid);
+//    tcase_add_test (tc_parsing, testIsSubtractiveSequenceInNumeralStringValid);
+//    tcase_add_test (tc_parsing, testIsNumeralStringValid);
     // String output attempt
-    tcase_add_test (tc_parsing, testIntToRomNumStringConversion);
+//    tcase_add_test (tc_parsing, testIntToRomNumStringConversion);
+    tcase_add_test (tc_parsing, testStringValidation);
     suite_add_tcase (s, tc_parsing);
 
     return s;
