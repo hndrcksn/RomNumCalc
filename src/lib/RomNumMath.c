@@ -1,5 +1,3 @@
-#define USE_NEW
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -570,252 +568,6 @@ RomNumeral romNumConcatenation(RomNumeral *rN1, RomNumeral *rN2)
 
 }
 */
-/*
-bool valString (const char *s)
-{
-    // Check for NULL string
-    if (s == NULL)
-    {
-        return false;
-    }
-
-    int length = strlen(s);
-    printf("'%s' at 0x%X, Length = %d\n", s, s, length);
-
-    // String lengths
-    int onesLen = 0;
-    int tensLen = 0;
-    int hunsLen = 0;
-    int thouLen = 0;
-
-    // Validation counters
-    int ordersPresent = 0;
-    int ordersValid = 0;
-
-    // Substring pointers
-    char *iPtr = NULL;
-    char *vPtr = NULL;
-    char *xPtr = NULL;
-    char *lPtr = NULL;
-    char *cPtr = NULL;
-    char *dPtr = NULL;
-    char *mPtr = NULL;
-
-    // Order pointers
-    char *onesPtr = NULL;
-    char *tensPtr = NULL;
-    char *hunsPtr = NULL;
-    char *thouPtr = NULL;
-
-    bool onesValid = false;
-    bool tensValid = false;
-    bool hunsValid = false;
-    bool thouValid = false;
-
-    // Specify pointers to existing numerals
-    if ((iPtr = strchr(s, 'I')) != NULL)
-    {
-        printf("I at 0x%X\n", iPtr);
-        // We have ones
-        onesPtr = iPtr;
-    }
-    if ((vPtr = strchr(s, 'V')) != NULL)
-    {
-        printf("V at 0x%X\n", vPtr);
-        if (onesPtr != NULL)
-        {
-            if (vPtr < onesPtr)
-            {
-                // We have ones
-                onesPtr = vPtr;
-            }
-        }
-        else
-        {
-            // We have ones
-            onesPtr = vPtr;
-        }
-    }
-    if ((xPtr = strchr(s, 'X')) != NULL)
-    {
-        printf("X at 0x%X\n", xPtr);
-        // We have tens
-        tensPtr = xPtr;
-    }
-    if ((lPtr = strchr(s, 'L')) != NULL)
-    {
-        printf("L at 0x%X\n", lPtr);
-        if (tensPtr != NULL)
-        {
-            if (lPtr < tensPtr)
-            {
-                // We have tens
-                tensPtr = lPtr;
-            }
-        }
-        else
-        {
-            // We have tens
-            tensPtr = lPtr;
-        }
-    }
-    if ((cPtr = strchr(s, 'C')) != NULL)
-    {
-        printf("C at 0x%X\n", cPtr);
-        // We have hundreds
-        hunsPtr = cPtr;
-    }
-    if ((dPtr = strchr(s, 'D')) != NULL)
-    {
-        printf("D at 0x%X\n", dPtr);
-        if (hunsPtr != NULL)
-        {
-            if (dPtr < hunsPtr)
-            {
-                // We have hundreds
-                hunsPtr = dPtr;
-            }
-        }
-        else
-        {
-            // We have hundreds
-            hunsPtr = dPtr;
-        }
-    }
-    if ((mPtr = strchr(s, 'M')) != NULL)
-    {
-        printf("M at 0x%X\n", mPtr);
-        // We have thousands
-        thouPtr = mPtr;
-    }
-
-    if (onesPtr != NULL)
-    {
-        // onesPtr points to first char in ones part of the string
-        onesLen = strlen(onesPtr);
-        printf("onesPtr at 0x%X, length = %d\n", onesPtr, onesLen);
-
-        // Validate
-        ordersPresent++;
-        if ((strncmp(onesPtr, "I",    onesLen) == 0) ||
-            (strncmp(onesPtr, "II",   onesLen) == 0) ||
-            (strncmp(onesPtr, "III",  onesLen) == 0) ||
-            (strncmp(onesPtr, "IV",   onesLen) == 0) ||
-            (strncmp(onesPtr, "V",    onesLen) == 0) ||
-            (strncmp(onesPtr, "VI",   onesLen) == 0) ||
-            (strncmp(onesPtr, "VII",  onesLen) == 0) ||
-            (strncmp(onesPtr, "VIII", onesLen) == 0) ||
-            (strncmp(onesPtr, "IX",   onesLen) == 0))
-        {
-            onesValid = true;
-            ordersValid++;
-        }
-    }
-    if (tensPtr != NULL)
-    {
-        // tensPtr points to first char in tens part of the string
-        if (onesPtr != NULL)
-        {
-            tensLen = onesPtr - tensPtr;
-        }
-        else
-        {
-            tensLen = strlen(tensPtr);
-        }
-        printf("tensPtr at 0x%X, length = %d\n", tensPtr, tensLen);
-
-        // Validate
-        ordersPresent++;
-        if ((strncmp(tensPtr, "X",    tensLen) == 0) ||
-            (strncmp(tensPtr, "XX",   tensLen) == 0) ||
-            (strncmp(tensPtr, "XXX",  tensLen) == 0) ||
-            (strncmp(tensPtr, "XL",   tensLen) == 0) ||
-            (strncmp(tensPtr, "L",    tensLen) == 0) ||
-            (strncmp(tensPtr, "LX",   tensLen) == 0) ||
-            (strncmp(tensPtr, "LXX",  tensLen) == 0) ||
-            (strncmp(tensPtr, "LXXX", tensLen) == 0) ||
-            (strncmp(tensPtr, "XC",   tensLen) == 0))
-        {
-            tensValid = true;
-            ordersValid++;
-        }
-    }
-    if (hunsPtr != NULL)
-    {
-        // hunsPtr points to first char in hundreds part of the string
-        if (tensPtr != NULL)
-        {
-            hunsLen = tensPtr - hunsPtr;
-        }
-        else if (onesPtr != NULL)
-        {
-            hunsLen = onesPtr - hunsPtr;
-        }
-        else
-        {
-            hunsLen = strlen(hunsPtr);
-        }
-        printf("hunsPtr at 0x%X, length = %d\n", hunsPtr, hunsLen);
-
-        // Validate
-        ordersPresent++;
-        if ((strncmp(hunsPtr, "C",    hunsLen) == 0) ||
-            (strncmp(hunsPtr, "CC",   hunsLen) == 0) ||
-            (strncmp(hunsPtr, "CCC",  hunsLen) == 0) ||
-            (strncmp(hunsPtr, "CD",   hunsLen) == 0) ||
-            (strncmp(hunsPtr, "D",    hunsLen) == 0) ||
-            (strncmp(hunsPtr, "DC",   hunsLen) == 0) ||
-            (strncmp(hunsPtr, "DCC",  hunsLen) == 0) ||
-            (strncmp(hunsPtr, "DCCC", hunsLen) == 0) ||
-            (strncmp(hunsPtr, "CM",   hunsLen) == 0))
-        {
-            hunsValid = true;
-            ordersValid++;
-        }
-    }
-    if (thouPtr != NULL)
-    {
-        // thouPtr points to first char in thousands part of the string
-        if (hunsPtr != NULL)
-        {
-            thouLen = hunsPtr - thouPtr;
-        }
-        else if (tensPtr != NULL)
-        {
-            thouLen = tensPtr - thouPtr;
-        }
-        else if (onesPtr != NULL)
-        {
-            thouLen = onesPtr - thouPtr;
-        }
-        else
-        {
-            thouLen = strlen(thouPtr);
-        }
-        printf("thouPtr at 0x%X, length = %d\n", thouPtr, thouLen);
-
-        // Validate
-        ordersPresent++;
-        if ((strncmp(thouPtr, "M",   thouLen) == 0) ||
-            (strncmp(thouPtr, "MM",  thouLen) == 0) ||
-            (strncmp(thouPtr, "MMM", thouLen) == 0))
-        {
-            thouValid = true;
-            ordersValid++;
-        }
-    }
-
-    // For each order of magnitude present there is a valid string representation
-    if (ordersPresent == ordersValid)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-*/
 
 /* New with attachment */
 bool valString (const char *s)
@@ -827,7 +579,7 @@ bool valString (const char *s)
     }
 
     int length = strlen(s);
-    printf("'%s' at 0x%X, Length = %d\n", s, s, length);
+    printf("'%s' at 0x%p, Length = %d\n", s, s, length);
 
     StrHolder vH;
     attachHolder(s, &vH);
@@ -958,33 +710,7 @@ printf("\n\n\nbuffer clear!\n");
         if (valString(aH.mainStr) && valString(bH.mainStr))
         {
             printf("%s + %s = ", aH.mainStr, bH.mainStr);
-/*
-            if (aH.thouPtr != NULL)
-            {
-                strncat(cH.mainStr, aH.thouPtr, aH.thouLen);
-            }
-            if (bH.thouPtr != NULL)
-            {
-                strncat(cH.mainStr, bH.thouPtr, bH.thouLen);
-            }
-            if (aH.hunsPtr != NULL)
-            {
-                strncat(cH.mainStr, aH.hunsPtr, aH.hunsLen);
-            }
-            if (bH.hunsPtr != NULL)
-            {
-                strncat(cH.mainStr, bH.hunsPtr, bH.hunsLen);
-            }
-            if (aH.tensPtr != NULL)
-            {
-                strncat(cH.mainStr, aH.tensPtr, aH.tensLen);
-            }
-            if (bH.tensPtr != NULL)
-            {
-                strncat(cH.mainStr, bH.tensPtr, bH.tensLen);
-            }
-*/
-#ifdef USE_NEW
+
             bool carry = false;
 
             carry = addOrder(&aH, &bH, onesStr, 'I', false);
@@ -1003,185 +729,6 @@ printf("\n\n\nbuffer clear!\n");
             printf("Thousands (%s)", thouStr);
             printf("%s\n", carry?" with carry":"");
 
-#else
-
-//OLD
-            // Handle Ones
-//            if ( neither string has ones, skip )
-//            else if ( one string has ones, but not the other, take the one that has )
-//            else if ( both strings have ones, add/concatenate/merge them )
-//              if ( a string starts with a I, see if it's subractive and save the result for later )
-//                if ( neither is subtractive, line up strings together, largest letters first )
-//                  ( any Xs or VVs get passed up the food chain the remaining V&Is get arranged in order largest first and the
-//                       subtractives get taken away. Each subtractive is a -2 from the final tally
-//                       save results to buffer for merging later with output buffer )
-
-            if (aH.onesPtr != NULL && bH.onesPtr == NULL)
-            {
-                strncat(cH.mainStr, aH.onesPtr, aH.onesLen);
-            }
-            else if (bH.onesPtr != NULL && aH.onesPtr == NULL)
-            {
-                strncat(cH.mainStr, bH.onesPtr, bH.onesLen);
-            }
-            else if (bH.onesPtr != NULL && aH.onesPtr != NULL)
-            {
-int iCount = 0;
-int vCount = 0;
-int xCount = 0;
-int subCount = 0;
-printf("\n\nx = %d, v = %d, i = %d, sub = %d\n", xCount, vCount, iCount, subCount);
-
-                if (isStringSubtractive(aH.onesPtr))
-                {
-                    subCount++;
-                }
-                if (isStringSubtractive(bH.onesPtr))
-                {
-                    subCount++;
-                }
-
-                // Tally characters
-                for (int i = 0; i < aH.onesLen; i++)
-                {
-                    switch (aH.onesPtr[i]) {
-                        case 'X':
-                            xCount++;
-                            break;
-
-                        case 'V':
-                            vCount++;
-                            break;
-
-                        case 'I':
-                            iCount++;
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-                for (int i = 0; i < bH.onesLen; i++)
-                {
-                    switch (bH.onesPtr[i]) {
-                        case 'X':
-                            xCount++;
-                            break;
-
-                        case 'V':
-                            vCount++;
-                            break;
-
-                        case 'I':
-                            iCount++;
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-printf("pre tally x = %d, v = %d, i = %d, sub = %d\n", xCount, vCount, iCount, subCount);
-// Handle subtractives. When removing a subtractive it has to take another non-subtractive
-// with it. eg IV + IV = VVII = VIII  (second V had to be split up to satisfy both subtractives
-//             IX + IX = XXII = XVIII (second X had to be split up to satisfy both subtractives
-                for (int i = 0; i < subCount; i++)
-                {
-                    if (iCount >= 2)
-                    {
-                        iCount -= 2;
-                    }
-                    else if (vCount != 0)
-                    {
-                        vCount--;
-                        iCount += 3; // sacrifice one+one for the subtractive
-                    }
-                    else if (xCount != 0)
-                    {
-                        xCount--; // split X into VV
-                        vCount++; // one V goes here
-                        iCount += 3; // sacrifice one+one for the subtractive
-                    }
-printf("sub looping... x = %d, v = %d, i = %d, sub = %d\n", xCount, vCount, iCount, subCount);
-                }
-subCount = 0;
-// Adjust tally
-// if iCount = 4, 5, or 6 we get IV, V or VI
-                switch (iCount) {
-                    case 4:
-                        iCount = 1;
-                        vCount++;
-                        subCount = 1;
-                        break;
-
-                    case 5:
-                        iCount = 0;
-                        vCount++;
-                        break;
-
-                    case 6:
-                        iCount = 1;
-                        vCount++;
-                        break;
-
-                    default:
-                        break;
-                }
-
-// if vCount = 2 or 3 we get an X or XV
-                switch (vCount) {
-                    case 2:
-                        vCount = 0;
-                        xCount++;
-                        break;
-
-                    case 3:
-                        vCount = 1;
-                        xCount++;
-                        break;
-
-                    default:
-                        break;
-                }
-
-    printf("post tally x = %d, v = %d, i = %d, sub = %d\n", xCount, vCount, iCount, subCount);
-    if (subCount != 1)
-    {
-        printf("output should be '%s%s", xCount==1?"X":"", vCount==1?"V":"");
-        sprintf(cH.mainStr, "%s%s", xCount==1?"X":"", vCount==1?"V":"");
-        char iChr[1] = "I";
-        for (int i = 0; i < iCount; i++)
-        {
-            printf("I");
-            strncat(cH.mainStr, &iChr[0], 1);
-        }
-        printf("'\n");
-    }
-    else if (subCount == 1 && vCount != 0)
-    {
-        printf("output should be '%s%s%s'\n", xCount==1?"X":"", iCount==1?"I":"", vCount==1?"V":"");
-        sprintf(cH.mainStr, "%s%s%s", xCount==1?"X":"", iCount==1?"I":"", vCount==1?"V":"");
-    }
-    else
-    {
-        printf("output should be '%s%s%s'\n", iCount==1?"I":"", xCount==1?"X":"", vCount==1?"V":"");
-        sprintf(cH.mainStr, "%s%s%s", iCount==1?"I":"", xCount==1?"X":"", vCount==1?"V":"");
-    }
-
-}
-
-#endif
-
-/*ANCIENT
-            if (aH.onesPtr != NULL)
-            {
-printf("catting aH ones...\n");                strncat(cH.mainStr, aH.onesPtr, aH.onesLen);
-            }
-            if (bH.onesPtr != NULL)
-            {
-printf("catting bH ones...\n");                strncat(cH.mainStr, bH.onesPtr, bH.onesLen);
-            }
-//ANCIENT */
-
             // Check output
             printf("OUTPUT>> %s|%s|%s|%s\n ", thouStr, hunsStr, tensStr, onesStr);
             strncat(cH.mainStr, thouStr, strlen(thouStr));
@@ -1191,11 +738,11 @@ printf("catting bH ones...\n");                strncat(cH.mainStr, bH.onesPtr, b
 
             if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
             {
-                printf("CLEAN and VALID +++ %s strlen(%d)\n", cH.mainStr, strlen(cH.mainStr));
+                printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
             }
             else
             {
-                printf("NOT CLEAN/VALID --- '%s' strlen(%d)\n", cH.mainStr, strlen(cH.mainStr));
+                printf("NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
             }
             return cs;
         }
@@ -1257,13 +804,13 @@ void attachHolder(const char *s, StrHolder *sh)
     // ONES
     if ((sh->iPtr = strchr(sh->mainStr, 'I')) != NULL)
     {
-        printf("I at 0x%X\n", sh->iPtr);
+        printf("I at 0x%p\n", sh->iPtr);
         // We have ones
         sh->onesPtr = sh->iPtr;
     }
     if ((sh->vPtr = strchr(sh->mainStr, 'V')) != NULL)
     {
-        printf("V at 0x%X\n", sh->vPtr);
+        printf("V at 0x%p\n", sh->vPtr);
         if (sh->onesPtr != NULL)
         {
             if (sh->vPtr < sh->onesPtr)
@@ -1282,7 +829,7 @@ void attachHolder(const char *s, StrHolder *sh)
     // TENS
     if ((sh->xPtr = strchr(sh->mainStr, 'X')) != NULL)
     {
-        printf("X at 0x%X\n", sh->xPtr);
+        printf("X at 0x%p\n", sh->xPtr);
         // Check if there is a subtractive
         if (sh->onesPtr != NULL)
         {
@@ -1304,7 +851,7 @@ void attachHolder(const char *s, StrHolder *sh)
     }
     if ((sh->lPtr = strchr(sh->mainStr, 'L')) != NULL)
     {
-        printf("L at 0x%X\n", sh->lPtr);
+        printf("L at 0x%p\n", sh->lPtr);
         if (sh->tensPtr != NULL)
         {
             if (sh->lPtr < sh->tensPtr)
@@ -1323,7 +870,7 @@ void attachHolder(const char *s, StrHolder *sh)
     // HUNDREDS
     if ((sh->cPtr = strchr(sh->mainStr, 'C')) != NULL)
     {
-        printf("C at 0x%X\n", sh->cPtr);
+        printf("C at 0x%p\n", sh->cPtr);
         // Check if there is a subtractive
         if (sh->tensPtr != NULL)
         {
@@ -1345,7 +892,7 @@ void attachHolder(const char *s, StrHolder *sh)
     }
     if ((sh->dPtr = strchr(sh->mainStr, 'D')) != NULL)
     {
-        printf("D at 0x%X\n", sh->dPtr);
+        printf("D at 0x%p\n", sh->dPtr);
         if (sh->hunsPtr != NULL)
         {
             if (sh->dPtr < sh->hunsPtr)
@@ -1364,7 +911,7 @@ void attachHolder(const char *s, StrHolder *sh)
     // THOUSANDS
     if ((sh->mPtr = strchr(sh->mainStr, 'M')) != NULL)
     {
-        printf("M at 0x%X\n", sh->mPtr);
+        printf("M at 0x%p\n", sh->mPtr);
         // Check if there is a subtractive
         if (sh->hunsPtr != NULL)
         {
@@ -1389,7 +936,7 @@ void attachHolder(const char *s, StrHolder *sh)
     {
         // onesPtr points to first char in ones part of the string
         sh->onesLen = strlen(sh->onesPtr);
-        printf("onesPtr at 0x%X, length = %d\n", sh->onesPtr, sh->onesLen);
+        printf("onesPtr at 0x%p, length = %d\n", sh->onesPtr, sh->onesLen);
     }
     if (sh->tensPtr != NULL)
     {
@@ -1402,7 +949,7 @@ void attachHolder(const char *s, StrHolder *sh)
         {
             sh->tensLen = strlen(sh->tensPtr);
         }
-        printf("tensPtr at 0x%X, length = %d\n", sh->tensPtr, sh->tensLen);
+        printf("tensPtr at 0x%p, length = %d\n", sh->tensPtr, sh->tensLen);
     }
     if (sh->hunsPtr != NULL)
     {
@@ -1419,7 +966,7 @@ void attachHolder(const char *s, StrHolder *sh)
         {
             sh->hunsLen = strlen(sh->hunsPtr);
         }
-        printf("hunsPtr at 0x%X, length = %d\n", sh->hunsPtr, sh->hunsLen);
+        printf("hunsPtr at 0x%p, length = %d\n", sh->hunsPtr, sh->hunsLen);
     }
     if (sh->thouPtr != NULL)
     {
@@ -1440,7 +987,7 @@ void attachHolder(const char *s, StrHolder *sh)
         {
             sh->thouLen = strlen(sh->thouPtr);
         }
-        printf("thouPtr at 0x%X, length = %d\n", sh->thouPtr, sh->thouLen);
+        printf("thouPtr at 0x%p, length = %d\n", sh->thouPtr, sh->thouLen);
     }
 }
 
