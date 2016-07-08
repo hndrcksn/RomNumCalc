@@ -33,5 +33,6 @@ char *subtraction (const char *as, const char *bs, char *cs);
 void attachHolder(const char *s, StrHolder *sh);
 bool isStringSubtractive(const char *s);
 bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carriedOver);
+bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carriedOver);
 //
 #endif /* ROMNUMMATH_H */

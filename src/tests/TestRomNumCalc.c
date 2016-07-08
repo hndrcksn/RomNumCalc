@@ -549,18 +549,26 @@ START_TEST (testStringValidation)
 //    ck_assert(valString("I"));
 //    ck_assert(valString("X"));
 
-//addition("XX", "II", output);
-//addition("II", "XX", output);
-//addition("XIX", "C", output);
-addition("VI", "V", output);
-//addition("V", "VI", output);
-addition("IV", "V", output);
-//addition("V", "IV", output);
-addition("IV", "IV", output);
-addition("I", "III", output);
-addition("VIII", "VIII", output);
-addition("VIII", "VII", output);
-addition("VII", "VII", output);
+////addition("XX", "II", output);
+////addition("II", "XX", output);
+////addition("XIX", "C", output);
+//addition("VI", "V", output);
+////addition("V", "VI", output);
+//addition("IV", "V", output);
+////addition("V", "IV", output);
+//addition("IV", "IV", output);
+//addition("I", "III", output);
+//addition("VIII", "VIII", output);
+//addition("VIII", "VII", output);
+//addition("VII", "VII", output);
+//addition("VII", "VII", output);
+//addition("III", "I", output);
+    subtraction("III", "I", output);
+    ck_assert_str_eq(output, "II");
+    subtraction("III", "II", output);
+    ck_assert_str_eq(output, "I");
+    subtraction("IV", "I", output);
+    ck_assert_str_eq(output, "III");
 /*
 //addition("CC", "XX", output);
 //addition("XX", "CC", output);
@@ -601,7 +609,7 @@ addition("MMVIII", "MCVIII", output);
 addition("MMVIII", "MMLXXVII", output);
 addition("MVII", "MCMLXVII", output);
 */
-    ck_assert(valString("LCCX"));
+//    ck_assert(valString("LCCX"));
 }
 END_TEST
 
