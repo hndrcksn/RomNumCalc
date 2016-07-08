@@ -541,6 +541,21 @@ START_TEST (testStringValidation)
     char output[255];
     char *outValue = NULL;
     memset(output, 0, 255);
+    int input = 1332;
+    outValue = intToRomNum(input,  &output[0]);
+    ck_assert(valString("MCCCXXXII"));
+    ck_assert(valString("MCDLXXVIII"));
+    ck_assert(valString("MMCMXCIX"));
+    ck_assert(valString("I"));
+    ck_assert(valString("X"));
+}
+END_TEST
+
+START_TEST (testAdditionValidation)
+{
+    char output[255];
+    char *outValue = NULL;
+    memset(output, 0, 255);
 //    int input = 1332;
 //    outValue = intToRomNum(input,  &output[0]);
 //    ck_assert(valString("MCCCXXXII"));
@@ -563,23 +578,7 @@ START_TEST (testStringValidation)
 //addition("VII", "VII", output);
 //addition("VII", "VII", output);
 //addition("III", "I", output);
-/*    subtraction("III", "I", output);
-    ck_assert_str_eq(output, "II");
-    subtraction("III", "II", output);
-    ck_assert_str_eq(output, "I");
-    subtraction("IV", "I", output);
-    ck_assert_str_eq(output, "III");
-    subtraction("XIV", "I", output);
-    ck_assert_str_eq(output, "XIII");
-    subtraction("XIV", "III", output);
-    ck_assert_str_eq(output, "XI");
-    subtraction("XIV", "IV", output);
-    ck_assert_str_eq(output, "X");*/
-    subtraction("XIV", "V", output);
-    ck_assert_str_eq(output, "IX");
-    subtraction("XXXIV", "V", output);
-    ck_assert_str_eq(output, "XXIX");
-/*
+
 //addition("CC", "XX", output);
 //addition("XX", "CC", output);
 //addition("CXC", "M", output);
@@ -618,7 +617,36 @@ addition("M", "MMC", output);
 addition("MMVIII", "MCVIII", output);
 addition("MMVIII", "MMLXXVII", output);
 addition("MVII", "MCMLXVII", output);
-*/
+//    ck_assert(valString("LCCX"));
+}
+END_TEST
+
+START_TEST (testSubtractionValidation)
+{
+    char output[255];
+    char *outValue = NULL;
+    memset(output, 0, 255);
+
+/*    subtraction("III", "I", output);
+    ck_assert_str_eq(output, "II");
+    subtraction("III", "II", output);
+    ck_assert_str_eq(output, "I");
+    subtraction("IV", "I", output);
+    ck_assert_str_eq(output, "III");
+    subtraction("XIV", "I", output);
+    ck_assert_str_eq(output, "XIII");
+    subtraction("XIV", "III", output);
+    ck_assert_str_eq(output, "XI");
+    subtraction("XIV", "IV", output);
+    ck_assert_str_eq(output, "X");*/
+    subtraction("XIV", "V", output);
+    ck_assert_str_eq(output, "IX");
+    subtraction("XXXIV", "V", output);
+    ck_assert_str_eq(output, "XXIX");
+    subtraction("XXXI", "II", output);
+    ck_assert_str_eq(output, "XXIX");
+    subtraction("XXXV", "VI", output);
+    ck_assert_str_eq(output, "XXIX");
 //    ck_assert(valString("LCCX"));
 }
 END_TEST
@@ -642,7 +670,9 @@ Suite *romNumTestSuite (void)
 //    tcase_add_test (tc_parsing, testIsNumeralStringValid);
     // String output attempt
 //    tcase_add_test (tc_parsing, testIntToRomNumStringConversion);
-    tcase_add_test (tc_parsing, testStringValidation);
+//    tcase_add_test (tc_parsing, testStringValidation);
+//    tcase_add_test (tc_parsing, testAdditionValidation);
+    tcase_add_test (tc_parsing, testSubtractionValidation);
     suite_add_tcase (s, tc_parsing);
 
     return s;

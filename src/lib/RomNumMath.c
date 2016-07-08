@@ -1555,7 +1555,7 @@ printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
 // if x1Count is 1 and subCount is 1 then we have a negative one situation and must borrow from
 // higher up. Here we borrow in good faith that somewhere in the upper orders the difference will be
 // reconciled. If not I guess it becomes a negative number?
-        if (x1Count == 1 && subCount ==1)
+        if ((x1Count == 1 && subCount == 1) || (x1Count == -1 && subCount == 0))
         {
             x10Count++;
             borrow = true;
@@ -1611,7 +1611,23 @@ printf("post looping   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
             return false;
         }
 
-        if (subCount != 1)
+        if (x1Count == -1 && x10Count == 1)
+        { // added for x1Count == -1 in subOrder
+            printf("output should be '");
+            if (x1Count == -1)
+            {
+                printf("%c", x1);
+                strncat(cStr, &x1, 1);
+            }
+
+            if (x10Count == 1)
+            {
+                printf("%c", x10);
+                strncat(cStr, &x10, 1);
+            }
+            printf("'\n");
+        }
+        else if (subCount != 1)
         {
             printf("output should be '");
             if (x10Count == 1)
