@@ -626,8 +626,8 @@ START_TEST (testSubtractionValidation)
     char output[255];
     char *outValue = NULL;
     memset(output, 0, 255);
-
-/*    subtraction("III", "I", output);
+//
+    subtraction("III", "I", output);
     ck_assert_str_eq(output, "II");
     subtraction("III", "II", output);
     ck_assert_str_eq(output, "I");
@@ -635,10 +635,14 @@ START_TEST (testSubtractionValidation)
     ck_assert_str_eq(output, "III");
     subtraction("XIV", "I", output);
     ck_assert_str_eq(output, "XIII");
+    subtraction("IV", "II", output);
+    ck_assert_str_eq(output, "II");
+/*    subtraction("IV", "III", output);
+    ck_assert_str_eq(output, "I");
     subtraction("XIV", "III", output);
     ck_assert_str_eq(output, "XI");
     subtraction("XIV", "IV", output);
-    ck_assert_str_eq(output, "X");*/
+    ck_assert_str_eq(output, "X");
     subtraction("XIV", "V", output);
     ck_assert_str_eq(output, "IX");
     subtraction("XXXIV", "V", output);
@@ -647,6 +651,8 @@ START_TEST (testSubtractionValidation)
     ck_assert_str_eq(output, "XXIX");
     subtraction("XXXV", "VI", output);
     ck_assert_str_eq(output, "XXIX");
+    subtraction("XX", "VIII", output);
+    ck_assert_str_eq(output, "XII");*/
 //    ck_assert(valString("LCCX"));
 }
 END_TEST
