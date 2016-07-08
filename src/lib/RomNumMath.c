@@ -1260,8 +1260,10 @@ printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count,
         }
 printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 // Handle subtractives. When removing a subtractive it has to take another non-subtractive
-// with it. eg IV + IV = VVII = VIII  (second V had to be split up to satisfy both subtractives
-//             IX + IX = XXII = XVIII (second X had to be split up to satisfy both subtractives
+// with it. eg IV + IV = (V - I) + (V - I) = IIII + IIII = (IIII + I) + III = VIII
+// the second V had to be split up to satisfy both subtractives
+//             IX + IX = XXII = XVIII
+// the second X had to be split up to satisfy both subtractives
         for (i = 0; i < subCount; i++)
         {
             if (x1Count >= 2)
@@ -1528,8 +1530,8 @@ printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count,
         }
 printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 // Handle subtractives. When removing a subtractive it has to take another non-subtractive
-// with it. eg IV - I  = IIII - I = III
-//             IX + IX = XXII = XVIII (second X had to be split up to satisfy both subtractives
+// with it. eg IV - I  = (V - I) - I = IIII - I = III
+//          eg XIV - V = X + (IV - V) = X + (-I) = IX (with a borrow from tens)
         for (i = 0; i < subCount; i++)
         {
             if (x1Count >= 2)
@@ -1550,6 +1552,15 @@ printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count,
 printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
         }
 
+// if x1Count is 1 and subCount is 1 then we have a negative one situation and must borrow from
+// higher up. Here we borrow in good faith that somewhere in the upper orders the difference will be
+// reconciled. If not I guess it becomes a negative number?
+        if (x1Count == 1 && subCount ==1)
+        {
+            x10Count++;
+            borrow = true;
+        }
+/*
         subCount = 0;
 
 // Adjust tally
@@ -1590,8 +1601,8 @@ printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
             default:
                 break;
         }
-
-printf("post looping tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+*/
+printf("post looping   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
         if (order == 'M' && (x10Count > 0 || x5Count > 0))
         {
@@ -1663,7 +1674,7 @@ printf("post looping tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5
             printf("'\n");
         }
     }
-    printf("addOrder: got %s\n", cStr);
+    printf("subOrder: got %s\n", cStr);
 
     return borrow;
 }

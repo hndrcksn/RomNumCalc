@@ -563,12 +563,22 @@ START_TEST (testStringValidation)
 //addition("VII", "VII", output);
 //addition("VII", "VII", output);
 //addition("III", "I", output);
-    subtraction("III", "I", output);
+/*    subtraction("III", "I", output);
     ck_assert_str_eq(output, "II");
     subtraction("III", "II", output);
     ck_assert_str_eq(output, "I");
     subtraction("IV", "I", output);
     ck_assert_str_eq(output, "III");
+    subtraction("XIV", "I", output);
+    ck_assert_str_eq(output, "XIII");
+    subtraction("XIV", "III", output);
+    ck_assert_str_eq(output, "XI");
+    subtraction("XIV", "IV", output);
+    ck_assert_str_eq(output, "X");*/
+    subtraction("XIV", "V", output);
+    ck_assert_str_eq(output, "IX");
+    subtraction("XXXIV", "V", output);
+    ck_assert_str_eq(output, "XXIX");
 /*
 //addition("CC", "XX", output);
 //addition("XX", "CC", output);
