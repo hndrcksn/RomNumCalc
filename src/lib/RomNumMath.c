@@ -1075,7 +1075,6 @@ bool isStringSubtractive(const char *s)
     }
 
     // Show string where sequence starts and get first character
-    printf("Checking if '%s' is subtractive...\n", s);
     char firstChar = s[0];
 
     if (strlen(s) >= 2)
@@ -1137,7 +1136,6 @@ bool isStringSubtractive(const char *s)
 
 bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carriedOver)
 {
-printf("---------------- > addOrder %c\n", order);
     char *aOrderPtr;
     char *bOrderPtr;
     int aOrderLen;
@@ -1192,6 +1190,14 @@ printf("---------------- > addOrder %c\n", order);
             return false;
             break;
     }
+
+    // If strings are empty, no further processing is necessary
+    if (aOrderLen == 0 && bOrderLen == 0 && !carriedOver)
+    {
+        return false;
+    }
+
+printf("\n---------------- > addOrder %c\n", order);
 
 //            if ( neither string has ones, skip )
 //            else if ( one string has ones, but not the other, take the one that has )
@@ -1397,14 +1403,13 @@ printf("post tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x
             printf("'\n");
         }
     }
-    printf("addOrder: got %s\n", cStr);
+    printf("addOrder: got %s, returning carry:%d\n", cStr, carry);
 
     return carry;
 }
 
 bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool borrowedFrom)
 {
-printf("---------------- > subOrder %c\n", order);
     char *aOrderPtr;
     char *bOrderPtr;
     int aOrderLen;
@@ -1460,6 +1465,14 @@ printf("---------------- > subOrder %c\n", order);
             break;
     }
 
+    // If strings are empty, no further processing is necessary
+    if (aOrderLen == 0 && bOrderLen == 0 && !borrowedFrom)
+    {
+        return false;
+    }
+
+printf("\n---------------- > subOrder %c\n", order);
+
 //            if ( neither string has ones, skip )
 //            else if ( one string has ones, but not the other, take the one that has )
 //            else if ( both strings have ones, add/concatenate/merge them )
@@ -1479,10 +1492,7 @@ printf("\n\nbase tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
     if (isStringSubtractive(aOrderPtr))
     {
         subCount++;
-    }
-    if (isStringSubtractive(bOrderPtr))
-    {
-        subCount++;
+        printf("'%s' is subtractive\n", aOrderPtr);
     }
 
     // Tally characters (A is added)
@@ -1502,6 +1512,12 @@ printf("\n\nbase tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
         }
     }
 printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+
+    if (isStringSubtractive(bOrderPtr))
+    {
+        subCount++;
+        printf("'%s' is subtractive\n", bOrderPtr);
+    }
 
     // Tally characters (B is subtracted)
     for (i = 0; i < bOrderLen; i++)
@@ -1523,37 +1539,61 @@ printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count,
 // Handle subtractives. When removing a subtractive it has to take another non-subtractive
 // with it. eg IV - I  = (V - I) - I = IIII - I = III
 //          eg XIV - V = X + (IV - V) = X + (-I) = IX (with a borrow from tens)
-    for (i = 0; i < subCount; i++)
+//          eg IX - IV = (two subtractives cancel each other) = X-V = V ?
+    if (subCount == 1)
     {
         if (x1Count >= 2)
         {
             x1Count -= 2;
         }
-        else if (x5Count != 0)
+        else if (x5Count == 1)
         {
             x5Count--;
             x1Count += 3; // sacrifice one+one for the subtractive
         }
-        else if (x10Count != 0)
+        else if (x10Count == 1)
         {
             x10Count--;   // split X into VV
             x5Count++;    // one V goes here
             x1Count += 3; // sacrifice one+one for the subtractive
         }
+        else if (x1Count == 1)
+        {   // have a -I situation
+            x10Count++;
+            borrow = true;
+        }
+//        subCount = 0;// fails IV-III if commented, fails XIV-V if uncommented
 printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+    }
+    else if (subCount == 0)
+    {
+        if (x10Count == 0 && x5Count == 0 && x1Count == -1 && subCount == 0)
+        {   // need to borrow and set for 10-1=9
+            x10Count++;
+            x1Count = 1;
+            subCount = 1;
+            borrow = true;
+        }
+        else if (x10Count == 0 && x5Count == -1 && x1Count < 0 && subCount == 0)
+        {   // need to borrow and set for 10-8=2
+            x10Count++;
+//            x1Count = 1;
+//            subCount = 1;
+            borrow = true;
+        }
     }
 
 // if x1Count is 1 and subCount is 1 then we have a negative one situation and must borrow from
 // higher up. Here we borrow in good faith that somewhere in the upper orders the difference will be
 // reconciled. If not I guess it becomes a negative number?
-    if ((x1Count == 1 && subCount == 1)  ||
-        (x1Count == -1 && subCount == 0) ||
+/*    if (//(x1Count == 1 && subCount == 1)  ||
+        //(x1Count == -1 && subCount == 0) ||//
         (x5Count == -1 && x1Count < 0 && subCount == 0))
     {
         x10Count++;
         borrow = true;
-    }
-
+    }*/
+printf("borrow = %d\n", borrow);
 
 // Adjust tally
     if (x5Count == -1 && x10Count == 1)
@@ -1566,8 +1606,12 @@ printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
         x5Count--;
         x1Count = 5 + x1Count;
     }
+    if (x10Count == 0 && x5Count == 0 && x1Count <= 3 && subCount == 1)
+    {
+        subCount = 0;
+    }
 
-    subCount = 0;
+//    subCount = 0;// passes IV-III if commented, passes XIV-V if uncommented, but others fail
 /*
 // Adjust tally
 // if x1Count = 4, 5, 6 we get IV, V VI or XL, L, LX or CD, D, DC
@@ -1664,6 +1708,7 @@ printf("post looping   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
 //                printf("%c", x10);
 //                strncat(cStr, &x10, 1);
             borrow = true;
+printf("    #27 borrow = %d\n", borrow);
         }
 
         if (x1Count == 1)
@@ -1696,7 +1741,7 @@ printf("post looping   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
         printf("'\n");
     }
 //}
-    printf("subOrder: got %s\n", cStr);
+    printf("subOrder: got %s, returning borrow:%d\n", cStr, borrow);
 
     return borrow;
 }
