@@ -654,6 +654,8 @@ START_TEST (testAdditionValidation)
     ck_assert_str_eq(output, "MMMLXXXV");
     addition("MVII", "MCMLXVII", output);
     ck_assert_str_eq(output, "MMCMLXXIV");
+    addition("MCM", "M", output);
+    ck_assert_str_eq(output, "MMCM");
 //    ck_assert(valString("LCCX"));
 }
 END_TEST
@@ -698,8 +700,18 @@ START_TEST (testSubtractionValidation)
     ck_assert_str_eq(output, "CXCIX");
     subtraction("MMM", "I", output);
     ck_assert_str_eq(output, "MMCMXCIX");
-//    subtraction("MCM", "M", output);
-//    ck_assert_str_eq(output, "CM");
+    subtraction("MCM", "M", output);
+    ck_assert_str_eq(output, "CM");//
+    subtraction("VI", "II", output);
+    ck_assert_str_eq(output, "IV");
+    subtraction("XC", "XX", output);
+    ck_assert_str_eq(output, "LXX");
+    subtraction("D", "C", output);
+    ck_assert_str_eq(output, "CD");
+    subtraction("MMM", "M", output);
+    ck_assert_str_eq(output, "MM");
+    subtraction("MMMDXCVI", "MXXII", output);
+    ck_assert_str_eq(output, "MMDLXXIV");
 //    subtraction("IV", "V", output);
 //    ck_assert_str_eq(output, "-I");
 //    ck_assert(valString("LCCX"));
