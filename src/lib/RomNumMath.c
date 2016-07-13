@@ -1,7 +1,13 @@
+#define HIDE_PRINTF
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "RomNumMath.h"
+
+#ifdef HIDE_PRINTF
+#define printf(fmt, ...) (0)
+#endif
 
 struct RomNumeral
 {
@@ -100,7 +106,7 @@ bool stringIsClean(const char *s)
         if (strchr(validRomanChars, s[i]) == NULL)
         {
             // Invalid char found
-            printf("Invalid char = '%c'\n", s[i]);
+            fprintf(stderr, "Found invalid character '%c'\n", s[i]);
             return false;
         }
     }
@@ -148,7 +154,7 @@ int sequenceInStringIsValid(const char *s)
 
         default:
             // Oops invalid character found!
-            printf("Invalid character (%d:%c) found!\n", firstChar, firstChar);
+            printf("Found invalid character (%d:%c) found!\n", firstChar, firstChar);
             return 0;
             break;
     }
@@ -161,7 +167,7 @@ int sequenceInStringIsValid(const char *s)
         if (s[i] == firstChar && i >= maxChar)
         {
             // Too many chars found in a row
-            printf("Exiting after number of chars hit %d\n", i+1);
+            printf("Too many sequential '%c's. Exiting after number of chars hit %d\n", s[i], i+1);
             return 0;
         }
         else if (s[i] != firstChar)
@@ -683,17 +689,19 @@ bool valString (const char *s)
 
 char *addition (const char *as, const char *bs, char *cs)
 {
-    char onesStr[255];
-    char tensStr[255];
-    char hunsStr[255];
-    char thouStr[255];
+    char onesStr[BUFRSIZE];
+    char tensStr[BUFRSIZE];
+    char hunsStr[BUFRSIZE];
+    char thouStr[BUFRSIZE];
     // Clear output buffer
-    memset(cs, '\0', 1);
-    memset(onesStr, '\0', 1);
-    memset(tensStr, '\0', 1);
-    memset(hunsStr, '\0', 1);
-    memset(thouStr, '\0', 1);
-printf("\n\n\nbuffer clear!\n");
+    memset(cs, '\0', BUFRSIZE);
+    memset(onesStr, '\0', BUFRSIZE);
+    memset(tensStr, '\0', BUFRSIZE);
+    memset(hunsStr, '\0', BUFRSIZE);
+    memset(thouStr, '\0', BUFRSIZE);
+
+    printf("\n\n\nbuffer clear!\n");
+
     // String holders
     StrHolder aH;
     StrHolder bH;
@@ -704,74 +712,74 @@ printf("\n\n\nbuffer clear!\n");
     attachHolder(bs, &bH);
     attachHolder(cs, &cH);
 
-    // Add two Romman numeral strings
-    if (stringIsClean(aH.mainStr) && stringIsClean(bH.mainStr))
+    // Check input
+    if (!stringIsClean(aH.mainStr) || !valString(aH.mainStr))
     {
-        if (valString(aH.mainStr) && valString(bH.mainStr))
-        {
-            printf("%s + %s = ", aH.mainStr, bH.mainStr);
+        fprintf(stderr, "%s is not a proper Roman numeral.\n", aH.mainStr);
+        return NULL;
+    }
 
-            bool carry = false;
+    if (!stringIsClean(bH.mainStr) || !valString(bH.mainStr))
+    {
+        fprintf(stderr, "%s is not a proper Roman numeral.\n", bH.mainStr);
+        return NULL;
+    }
 
-            carry = addOrder(&aH, &bH, onesStr, 'I', false);
-            printf("Ones (%s)", onesStr);
-            printf("%s\n", carry?" with carry":"");
+    // Add two Roman numeral strings
+    printf("%s + %s = ", aH.mainStr, bH.mainStr);
 
-            carry = addOrder(&aH, &bH, tensStr, 'X', carry);
-            printf("Tens (%s)", tensStr);
-            printf("%s\n", carry?" with carry":"");
+    bool carry = false;
 
-            carry = addOrder(&aH, &bH, hunsStr, 'C', carry);
-            printf("Hundreds (%s)", hunsStr);
-            printf("%s\n", carry?" with carry":"");
+    carry = addOrder(&aH, &bH, onesStr, 'I', false);
+    printf("Ones (%s)", onesStr);
+    printf("%s\n", carry?" with carry":"");
 
-            carry = addOrder(&aH, &bH, thouStr, 'M', carry);
-            printf("Thousands (%s)", thouStr);
-            printf("%s\n", carry?" with carry":"");
+    carry = addOrder(&aH, &bH, tensStr, 'X', carry);
+    printf("Tens (%s)", tensStr);
+    printf("%s\n", carry?" with carry":"");
 
-            // Check output
-            printf("OUTPUT>> %s|%s|%s|%s\n ", thouStr, hunsStr, tensStr, onesStr);
-            strncat(cH.mainStr, thouStr, strlen(thouStr));
-            strncat(cH.mainStr, hunsStr, strlen(hunsStr));
-            strncat(cH.mainStr, tensStr, strlen(tensStr));
-            strncat(cH.mainStr, onesStr, strlen(onesStr));
+    carry = addOrder(&aH, &bH, hunsStr, 'C', carry);
+    printf("Hundreds (%s)", hunsStr);
+    printf("%s\n", carry?" with carry":"");
 
-            if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
-            {
-                printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-            }
-            else
-            {
-                printf("NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-            }
-            return cs;
-        }
-        else
-        {
-            printf("%s is not a proper Roman numeral.\n", bH.mainStr);
-            return NULL;
-        }
+    carry = addOrder(&aH, &bH, thouStr, 'M', carry);
+    printf("Thousands (%s)", thouStr);
+    printf("%s\n", carry?" with carry":"");
+
+    // Check output
+    printf("OUTPUT>> %s|%s|%s|%s\n ", thouStr, hunsStr, tensStr, onesStr);
+    strncat(cH.mainStr, thouStr, strlen(thouStr));
+    strncat(cH.mainStr, hunsStr, strlen(hunsStr));
+    strncat(cH.mainStr, tensStr, strlen(tensStr));
+    strncat(cH.mainStr, onesStr, strlen(onesStr));
+
+    if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
+    {
+        printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
+        return cs;
     }
     else
     {
-        printf("%s is not a proper Roman numeral.\n", aH.mainStr);
+        fprintf(stderr, "NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
         return NULL;
     }
 }
 
 char *subtraction (const char *as, const char *bs, char *cs)
 {
-    char onesStr[255];
-    char tensStr[255];
-    char hunsStr[255];
-    char thouStr[255];
+    char onesStr[BUFRSIZE];
+    char tensStr[BUFRSIZE];
+    char hunsStr[BUFRSIZE];
+    char thouStr[BUFRSIZE];
     // Clear output buffer
-    memset(cs, '\0', 1);
-    memset(onesStr, '\0', 1);
-    memset(tensStr, '\0', 1);
-    memset(hunsStr, '\0', 1);
-    memset(thouStr, '\0', 1);
-printf("\n\n\n sub buffer clear!\n");
+    memset(cs, '\0', BUFRSIZE);
+    memset(onesStr, '\0', BUFRSIZE);
+    memset(tensStr, '\0', BUFRSIZE);
+    memset(hunsStr, '\0', BUFRSIZE);
+    memset(thouStr, '\0', BUFRSIZE);
+
+    printf("\n\n\n sub buffer clear!\n");
+
     // String holders
     StrHolder aH;
     StrHolder bH;
@@ -782,57 +790,55 @@ printf("\n\n\n sub buffer clear!\n");
     attachHolder(bs, &bH);
     attachHolder(cs, &cH);
 
-    // Subtract two Romman numeral strings
-    if (stringIsClean(aH.mainStr) && stringIsClean(bH.mainStr))
+    // Check input
+    if (!stringIsClean(aH.mainStr) || !valString(aH.mainStr))
     {
-        if (valString(aH.mainStr) && valString(bH.mainStr))
-        {
-            printf("%s - %s = ", aH.mainStr, bH.mainStr);
+        fprintf(stderr, "%s is not a proper Roman numeral.\n", aH.mainStr);
+        return NULL;
+    }
 
-            bool borrow = false;
+    if (!stringIsClean(bH.mainStr) || !valString(bH.mainStr))
+    {
+        fprintf(stderr, "%s is not a proper Roman numeral.\n", bH.mainStr);
+        return NULL;
+    }
 
-            borrow = subOrder(&aH, &bH, onesStr, 'I', false);
-            printf("Ones (%s)", onesStr);
-            printf("%s\n", borrow?" with borrow":"");
+    // Subtract two Roman numeral strings
+    printf("%s - %s = ", aH.mainStr, bH.mainStr);
 
-            borrow = subOrder(&aH, &bH, tensStr, 'X', borrow);
-            printf("Tens (%s)", tensStr);
-            printf("%s\n", borrow?" with borrow":"");
+    bool borrow = false;
 
-            borrow = subOrder(&aH, &bH, hunsStr, 'C', borrow);
-            printf("Hundreds (%s)", hunsStr);
-            printf("%s\n", borrow?" with borrow":"");
+    borrow = subOrder(&aH, &bH, onesStr, 'I', false);
+    printf("Ones (%s)", onesStr);
+    printf("%s\n", borrow?" with borrow":"");
 
-            borrow = subOrder(&aH, &bH, thouStr, 'M', borrow);
-            printf("Thousands (%s)", thouStr);
-            printf("%s\n", borrow?" with borrow":"");
+    borrow = subOrder(&aH, &bH, tensStr, 'X', borrow);
+    printf("Tens (%s)", tensStr);
+    printf("%s\n", borrow?" with borrow":"");
 
-            // Check output
-            printf("OUTPUT>> %s|%s|%s|%s\n ", thouStr, hunsStr, tensStr, onesStr);
-            strncat(cH.mainStr, thouStr, strlen(thouStr));
-            strncat(cH.mainStr, hunsStr, strlen(hunsStr));
-            strncat(cH.mainStr, tensStr, strlen(tensStr));
-            strncat(cH.mainStr, onesStr, strlen(onesStr));
+    borrow = subOrder(&aH, &bH, hunsStr, 'C', borrow);
+    printf("Hundreds (%s)", hunsStr);
+    printf("%s\n", borrow?" with borrow":"");
 
-            if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
-            {
-                printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-            }
-            else
-            {
-                printf("NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-            }
-            return cs;
-        }
-        else
-        {
-            printf("%s is not a proper Roman numeral.\n", bH.mainStr);
-            return NULL;
-        }
+    borrow = subOrder(&aH, &bH, thouStr, 'M', borrow);
+    printf("Thousands (%s)", thouStr);
+    printf("%s\n", borrow?" with borrow":"");
+
+    // Check output
+    printf("OUTPUT>> %s|%s|%s|%s\n ", thouStr, hunsStr, tensStr, onesStr);
+    strncat(cH.mainStr, thouStr, strlen(thouStr));
+    strncat(cH.mainStr, hunsStr, strlen(hunsStr));
+    strncat(cH.mainStr, tensStr, strlen(tensStr));
+    strncat(cH.mainStr, onesStr, strlen(onesStr));
+
+    if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
+    {
+        printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
+        return cs;
     }
     else
     {
-        printf("%s is not a proper Roman numeral.\n", aH.mainStr);
+        fprintf(stderr, "NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
         return NULL;
     }
 }
@@ -1136,15 +1142,15 @@ bool isStringSubtractive(const char *s)
 
 bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carriedOver)
 {
-    char *aOrderPtr;
-    char *bOrderPtr;
-    int aOrderLen;
-    int bOrderLen;
-    int x10Count = 0;
-    char x1;
-    char x5;
-    char x10;
-    bool carry = false;
+    char *aOrderPtr = NULL;
+    char *bOrderPtr = NULL;
+    int aOrderLen   = 0;
+    int bOrderLen   = 0;
+    int x10Count    = 0;
+    char x1         = '\0';
+    char x5         = '\0';
+    char x10        = '\0';
+    bool carry      = false;
 
     switch (order) {
         case 'I':
@@ -1197,8 +1203,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carried
         return false;
     }
 
-printf("\n---------------- > addOrder %c\n", order);
-
+    printf("\n---------------- > addOrder %c\n", order);
 //            if ( neither string has ones, skip )
 //            else if ( one string has ones, but not the other, take the one that has )
 //            else if ( both strings have ones, add/concatenate/merge them )
@@ -1222,7 +1227,7 @@ printf("\n---------------- > addOrder %c\n", order);
         int x1Count = carriedOver?1:0;
         int x5Count = 0;
         int subCount = 0;
-printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+        printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
         if (isStringSubtractive(aOrderPtr))
         {
@@ -1264,7 +1269,7 @@ printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count,
                 x1Count++;
             }
         }
-printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+        printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 // Handle subtractives. When removing a subtractive it has to take another non-subtractive
 // with it. eg IV + IV = (V - I) + (V - I) = IIII + IIII = (IIII + I) + III = VIII
 // the second V had to be split up to satisfy both subtractives
@@ -1287,7 +1292,7 @@ printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1
                 x5Count++;    // one V goes here
                 x1Count += 3; // sacrifice one+one for the subtractive
             }
-printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+            printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
         }
 
         subCount = 0;
@@ -1331,7 +1336,7 @@ printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
                 break;
         }
 
-printf("post tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+        printf("post tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
         if (order == 'M' && (x10Count > 0 || x5Count > 0))
         {
@@ -1410,15 +1415,15 @@ printf("post tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x
 
 bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool borrowedFrom)
 {
-    char *aOrderPtr;
-    char *bOrderPtr;
-    int aOrderLen;
-    int bOrderLen;
-    int x10Count = 0;
-    char x1;
-    char x5;
-    char x10;
-    bool borrow = false;
+    char *aOrderPtr = NULL;
+    char *bOrderPtr = NULL;
+    int aOrderLen   = 0;
+    int bOrderLen   = 0;
+    int x10Count    = 0;
+    char x1         = '\0';
+    char x5         = '\0';
+    char x10        = '\0';
+    bool borrow     = false;
 
     switch (order) {
         case 'I':
@@ -1511,7 +1516,7 @@ printf("\n\nbase tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
             x1Count++;
         }
     }
-printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+    printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
     if (isStringSubtractive(bOrderPtr))
     {
@@ -1535,11 +1540,11 @@ printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count,
             x1Count--;
         }
     }
-printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
-// Handle subtractives. When removing a subtractive it has to take another non-subtractive
-// with it. eg IV - I  = (V - I) - I = IIII - I = III
-//          eg XIV - V = X + (IV - V) = X + (-I) = IX (with a borrow from tens)
-//          eg IX - IV = (two subtractives cancel each other) = X-V = V ?
+    printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+    // Handle subtractives. When removing a subtractive it has to take another non-subtractive
+    // with it. eg IV - I  = (V - I) - I = IIII - I = III
+    //          eg XIV - V = X + (IV - V) = X + (-I) = IX (with a borrow from tens)
+    //          eg IX - IV = (two subtractives cancel each other) = X-V = V ?
     if (subCount == 1)
     {
         if (x1Count >= 2)
@@ -1563,7 +1568,7 @@ printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count,
             borrow = true;
         }
 //        subCount = 0;// fails IV-III if commented, fails XIV-V if uncommented
-printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+        printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
     }
     else if (subCount == 0)
     {
@@ -1583,9 +1588,9 @@ printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
         }
     }
 
-// if x1Count is 1 and subCount is 1 then we have a negative one situation and must borrow from
-// higher up. Here we borrow in good faith that somewhere in the upper orders the difference will be
-// reconciled. If not I guess it becomes a negative number?
+    // if x1Count is 1 and subCount is 1 then we have a negative one situation and must borrow from
+    // higher up. Here we borrow in good faith that somewhere in the upper orders the difference will be
+    // reconciled. If not I guess it becomes a negative number?
 /*    if (//(x1Count == 1 && subCount == 1)  ||
         //(x1Count == -1 && subCount == 0) ||//
         (x5Count == -1 && x1Count < 0 && subCount == 0))
@@ -1593,7 +1598,7 @@ printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
         x10Count++;
         borrow = true;
     }*/
-printf("borrow = %d\n", borrow);
+    printf("borrow = %d\n", borrow);
 
 // Adjust tally
     if (x5Count == -1 && x10Count == 1)
@@ -1652,7 +1657,7 @@ printf("borrow = %d\n", borrow);
             break;
     }
 */
-printf("post looping   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+    printf("post looping   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
     if (order == 'M' && (x10Count > 0 || x5Count > 0))
     {
@@ -1708,7 +1713,6 @@ printf("post looping   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Coun
 //                printf("%c", x10);
 //                strncat(cStr, &x10, 1);
             borrow = true;
-printf("    #27 borrow = %d\n", borrow);
         }
 
         if (x1Count == 1)
@@ -1740,7 +1744,7 @@ printf("    #27 borrow = %d\n", borrow);
         }
         printf("'\n");
     }
-//}
+
     printf("subOrder: got %s, returning borrow:%d\n", cStr, borrow);
 
     return borrow;

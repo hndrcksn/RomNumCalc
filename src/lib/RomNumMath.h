@@ -5,6 +5,7 @@
 
 typedef struct RomNumeral RomNumeral;
 typedef struct StrHolder StrHolder;
+static const int BUFRSIZE = 32;
 
 RomNumeral *numeralCreate(int numValue, char *numString);
 void numeralReplace(RomNumeral *rN, int newValue, char *newStrPtr);

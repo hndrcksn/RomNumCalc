@@ -553,9 +553,9 @@ END_TEST
 
 START_TEST (testAdditionValidation)
 {
-    char output[255];
+    char output[32];
     char *outValue = NULL;
-    memset(output, 0, 255);
+    memset(output, 0, 32);
 //    int input = 1332;
 //    outValue = intToRomNum(input,  &output[0]);
 
@@ -611,6 +611,7 @@ START_TEST (testAdditionValidation)
     ck_assert_str_eq(output, "MMCC");
     addition("CC", "MM", output);
     ck_assert_str_eq(output, "MMCC");
+//memset(output, 0, 32);
     addition("MCM", "M", output);
     ck_assert_str_eq(output, "MMCM");
     addition("DC", "D", output);
@@ -659,40 +660,46 @@ END_TEST
 
 START_TEST (testSubtractionValidation)
 {
-    char output[255];
+    char output[32];
     char *outValue = NULL;
-    memset(output, 0, 255);
+    memset(output, 0, 32);
 
     subtraction("III", "I", output);
     ck_assert_str_eq(output, "II");
     subtraction("III", "II", output);
     ck_assert_str_eq(output, "I");
-/**/    subtraction("IV", "I", output);
+    subtraction("IV", "I", output);
     ck_assert_str_eq(output, "III");
     subtraction("XIV", "I", output);
     ck_assert_str_eq(output, "XIII");
     subtraction("IV", "II", output);
-    ck_assert_str_eq(output, "II");/**/
+    ck_assert_str_eq(output, "II");
     subtraction("IV", "III", output);
     ck_assert_str_eq(output, "I");
-/**/    subtraction("IX", "IV", output);
+    subtraction("IX", "IV", output);
     ck_assert_str_eq(output, "V");
     subtraction("XIV", "III", output);
-    ck_assert_str_eq(output, "XI");/**/
+    ck_assert_str_eq(output, "XI");
     subtraction("XIV", "IV", output);
     ck_assert_str_eq(output, "X");
     subtraction("XIV", "V", output);
     ck_assert_str_eq(output, "IX");
     subtraction("XXXIV", "V", output);
     ck_assert_str_eq(output, "XXIX");
-/**/    subtraction("XXXI", "II", output);
+    subtraction("XXXI", "II", output);
     ck_assert_str_eq(output, "XXIX");
-    subtraction("XXXV", "VI", output);/**/
+    subtraction("XXXV", "VI", output);
     ck_assert_str_eq(output, "XXIX");
     subtraction("XX", "VIII", output);
     ck_assert_str_eq(output, "XII");
     subtraction("IV", "I", output);
     ck_assert_str_eq(output, "III");
+    subtraction("CC", "I", output);
+    ck_assert_str_eq(output, "CXCIX");
+    subtraction("MMM", "I", output);
+    ck_assert_str_eq(output, "MMCMXCIX");
+//    subtraction("MCM", "M", output);
+//    ck_assert_str_eq(output, "CM");
 //    subtraction("IV", "V", output);
 //    ck_assert_str_eq(output, "-I");
 //    ck_assert(valString("LCCX"));
@@ -706,23 +713,26 @@ Suite *romNumTestSuite (void)
     /* Core test case */
     TCase *tc_core = tcase_create ("Core");
     tcase_add_test (tc_core, testNumeralCreate);
-//    tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
-//    tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
+    tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
+    tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
     suite_add_tcase (s, tc_core);
 
     TCase *tc_parsing = tcase_create ("Parsing");
-//    tcase_add_test (tc_parsing, testEachCharInNumeralStringIsClean);
-//    tcase_add_test (tc_parsing, testFindDirtyCharInNumeralString);
-//    tcase_add_test (tc_parsing, testIsSequenceInNumeralStringValid);
-//    tcase_add_test (tc_parsing, testIsSubtractiveSequenceInNumeralStringValid);
-//    tcase_add_test (tc_parsing, testIsNumeralStringValid);
+    tcase_add_test (tc_parsing, testEachCharInNumeralStringIsClean);
+    tcase_add_test (tc_parsing, testFindDirtyCharInNumeralString);
+    tcase_add_test (tc_parsing, testIsSequenceInNumeralStringValid);
+    tcase_add_test (tc_parsing, testIsSubtractiveSequenceInNumeralStringValid);
+    tcase_add_test (tc_parsing, testIsNumeralStringValid);
     // String output attempt
-//    tcase_add_test (tc_parsing, testIntToRomNumStringConversion);
-//    tcase_add_test (tc_parsing, testStringValidation);
-    // Addition and Subtraction tests
-    tcase_add_test (tc_parsing, testAdditionValidation);
-    tcase_add_test (tc_parsing, testSubtractionValidation);
+    tcase_add_test (tc_parsing, testIntToRomNumStringConversion);
+    tcase_add_test (tc_parsing, testStringValidation);
     suite_add_tcase (s, tc_parsing);
+
+    TCase *tc_calculation = tcase_create ("Calculation");
+    // Addition and Subtraction tests
+    tcase_add_test (tc_calculation, testAdditionValidation);
+    tcase_add_test (tc_calculation, testSubtractionValidation);
+    suite_add_tcase (s, tc_calculation);
 
     return s;
 }
