@@ -38,6 +38,6 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
 bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool carriedOver);
 int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order);
 int romStrCmp(const char *as, const char *bs);
-int romNumRelVal(const char *str, OrderType order);
+int romNumRelVal(const char *str, int length, OrderType order);
 
 #endif /* ROMNUMMATH_H */

@@ -1720,17 +1720,20 @@ int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order)
     }
     else if (aH->orderPtr[order] != NULL && bH->orderPtr[order] != NULL)
     {
-        if (romNumRelVal(aH->orderPtr[order], order) > romNumRelVal(bH->orderPtr[order], order))
+        int aNumRelVal = romNumRelVal(aH->orderPtr[order], aH->orderLen[order], order);
+        int bNumRelVal = romNumRelVal(bH->orderPtr[order], bH->orderLen[order], order);
+
+        if (aNumRelVal > bNumRelVal)
         {
             printf("%s > %s\n", aH->mainStr, bH->mainStr);
             return 1;
         }
-        else if (romNumRelVal(aH->orderPtr[order], order) < romNumRelVal(bH->orderPtr[order], order))
+        else if (aNumRelVal < bNumRelVal)
         {
             printf("%s < %s\n", aH->mainStr, bH->mainStr);
             return -1;
         }
-        else // (romNumRelVal(aH->orderPtr[order], order) == romNumRelVal(bH->orderPtr[order], order))
+        else // (aNumRelVal == bNumRelVal)
         {
             if (order != ONES)
             {
@@ -1771,13 +1774,13 @@ int romStrCmp(const char *as, const char *bs)
     return romStrCmpSH(&aH, &bH, THOU);
 }
 
-int romNumRelVal(const char *str, OrderType order)
+int romNumRelVal(const char *str, int orderLength, OrderType order)
 {
     for (int i = 0; i < 9; i++)
     {
-        if (strncmp(str, numerals[order][i], strlen(str)) == 0)
+        if (strncmp(str, numerals[order][i], orderLength) == 0)
         {
-            printf("romNumRelVal(%s, %d) = %d\n", str, order, i);
+            printf("romNumRelVal(%s, %d, %s) = %d\n", str, order, numerals[order][i], i);
             return i;
         }
     }
