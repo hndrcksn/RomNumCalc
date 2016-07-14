@@ -712,10 +712,14 @@ START_TEST (testSubtractionValidation)
     ck_assert_str_eq(output, "MM");
     subtraction("MMMDXCVI", "MXXII", output);
     ck_assert_str_eq(output, "MMDLXXIV");
-//    subtraction("I", "II", output);
-//    ck_assert_str_eq(output, "-I");
-//    subtraction("IV", "V", output);
-//    ck_assert_str_eq(output, "-I");
+    subtraction("I", "II", output);
+    ck_assert_str_eq(output, "-I");
+    subtraction("IV", "V", output);
+    ck_assert_str_eq(output, "-I");
+    subtraction("I", "III", output);
+    ck_assert_str_eq(output, "-II");
+    subtraction("I", "MMM", output);
+    ck_assert_str_eq(output, "-MMCMXCIX");
 //    ck_assert(valString("LCCX"));
 }
 END_TEST

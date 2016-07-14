@@ -784,14 +784,40 @@ char *subtraction (const char *as, const char *bs, char *cs)
 
     printf("\n\n\n sub buffer clear!\n");
 
+    int val = romStrCmp(as, bs);
+    bool negativeOutput = false;
+
+    if (val > 0)
+    {
+        printf("CMP %s > %s %d\n", as, bs, val);
+    }
+    else if (val < 0)
+    {
+        printf("CMP %s < %s %d\n", as, bs, val);
+        negativeOutput = true;
+    }
+    else // (val == 0)
+    {
+        printf("CMP %s == %s %d\n", as, bs, val);
+    }
+
     // String holders
     StrHolder aH;
     StrHolder bH;
     StrHolder cH;
 
     // Attach holders
-    attachHolder(as, &aH);
-    attachHolder(bs, &bH);
+    if (!negativeOutput)
+    {
+        attachHolder(as, &aH);
+        attachHolder(bs, &bH);
+    }
+    else
+    {
+        attachHolder(bs, &aH);
+        attachHolder(as, &bH);
+    }
+
     attachHolder(cs, &cH);
 
     // Check input
@@ -837,6 +863,19 @@ char *subtraction (const char *as, const char *bs, char *cs)
     {
         printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
         printf("%s - %s = %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
+
+        if (negativeOutput)
+        {
+            size_t len = strlen(cs);
+            memmove(cs + 1, cs, strlen(cs) + 1);
+            cs[0] = '-';
+            printf("%s - %s = %s\n\n", bH.mainStr, aH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
+        }
+        else
+        {
+            printf("%s - %s = %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
+        }
+
         return cs;
     }
     else
