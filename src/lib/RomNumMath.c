@@ -1,4 +1,4 @@
-#define HIDE_PRINTF
+//#define HIDE_PRINTF
 
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +8,16 @@
 #ifdef HIDE_PRINTF
 #define printf(fmt, ...) (0)
 #endif
+
+const char ones[9][5] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+const char tens[9][5] = {"X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+const char huns[9][5] = {"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+const char thou[9][5] = {"M", "MM", "MMM", "", "", "", "", "", ""};
+
+const char numerals[NUM_ORDERS][9][5] = {{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"},
+                                         {"X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"},
+                                         {"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"},
+                                         {"M", "MM", "MMM", "", "", "", "", "", ""}};
 
 struct RomNumeral
 {
@@ -34,10 +44,7 @@ RomNumeral *numeralCreate(int numValue, char *numString)
 struct StrHolder
 {
     // String lengths
-    int onesLen;
-    int tensLen;
-    int hunsLen;
-    int thouLen;
+    int orderLen[NUM_ORDERS];
 
     // Substring pointers
     char *iPtr;
@@ -49,10 +56,7 @@ struct StrHolder
     char *mPtr;
 
     // Order pointers
-    char *onesPtr;
-    char *tensPtr;
-    char *hunsPtr;
-    char *thouPtr;
+    char *orderPtr[NUM_ORDERS];
 
     // Main string pointer
     char *mainStr;
@@ -592,10 +596,10 @@ bool valString (const char *s)
 
     // Quick check - if any order lengths are negative then
     // they are out of order and hence invalid
-    if (vH.onesLen < 0 ||
-        vH.tensLen < 0 ||
-        vH.hunsLen < 0 ||
-        vH.thouLen < 0)
+    if (vH.orderLen[ONES] < 0 ||
+        vH.orderLen[TENS] < 0 ||
+        vH.orderLen[HUNS] < 0 ||
+        vH.orderLen[THOU] < 0)
     {
         return false;
     }
@@ -609,67 +613,67 @@ bool valString (const char *s)
     bool hunsValid = false;
     bool thouValid = false;
 
-    if (vH.onesPtr != NULL)
+    if (vH.orderPtr[ONES] != NULL)
     {
         // Validate
         ordersPresent++;
-        if ((strncmp(vH.onesPtr, "I",    vH.onesLen) == 0) ||
-            (strncmp(vH.onesPtr, "II",   vH.onesLen) == 0) ||
-            (strncmp(vH.onesPtr, "III",  vH.onesLen) == 0) ||
-            (strncmp(vH.onesPtr, "IV",   vH.onesLen) == 0) ||
-            (strncmp(vH.onesPtr, "V",    vH.onesLen) == 0) ||
-            (strncmp(vH.onesPtr, "VI",   vH.onesLen) == 0) ||
-            (strncmp(vH.onesPtr, "VII",  vH.onesLen) == 0) ||
-            (strncmp(vH.onesPtr, "VIII", vH.onesLen) == 0) ||
-            (strncmp(vH.onesPtr, "IX",   vH.onesLen) == 0))
+        if ((strncmp(vH.orderPtr[ONES], "I",    vH.orderLen[ONES]) == 0) ||
+            (strncmp(vH.orderPtr[ONES], "II",   vH.orderLen[ONES]) == 0) ||
+            (strncmp(vH.orderPtr[ONES], "III",  vH.orderLen[ONES]) == 0) ||
+            (strncmp(vH.orderPtr[ONES], "IV",   vH.orderLen[ONES]) == 0) ||
+            (strncmp(vH.orderPtr[ONES], "V",    vH.orderLen[ONES]) == 0) ||
+            (strncmp(vH.orderPtr[ONES], "VI",   vH.orderLen[ONES]) == 0) ||
+            (strncmp(vH.orderPtr[ONES], "VII",  vH.orderLen[ONES]) == 0) ||
+            (strncmp(vH.orderPtr[ONES], "VIII", vH.orderLen[ONES]) == 0) ||
+            (strncmp(vH.orderPtr[ONES], "IX",   vH.orderLen[ONES]) == 0))
         {
             onesValid = true;
             ordersValid++;
         }
     }
-    if (vH.tensPtr != NULL)
+    if (vH.orderPtr[TENS] != NULL)
     {
         // Validate
         ordersPresent++;
-        if ((strncmp(vH.tensPtr, "X",    vH.tensLen) == 0) ||
-            (strncmp(vH.tensPtr, "XX",   vH.tensLen) == 0) ||
-            (strncmp(vH.tensPtr, "XXX",  vH.tensLen) == 0) ||
-            (strncmp(vH.tensPtr, "XL",   vH.tensLen) == 0) ||
-            (strncmp(vH.tensPtr, "L",    vH.tensLen) == 0) ||
-            (strncmp(vH.tensPtr, "LX",   vH.tensLen) == 0) ||
-            (strncmp(vH.tensPtr, "LXX",  vH.tensLen) == 0) ||
-            (strncmp(vH.tensPtr, "LXXX", vH.tensLen) == 0) ||
-            (strncmp(vH.tensPtr, "XC",   vH.tensLen) == 0))
+        if ((strncmp(vH.orderPtr[TENS], "X",    vH.orderLen[TENS]) == 0) ||
+            (strncmp(vH.orderPtr[TENS], "XX",   vH.orderLen[TENS]) == 0) ||
+            (strncmp(vH.orderPtr[TENS], "XXX",  vH.orderLen[TENS]) == 0) ||
+            (strncmp(vH.orderPtr[TENS], "XL",   vH.orderLen[TENS]) == 0) ||
+            (strncmp(vH.orderPtr[TENS], "L",    vH.orderLen[TENS]) == 0) ||
+            (strncmp(vH.orderPtr[TENS], "LX",   vH.orderLen[TENS]) == 0) ||
+            (strncmp(vH.orderPtr[TENS], "LXX",  vH.orderLen[TENS]) == 0) ||
+            (strncmp(vH.orderPtr[TENS], "LXXX", vH.orderLen[TENS]) == 0) ||
+            (strncmp(vH.orderPtr[TENS], "XC",   vH.orderLen[TENS]) == 0))
         {
             tensValid = true;
             ordersValid++;
         }
     }
-    if (vH.hunsPtr != NULL)
+    if (vH.orderPtr[HUNS] != NULL)
     {
         // Validate
         ordersPresent++;
-        if ((strncmp(vH.hunsPtr, "C",    vH.hunsLen) == 0) ||
-            (strncmp(vH.hunsPtr, "CC",   vH.hunsLen) == 0) ||
-            (strncmp(vH.hunsPtr, "CCC",  vH.hunsLen) == 0) ||
-            (strncmp(vH.hunsPtr, "CD",   vH.hunsLen) == 0) ||
-            (strncmp(vH.hunsPtr, "D",    vH.hunsLen) == 0) ||
-            (strncmp(vH.hunsPtr, "DC",   vH.hunsLen) == 0) ||
-            (strncmp(vH.hunsPtr, "DCC",  vH.hunsLen) == 0) ||
-            (strncmp(vH.hunsPtr, "DCCC", vH.hunsLen) == 0) ||
-            (strncmp(vH.hunsPtr, "CM",   vH.hunsLen) == 0))
+        if ((strncmp(vH.orderPtr[HUNS], "C",    vH.orderLen[HUNS]) == 0) ||
+            (strncmp(vH.orderPtr[HUNS], "CC",   vH.orderLen[HUNS]) == 0) ||
+            (strncmp(vH.orderPtr[HUNS], "CCC",  vH.orderLen[HUNS]) == 0) ||
+            (strncmp(vH.orderPtr[HUNS], "CD",   vH.orderLen[HUNS]) == 0) ||
+            (strncmp(vH.orderPtr[HUNS], "D",    vH.orderLen[HUNS]) == 0) ||
+            (strncmp(vH.orderPtr[HUNS], "DC",   vH.orderLen[HUNS]) == 0) ||
+            (strncmp(vH.orderPtr[HUNS], "DCC",  vH.orderLen[HUNS]) == 0) ||
+            (strncmp(vH.orderPtr[HUNS], "DCCC", vH.orderLen[HUNS]) == 0) ||
+            (strncmp(vH.orderPtr[HUNS], "CM",   vH.orderLen[HUNS]) == 0))
         {
             hunsValid = true;
             ordersValid++;
         }
     }
-    if (vH.thouPtr != NULL)
+    if (vH.orderPtr[THOU] != NULL)
     {
         // Validate
         ordersPresent++;
-        if ((strncmp(vH.thouPtr, "M",   vH.thouLen) == 0) ||
-            (strncmp(vH.thouPtr, "MM",  vH.thouLen) == 0) ||
-            (strncmp(vH.thouPtr, "MMM", vH.thouLen) == 0))
+        if ((strncmp(vH.orderPtr[THOU], "M",   vH.orderLen[THOU]) == 0) ||
+            (strncmp(vH.orderPtr[THOU], "MM",  vH.orderLen[THOU]) == 0) ||
+            (strncmp(vH.orderPtr[THOU], "MMM", vH.orderLen[THOU]) == 0))
         {
             thouValid = true;
             ordersValid++;
@@ -728,19 +732,19 @@ char *addition (const char *as, const char *bs, char *cs)
     // Add two Roman numeral strings
     bool carry = false;
 
-    carry = addOrder(&aH, &bH, onesStr, 'I', false);
+    carry = addOrder(&aH, &bH, onesStr, ONES, false);
     printf("Ones (%s)", onesStr);
     printf("%s\n", carry?" with carry":"");
 
-    carry = addOrder(&aH, &bH, tensStr, 'X', carry);
+    carry = addOrder(&aH, &bH, tensStr, TENS, carry);
     printf("Tens (%s)", tensStr);
     printf("%s\n", carry?" with carry":"");
 
-    carry = addOrder(&aH, &bH, hunsStr, 'C', carry);
+    carry = addOrder(&aH, &bH, hunsStr, HUNS, carry);
     printf("Hundreds (%s)", hunsStr);
     printf("%s\n", carry?" with carry":"");
 
-    carry = addOrder(&aH, &bH, thouStr, 'M', carry);
+    carry = addOrder(&aH, &bH, thouStr, THOU, carry);
     printf("Thousands (%s)", thouStr);
     printf("%s\n", carry?" with carry":"");
 
@@ -754,13 +758,13 @@ char *addition (const char *as, const char *bs, char *cs)
     if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
     {
         printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-        printf("%s + %s = %s\n\n", aH.mainStr, bH.mainStr, cH.mainStr);
+        printf("%s + %s = %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
         return cs;
     }
     else
     {
         fprintf(stderr, "NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-        printf("%s + %s != %s\n\n", aH.mainStr, bH.mainStr, cH.mainStr);
+        printf("%s + %s != %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
         return NULL;
     }
 }
@@ -806,19 +810,19 @@ char *subtraction (const char *as, const char *bs, char *cs)
     // Subtract two Roman numeral strings
     bool borrow = false;
 
-    borrow = subOrder(&aH, &bH, onesStr, 'I', false);
+    borrow = subOrder(&aH, &bH, onesStr, ONES, false);
     printf("Ones (%s)", onesStr);
     printf("%s\n", borrow?" with borrow":"");
 
-    borrow = subOrder(&aH, &bH, tensStr, 'X', borrow);
+    borrow = subOrder(&aH, &bH, tensStr, TENS, borrow);
     printf("Tens (%s)", tensStr);
     printf("%s\n", borrow?" with borrow":"");
 
-    borrow = subOrder(&aH, &bH, hunsStr, 'C', borrow);
+    borrow = subOrder(&aH, &bH, hunsStr, HUNS, borrow);
     printf("Hundreds (%s)", hunsStr);
     printf("%s\n", borrow?" with borrow":"");
 
-    borrow = subOrder(&aH, &bH, thouStr, 'M', borrow);
+    borrow = subOrder(&aH, &bH, thouStr, THOU, borrow);
     printf("Thousands (%s)", thouStr);
     printf("%s\n", borrow?" with borrow":"");
 
@@ -832,13 +836,13 @@ char *subtraction (const char *as, const char *bs, char *cs)
     if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
     {
         printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-        printf("%s - %s = %s\n\n", aH.mainStr, bH.mainStr, cH.mainStr);
+        printf("%s - %s = %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
         return cs;
     }
     else
     {
         fprintf(stderr, "NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-        printf("%s - %s != %s\n\n", aH.mainStr, bH.mainStr, cH.mainStr);
+        printf("%s - %s != %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
         return NULL;
     }
 }
@@ -856,10 +860,10 @@ void attachHolder(const char *s, StrHolder *sh)
     sh->mainStr = (char *) s;
 
     // String lengths
-    sh->onesLen = 0;
-    sh->tensLen = 0;
-    sh->hunsLen = 0;
-    sh->thouLen = 0;
+    sh->orderLen[ONES] = 0;
+    sh->orderLen[TENS] = 0;
+    sh->orderLen[HUNS] = 0;
+    sh->orderLen[THOU] = 0;
 
     // Substring pointers
     sh->iPtr = NULL;
@@ -871,10 +875,10 @@ void attachHolder(const char *s, StrHolder *sh)
     sh->mPtr = NULL;
 
     // Order pointers
-    sh->onesPtr = NULL;
-    sh->tensPtr = NULL;
-    sh->hunsPtr = NULL;
-    sh->thouPtr = NULL;
+    sh->orderPtr[ONES] = NULL;
+    sh->orderPtr[TENS] = NULL;
+    sh->orderPtr[HUNS] = NULL;
+    sh->orderPtr[THOU] = NULL;
 
     // Specify pointers to existing numerals
     // ONES
@@ -882,23 +886,23 @@ void attachHolder(const char *s, StrHolder *sh)
     {
         printf("I at 0x%p\n", sh->iPtr);
         // We have ones
-        sh->onesPtr = sh->iPtr;
+        sh->orderPtr[ONES] = sh->iPtr;
     }
     if ((sh->vPtr = strchr(sh->mainStr, 'V')) != NULL)
     {
         printf("V at 0x%p\n", sh->vPtr);
-        if (sh->onesPtr != NULL)
+        if (sh->orderPtr[ONES] != NULL)
         {
-            if (sh->vPtr < sh->onesPtr)
+            if (sh->vPtr < sh->orderPtr[ONES])
             {
                 // We have ones
-                sh->onesPtr = sh->vPtr;
+                sh->orderPtr[ONES] = sh->vPtr;
             }
         }
         else
         {
             // We have ones
-            sh->onesPtr = sh->vPtr;
+            sh->orderPtr[ONES] = sh->vPtr;
         }
     }
 
@@ -907,12 +911,12 @@ void attachHolder(const char *s, StrHolder *sh)
     {
         printf("X at 0x%p\n", sh->xPtr);
         // Check if there is a subtractive
-        if (sh->onesPtr != NULL)
+        if (sh->orderPtr[ONES] != NULL)
         {
-            if (sh->onesPtr > sh->xPtr)
+            if (sh->orderPtr[ONES] > sh->xPtr)
             {
                 // We have tens
-                sh->tensPtr = sh->xPtr;
+                sh->orderPtr[TENS] = sh->xPtr;
             }
             else
             {
@@ -922,24 +926,24 @@ void attachHolder(const char *s, StrHolder *sh)
         else
         {
             // We have tens
-            sh->tensPtr = sh->xPtr;
+            sh->orderPtr[TENS] = sh->xPtr;
         }
     }
     if ((sh->lPtr = strchr(sh->mainStr, 'L')) != NULL)
     {
         printf("L at 0x%p\n", sh->lPtr);
-        if (sh->tensPtr != NULL)
+        if (sh->orderPtr[TENS] != NULL)
         {
-            if (sh->lPtr < sh->tensPtr)
+            if (sh->lPtr < sh->orderPtr[TENS])
             {
                 // We have tens
-                sh->tensPtr = sh->lPtr;
+                sh->orderPtr[TENS] = sh->lPtr;
             }
         }
         else
         {
             // We have tens
-            sh->tensPtr = sh->lPtr;
+            sh->orderPtr[TENS] = sh->lPtr;
         }
     }
 
@@ -948,12 +952,12 @@ void attachHolder(const char *s, StrHolder *sh)
     {
         printf("C at 0x%p\n", sh->cPtr);
         // Check if there is a subtractive
-        if (sh->tensPtr != NULL)
+        if (sh->orderPtr[TENS] != NULL)
         {
-            if (sh->tensPtr > sh->cPtr)
+            if (sh->orderPtr[TENS] > sh->cPtr)
             {
                 // We have hundreds
-                sh->hunsPtr = sh->cPtr;
+                sh->orderPtr[HUNS] = sh->cPtr;
             }
             else
             {
@@ -963,24 +967,24 @@ void attachHolder(const char *s, StrHolder *sh)
         else
         {
             // We have hundreds
-            sh->hunsPtr = sh->cPtr;
+            sh->orderPtr[HUNS] = sh->cPtr;
         }
     }
     if ((sh->dPtr = strchr(sh->mainStr, 'D')) != NULL)
     {
         printf("D at 0x%p\n", sh->dPtr);
-        if (sh->hunsPtr != NULL)
+        if (sh->orderPtr[HUNS] != NULL)
         {
-            if (sh->dPtr < sh->hunsPtr)
+            if (sh->dPtr < sh->orderPtr[HUNS])
             {
                 // We have hundreds
-                sh->hunsPtr = sh->dPtr;
+                sh->orderPtr[HUNS] = sh->dPtr;
             }
         }
         else
         {
             // We have hundreds
-            sh->hunsPtr = sh->dPtr;
+            sh->orderPtr[HUNS] = sh->dPtr;
         }
     }
 
@@ -989,12 +993,12 @@ void attachHolder(const char *s, StrHolder *sh)
     {
         printf("M at 0x%p\n", sh->mPtr);
         // Check if there is a subtractive
-        if (sh->hunsPtr != NULL)
+        if (sh->orderPtr[HUNS] != NULL)
         {
-            if (sh->hunsPtr > sh->mPtr)
+            if (sh->orderPtr[HUNS] > sh->mPtr)
             {
                 // We have thousands
-                sh->thouPtr = sh->mPtr;
+                sh->orderPtr[THOU] = sh->mPtr;
             }
             else
             {
@@ -1004,66 +1008,66 @@ void attachHolder(const char *s, StrHolder *sh)
         else
         {
             // We have thousands
-            sh->thouPtr = sh->mPtr;
+            sh->orderPtr[THOU] = sh->mPtr;
         }
     }
 
-    if (sh->onesPtr != NULL)
+    if (sh->orderPtr[ONES] != NULL)
     {
-        // onesPtr points to first char in ones part of the string
-        sh->onesLen = strlen(sh->onesPtr);
-        printf("onesPtr at 0x%p, length = %d\n", sh->onesPtr, sh->onesLen);
+        // orderPtr[ONES] points to first char in ones part of the string
+        sh->orderLen[ONES] = strlen(sh->orderPtr[ONES]);
+        printf("orderPtr[ONES] at 0x%p, length = %d\n", sh->orderPtr[ONES], sh->orderLen[ONES]);
     }
-    if (sh->tensPtr != NULL)
+    if (sh->orderPtr[TENS] != NULL)
     {
-        // tensPtr points to first char in tens part of the string
-        if (sh->onesPtr != NULL)
+        // orderPtr[TENS] points to first char in tens part of the string
+        if (sh->orderPtr[ONES] != NULL)
         {
-            sh->tensLen = sh->onesPtr - sh->tensPtr;
+            sh->orderLen[TENS] = sh->orderPtr[ONES] - sh->orderPtr[TENS];
         }
         else
         {
-            sh->tensLen = strlen(sh->tensPtr);
+            sh->orderLen[TENS] = strlen(sh->orderPtr[TENS]);
         }
-        printf("tensPtr at 0x%p, length = %d\n", sh->tensPtr, sh->tensLen);
+        printf("orderPtr[TENS] at 0x%p, length = %d\n", sh->orderPtr[TENS], sh->orderLen[TENS]);
     }
-    if (sh->hunsPtr != NULL)
+    if (sh->orderPtr[HUNS] != NULL)
     {
-        // hunsPtr points to first char in hundreds part of the string
-        if (sh->tensPtr != NULL)
+        // orderPtr[HUNS] points to first char in hundreds part of the string
+        if (sh->orderPtr[TENS] != NULL)
         {
-            sh->hunsLen = sh->tensPtr - sh->hunsPtr;
+            sh->orderLen[HUNS] = sh->orderPtr[TENS] - sh->orderPtr[HUNS];
         }
-        else if (sh->onesPtr != NULL)
+        else if (sh->orderPtr[ONES] != NULL)
         {
-            sh->hunsLen = sh->onesPtr - sh->hunsPtr;
+            sh->orderLen[HUNS] = sh->orderPtr[ONES] - sh->orderPtr[HUNS];
         }
         else
         {
-            sh->hunsLen = strlen(sh->hunsPtr);
+            sh->orderLen[HUNS] = strlen(sh->orderPtr[HUNS]);
         }
-        printf("hunsPtr at 0x%p, length = %d\n", sh->hunsPtr, sh->hunsLen);
+        printf("orderPtr[HUNS] at 0x%p, length = %d\n", sh->orderPtr[HUNS], sh->orderLen[HUNS]);
     }
-    if (sh->thouPtr != NULL)
+    if (sh->orderPtr[THOU] != NULL)
     {
-        // thouPtr points to first char in thousands part of the string
-        if (sh->hunsPtr != NULL)
+        // orderPtr[THOU] points to first char in thousands part of the string
+        if (sh->orderPtr[HUNS] != NULL)
         {
-            sh->thouLen = sh->hunsPtr - sh->thouPtr;
+            sh->orderLen[THOU] = sh->orderPtr[HUNS] - sh->orderPtr[THOU];
         }
-        else if (sh->tensPtr != NULL)
+        else if (sh->orderPtr[TENS] != NULL)
         {
-            sh->thouLen = sh->tensPtr - sh->thouPtr;
+            sh->orderLen[THOU] = sh->orderPtr[TENS] - sh->orderPtr[THOU];
         }
-        else if (sh->onesPtr != NULL)
+        else if (sh->orderPtr[ONES] != NULL)
         {
-            sh->thouLen = sh->onesPtr - sh->thouPtr;
+            sh->orderLen[THOU] = sh->orderPtr[ONES] - sh->orderPtr[THOU];
         }
         else
         {
-            sh->thouLen = strlen(sh->thouPtr);
+            sh->orderLen[THOU] = strlen(sh->orderPtr[THOU]);
         }
-        printf("thouPtr at 0x%p, length = %d\n", sh->thouPtr, sh->thouLen);
+        printf("orderPtr[THOU] at 0x%p, length = %d\n", sh->orderPtr[THOU], sh->orderLen[THOU]);
     }
 }
 
@@ -1140,12 +1144,8 @@ bool isStringSubtractive(const char *s)
     }
 }
 
-bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carriedOver)
+bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool carriedOver)
 {
-    char *aOrderPtr = NULL;
-    char *bOrderPtr = NULL;
-    int aOrderLen   = 0;
-    int bOrderLen   = 0;
     int x10Count    = 0;
     char x1         = '\0';
     char x5         = '\0';
@@ -1153,57 +1153,41 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carried
     bool carry      = false;
 
     switch (order) {
-        case 'I':
-            aOrderPtr = aH->onesPtr;
-            bOrderPtr = bH->onesPtr;
-            aOrderLen = aH->onesLen;
-            bOrderLen = bH->onesLen;
-            x1  = order;
+        case ONES:
+            x1  = 'I';
             x5  = 'V';
             x10 = 'X';
             break;
 
-        case 'X':
-            aOrderPtr = aH->tensPtr;
-            bOrderPtr = bH->tensPtr;
-            aOrderLen = aH->tensLen;
-            bOrderLen = bH->tensLen;
-            x1  = order;
+        case TENS:
+            x1  = 'X';
             x5  = 'L';
             x10 = 'C';
             break;
 
-        case 'C':
-            aOrderPtr = aH->hunsPtr;
-            bOrderPtr = bH->hunsPtr;
-            aOrderLen = aH->hunsLen;
-            bOrderLen = bH->hunsLen;
-            x1  = order;
+        case HUNS:
+            x1  = 'C';
             x5  = 'D';
             x10 = 'M';
             break;
 
-        case 'M':
-            aOrderPtr = aH->thouPtr;
-            bOrderPtr = bH->thouPtr;
-            aOrderLen = aH->thouLen;
-            bOrderLen = bH->thouLen;
-            x1  = order;
+        case THOU:
+            x1  = 'M';
             break;
 
         default:
-            printf("incorrect order identifier '%c' exiting...", order);
+            printf("incorrect order identifier '%d' exiting...", order);
             return false;
             break;
     }
 
     // If strings are empty, no further processing is necessary
-    if (aOrderLen == 0 && bOrderLen == 0 && !carriedOver)
+    if (aH->orderLen[order] == 0 && bH->orderLen[order] == 0 && !carriedOver)
     {
         return false;
     }
 
-    printf("\n---------------- > addOrder %c\n", order);
+    printf("\n---------------- > addOrder %d\n", order);
 //            if ( neither string has ones, skip )
 //            else if ( one string has ones, but not the other, take the one that has )
 //            else if ( both strings have ones, add/concatenate/merge them )
@@ -1213,15 +1197,15 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carried
 //                       subtractives get taken away. Each subtractive is a -2 from the final tally
 //                       save results to buffer for merging later with output buffer )
 
-    if (aOrderPtr != NULL && bOrderPtr == NULL && !carriedOver)
+    if (aH->orderPtr[order] != NULL && bH->orderPtr[order] == NULL && !carriedOver)
     {
-        strncat(cStr, aOrderPtr, aOrderLen);
+        strncat(cStr, aH->orderPtr[order], aH->orderLen[order]);
     }
-    else if (bOrderPtr != NULL && aOrderPtr == NULL && !carriedOver)
+    else if (bH->orderPtr[order] != NULL && aH->orderPtr[order] == NULL && !carriedOver)
     {
-        strncat(cStr, bOrderPtr, bOrderLen);
+        strncat(cStr, bH->orderPtr[order], bH->orderLen[order]);
     }
-    else /* if (bOrderPtr != NULL && aOrderPtr != NULL) */
+    else /* if (bH->orderPtr[order] != NULL && aH->orderPtr[order] != NULL) */
     {
         int i = 0;
         int x1Count = carriedOver?1:0;
@@ -1229,42 +1213,42 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carried
         int subCount = 0;
         printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
-        if (isStringSubtractive(aOrderPtr))
+        if (isStringSubtractive(aH->orderPtr[order]))
         {
             subCount++;
         }
-        if (isStringSubtractive(bOrderPtr))
+        if (isStringSubtractive(bH->orderPtr[order]))
         {
             subCount++;
         }
 
         // Tally characters
-        for (i = 0; i < aOrderLen; i++)
+        for (i = 0; i < aH->orderLen[order]; i++)
         {
-            if (aOrderPtr[i] == x10)
+            if (aH->orderPtr[order][i] == x10)
             {
                 x10Count++;
             }
-            else if (aOrderPtr[i] == x5)
+            else if (aH->orderPtr[order][i] == x5)
             {
                 x5Count++;
             }
-            else if (aOrderPtr[i] == x1)
+            else if (aH->orderPtr[order][i] == x1)
             {
                 x1Count++;
             }
         }
-        for (i = 0; i < bOrderLen; i++)
+        for (i = 0; i < bH->orderLen[order]; i++)
         {
-            if (bOrderPtr[i] == x10)
+            if (bH->orderPtr[order][i] == x10)
             {
                 x10Count++;
             }
-            else if (bOrderPtr[i] == x5)
+            else if (bH->orderPtr[order][i] == x5)
             {
                 x5Count++;
             }
-            else if (bOrderPtr[i] == x1)
+            else if (bH->orderPtr[order][i] == x1)
             {
                 x1Count++;
             }
@@ -1338,7 +1322,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carried
 
         printf("post tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
-        if (order == 'M' && (x10Count > 0 || x5Count > 0))
+        if (order == THOU && (x10Count > 0 || x5Count > 0))
         {
             // Only values up to MMMCMXCIX (3999) are supported
             fprintf(stderr, "Fatal Error: Only values up to MMMCMXCIX (3999) are supported\n");
@@ -1413,69 +1397,49 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool carried
     return carry;
 }
 
-bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool borrowedFrom)
+bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool borrowedFrom)
 {
-    char *aOrderPtr = NULL;
-    char *bOrderPtr = NULL;
-    int aOrderLen   = 0;
-    int bOrderLen   = 0;
     char x1         = '\0';
     char x5         = '\0';
     char x10        = '\0';
     bool borrow     = false;
 
     switch (order) {
-        case 'I':
-            aOrderPtr = aH->onesPtr;
-            bOrderPtr = bH->onesPtr;
-            aOrderLen = aH->onesLen;
-            bOrderLen = bH->onesLen;
-            x1  = order;
+        case ONES:
+            x1  = 'I';
             x5  = 'V';
             x10 = 'X';
             break;
 
-        case 'X':
-            aOrderPtr = aH->tensPtr;
-            bOrderPtr = bH->tensPtr;
-            aOrderLen = aH->tensLen;
-            bOrderLen = bH->tensLen;
-            x1  = order;
+        case TENS:
+            x1  = 'X';
             x5  = 'L';
             x10 = 'C';
             break;
 
-        case 'C':
-            aOrderPtr = aH->hunsPtr;
-            bOrderPtr = bH->hunsPtr;
-            aOrderLen = aH->hunsLen;
-            bOrderLen = bH->hunsLen;
-            x1  = order;
+        case HUNS:
+            x1  = 'C';
             x5  = 'D';
             x10 = 'M';
             break;
 
-        case 'M':
-            aOrderPtr = aH->thouPtr;
-            bOrderPtr = bH->thouPtr;
-            aOrderLen = aH->thouLen;
-            bOrderLen = bH->thouLen;
-            x1  = order;
+        case THOU:
+            x1  = 'M';
             break;
 
         default:
-            printf("incorrect order identifier '%c' exiting...", order);
+            printf("incorrect order identifier '%d' exiting...", order);
             return false;
             break;
     }
 
     // If strings are empty, no further processing is necessary
-    if (aOrderLen == 0 && bOrderLen == 0 && !borrowedFrom)
+    if (aH->orderLen[order] == 0 && bH->orderLen[order] == 0 && !borrowedFrom)
     {
         return false;
     }
 
-    printf("\n---------------- > subOrder %c\n", order);
+    printf("\n---------------- > subOrder %d\n", order);
 
 //            if ( neither string has ones, skip )
 //            else if ( one string has ones, but not the other, take the one that has )
@@ -1487,9 +1451,9 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool borrowe
 //                       save results to buffer for merging later with output buffer )
 
     // If B string is empty and the lower order of magnitude subtraction didn't require a borrow then just copy A
-    if (aOrderPtr != NULL && bOrderPtr == NULL && !borrowedFrom)
+    if (aH->orderPtr[order] != NULL && bH->orderPtr[order] == NULL && !borrowedFrom)
     {
-        strncat(cStr, aOrderPtr, aOrderLen);
+        strncat(cStr, aH->orderPtr[order], aH->orderLen[order]);
     }
     else
     {
@@ -1507,48 +1471,48 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool borrowe
 
         printf("\n\nA tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
 
-        if (isStringSubtractive(aOrderPtr))
+        if (isStringSubtractive(aH->orderPtr[order]))
         {
             aSub = true;
-            printf("'%s' is subtractive\n", aOrderPtr);
+            printf("'%s' is subtractive\n", aH->orderPtr[order]);
         }
 
         // Tally characters for A
-        for (i = 0; i < aOrderLen; i++)
+        for (i = 0; i < aH->orderLen[order]; i++)
         {
-            if (aOrderPtr[i] == x10)
+            if (aH->orderPtr[order][i] == x10)
             {
                 aX10Count++;
             }
-            else if (aOrderPtr[i] == x5)
+            else if (aH->orderPtr[order][i] == x5)
             {
                 aX5Count++;
             }
-            else if (aOrderPtr[i] == x1)
+            else if (aH->orderPtr[order][i] == x1)
             {
                 aX1Count++;
             }
         }
         printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
 
-        if (isStringSubtractive(bOrderPtr))
+        if (isStringSubtractive(bH->orderPtr[order]))
         {
             bSub = true;
-            printf("'%s' is subtractive\n", bOrderPtr);
+            printf("'%s' is subtractive\n", bH->orderPtr[order]);
         }
 
         // Tally characters for B (to be subtracted)
-        for (i = 0; i < bOrderLen; i++)
+        for (i = 0; i < bH->orderLen[order]; i++)
         {
-            if (bOrderPtr[i] == x10)
+            if (bH->orderPtr[order][i] == x10)
             {
                 bX10Count++;
             }
-            else if (bOrderPtr[i] == x5)
+            else if (bH->orderPtr[order][i] == x5)
             {
                 bX5Count++;
             }
-            else if (bOrderPtr[i] == x1)
+            else if (bH->orderPtr[order][i] == x1)
             {
                 bX1Count++;
             }
@@ -1677,7 +1641,7 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool borrowe
         printf("final form   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
 
         // Return Output
-        if (order == 'M' && (aX10Count > 0 || aX5Count > 0))
+        if (order == THOU && (aX10Count > 0 || aX5Count > 0))
         {
             // Only values up to MMMCMXCIX (3999) are supported
             fprintf(stderr, "Fatal Error: Only values up to MMMCMXCIX (3999) are supported\n");
@@ -1726,5 +1690,99 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, char order, bool borrowe
     printf("subOrder: got %s, returning borrow:%d\n", cStr, borrow);
 
     return borrow;
+}
+
+int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order)
+{
+    printf("--> romStrCmpSH: %s, %s %d\n", aH->orderPtr[order], bH->orderPtr[order], order);
+
+    // Compare strings from the highest to the lowest order
+    if (aH->orderPtr[order] != NULL && bH->orderPtr[order] == NULL)
+    {
+        printf("%s > %s\n", aH->mainStr, bH->mainStr);
+        return 1;
+    }
+    else if (aH->orderPtr[order] == NULL && bH->orderPtr[order] != NULL)
+    {
+        printf("%s < %s\n", aH->mainStr, bH->mainStr);
+        return -1;
+    }
+    else if (aH->orderPtr[order] == NULL && bH->orderPtr[order] == NULL)
+    {
+        if (order != ONES)
+        {
+            return romStrCmpSH(aH, bH, order-1);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (aH->orderPtr[order] != NULL && bH->orderPtr[order] != NULL)
+    {
+        if (romNumRelVal(aH->orderPtr[order], order) > romNumRelVal(bH->orderPtr[order], order))
+        {
+            printf("%s > %s\n", aH->mainStr, bH->mainStr);
+            return 1;
+        }
+        else if (romNumRelVal(aH->orderPtr[order], order) < romNumRelVal(bH->orderPtr[order], order))
+        {
+            printf("%s < %s\n", aH->mainStr, bH->mainStr);
+            return -1;
+        }
+        else // (romNumRelVal(aH->orderPtr[order], order) == romNumRelVal(bH->orderPtr[order], order))
+        {
+            if (order != ONES)
+            {
+                return romStrCmpSH(aH, bH, order-1);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    } 
+}
+
+int romStrCmp(const char *as, const char *bs)
+{
+    printf("\n--> romStrCmp: %s, %s\n", as, bs);
+    // Check input
+    if (!stringIsClean(as) || !valString(as))
+    {
+        fprintf(stderr, "%s is not a proper Roman numeral.\n", as);
+        return -999;
+    }
+
+    if (!stringIsClean(bs) || !valString(bs))
+    {
+        fprintf(stderr, "%s is not a proper Roman numeral.\n", bs);
+        return -998;
+    }
+
+    // String holders
+    StrHolder aH;
+    StrHolder bH;
+
+    // Attach holders
+    attachHolder(as, &aH);
+    attachHolder(bs, &bH);
+
+    return romStrCmpSH(&aH, &bH, THOU);
+}
+
+int romNumRelVal(const char *str, OrderType order)
+{
+    for (int i = 0; i < 9; i++)
+    {
+        if (strncmp(str, numerals[order][i], strlen(str)) == 0)
+        {
+            printf("romNumRelVal(%s, %d) = %d\n", str, order, i);
+            return i;
+        }
+    }
+
+    printf("romNumRelVal(%s, %d) returns -1\n", str, order);
+    return -1;
 }
 

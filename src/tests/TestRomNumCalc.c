@@ -712,9 +712,34 @@ START_TEST (testSubtractionValidation)
     ck_assert_str_eq(output, "MM");
     subtraction("MMMDXCVI", "MXXII", output);
     ck_assert_str_eq(output, "MMDLXXIV");
+//    subtraction("I", "II", output);
+//    ck_assert_str_eq(output, "-I");
 //    subtraction("IV", "V", output);
 //    ck_assert_str_eq(output, "-I");
 //    ck_assert(valString("LCCX"));
+}
+END_TEST
+
+START_TEST (testComparison)
+{
+    // Relative positions of Roman numerals within their magnitude
+    ck_assert_int_eq(romNumRelVal("I", 0), 0);
+    ck_assert_int_eq(romNumRelVal("VIII", 0), 7);
+    ck_assert_int_eq(romNumRelVal("X", 1), 0);
+    ck_assert_int_eq(romNumRelVal("XL", 1), 3);
+    ck_assert_int_eq(romNumRelVal("CC", 2), 1);
+    ck_assert_int_eq(romNumRelVal("CM", 2), 8);
+    ck_assert_int_eq(romNumRelVal("M", 3), 0);
+    ck_assert_int_eq(romNumRelVal("MMM", 3), 2);
+
+    // Is the first string greater than/less than/equal to the second?
+    ck_assert_int_eq(romStrCmp("III", "III"), 0);
+    ck_assert_int_eq(romStrCmp("IV", "III"), 1);
+    ck_assert_int_eq(romStrCmp("III", "IX"), -1);
+    ck_assert_int_eq(romStrCmp("XX", "XIX"), 1);
+    ck_assert_int_eq(romStrCmp("DCCCXXIX", "CM"), -1);
+//    ck_assert_int_eq(romStrCmp("MCM", "MCMVII"), -1);
+//    ck_assert_int_eq(1, 0);
 }
 END_TEST
 
@@ -745,6 +770,11 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_calculation, testAdditionValidation);
     tcase_add_test (tc_calculation, testSubtractionValidation);
     suite_add_tcase (s, tc_calculation);
+
+    TCase *tc_comparison = tcase_create ("Comparison");
+    // Compare number string values
+    tcase_add_test (tc_comparison, testComparison);
+    suite_add_tcase (s, tc_comparison);
 
     return s;
 }
