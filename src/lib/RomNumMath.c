@@ -1,4 +1,4 @@
-//#define HIDE_PRINTF
+#define HIDE_PRINTF
 
 #include <stdlib.h>
 #include <string.h>
