@@ -556,8 +556,6 @@ START_TEST (testAdditionValidation)
     char output[32];
     char *outValue = NULL;
     memset(output, 0, 32);
-//    int input = 1332;
-//    outValue = intToRomNum(input,  &output[0]);
 
     addition("XX", "II", output);
     ck_assert_str_eq(output, "XXII");
@@ -611,7 +609,6 @@ START_TEST (testAdditionValidation)
     ck_assert_str_eq(output, "MMCC");
     addition("CC", "MM", output);
     ck_assert_str_eq(output, "MMCC");
-//memset(output, 0, 32);
     addition("MCM", "M", output);
     ck_assert_str_eq(output, "MMCM");
     addition("DC", "D", output);

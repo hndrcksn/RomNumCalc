@@ -3,14 +3,15 @@
 
 int main(int argc, char *argv[])
 {
-    // Output buffer
+    // Prepare output buffer
     char output[32];
     memset(output, '\0', 32);
 
+    // Self aggrandizement
     printf("Roman Numeral Calculator!\n");
 
     if (argc != 4)
-    {
+    {   // Help message
         printf("The Roman Numeral Calculator requires three inputs:\n");
         printf(" -a AAA BBB\n");
         printf(" Adds AAA to BBB and prints out the sum\n");
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
     else
     {
         if (!strcmp(argv[1], "-a"))
-        {
+        {   // Handle addition
             if (addition(argv[2], argv[3], output) != NULL)
             {
                 printf("%s + %s = %s\n", argv[2], argv[3], strlen(output)!=0?output:"nihil");
@@ -30,12 +31,12 @@ int main(int argc, char *argv[])
             }
             else
             {
-                fprintf(stderr, "Error! No Data output!\n");
+                fprintf(stderr, "Error! No data output!\n");
                 return -1;
             }
         }
         else if (!strcmp(argv[1], "-s"))
-        {
+        {   // Handle subtraction
             if (subtraction(argv[2], argv[3], output) != NULL)
             {
                 printf("%s - %s = %s\n", argv[2], argv[3], strlen(output)!=0?output:"nihil");
@@ -48,19 +49,19 @@ int main(int argc, char *argv[])
             }
         }
         else if (!strcmp(argv[1], "-c"))
-        {
-            int compare = romStrCmp(argv[2], argv[3]);
-            if (compare == 0)
+        {   // Handle comparison
+            int comparison = romStrCmp(argv[2], argv[3]);
+            if (comparison == 0)
             {
                 printf("%s == %s\n", argv[2], argv[3]);
                 return 0;
             }
-            else if (compare < 0 && compare > -900)
+            else if (comparison < 0 && comparison > -900)
             {
                 printf("%s < %s\n", argv[2], argv[3]);
                 return 0;
             }
-            else if (compare > 0)
+            else if (comparison > 0)
             {
                 printf("%s > %s\n", argv[2], argv[3]);
                 return 0;

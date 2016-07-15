@@ -9,22 +9,38 @@
 #define printf(fmt, ...) (0)
 #endif
 
+// All Roman numerals in separate orders of magnitude
 const char ones[9][5] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
 const char tens[9][5] = {"X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
 const char huns[9][5] = {"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
 const char thou[9][5] = {"M", "MM", "MMM", "", "", "", "", "", ""};
 
+// All Roman numerals in increasing magnitude order
 const char numerals[NUM_ORDERS][9][5] = {{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"},
                                          {"X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"},
                                          {"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"},
                                          {"M", "MM", "MMM", "", "", "", "", "", ""}};
 
+// Represents bad input strings
+const int BAD_NUMERAL_A = -999;
+const int BAD_NUMERAL_B = -998;
+
+//////
+//  RomNumeral is a struct for Roman numeral strings and their integer values
+//
+//  This struct isn't used by the RomNumCalcApp
+//////
 struct RomNumeral
 {
     int value;
     char *nString;
 };
 
+//////
+//  numeralCreate() was created for unit testing of RomNumeral structs
+//
+//  This function was never used by the RomNumCalcApp
+//////
 RomNumeral *numeralCreate(int numValue, char *numString)
 {
     RomNumeral *rN = malloc(sizeof(RomNumeral));
@@ -41,6 +57,12 @@ RomNumeral *numeralCreate(int numValue, char *numString)
     }
 }
 
+//////
+//  StrHolder is a struct for dividing up the a string into
+//  chunks based on orders of magnitude and its pointer and
+//  length variables are used for addition, subtraction and
+//  comparison operations by various functions.
+//////
 struct StrHolder
 {
     // String lengths
@@ -62,43 +84,86 @@ struct StrHolder
     char *mainStr;
 };
 
+//////
+//  numeralReplace() replaces the internal values of a RomNumeral struct
+//
+//  This function was never used by the RomNumCalcApp
+//////
 void numeralReplace(RomNumeral *rN, int newValue, char *newStrPtr)
 {
     rN->value = newValue;
     rN->nString = newStrPtr;
 }
 
+//////
+//  numeralValue() returns the integer value of a RomNumeral struct
+//  used for initial unit testing
+//
+//  This function was never used by the RomNumCalcApp
+//////
 int numeralValue(RomNumeral *rN)
 {
     return rN->value;
 }
 
+//////
+//  numeralString() returns the nString of a RomNumeral struct
+//  used for initial unit testing
+//
+//  This function was never used by the RomNumCalcApp
+//////
 char *numeralString(RomNumeral *rN)
 {
     return rN->nString;
 }
 
+//////
+//  numeralDestroy() was created for deleting RomNumeral structs
+//  used for initial unit testing
+//
+//  This function was never used by the RomNumCalcApp
+//////
 void numeralDestroy(RomNumeral *rN)
 {
     free(rN);
     return;
 }
 
+//////
+//  char0Is_I() was created simply to investigate unit testing using check
+//
+//  This function was never used by the RomNumCalcApp
+//////
 bool char0Is_I(RomNumeral *rN)
 {
     return !strncmp(&(rN->nString)[0], "I", 1);
 }
 
+//////
+//  char1Is_V() was created simply to investigate unit testing using check
+//
+//  This function was never used by the RomNumCalcApp
+//////
 bool char1Is_V(RomNumeral *rN)
 {
     return !strncmp(&(rN->nString)[1], "V", 1);
 }
 
+//////
+//  numeralStringIsClean() checks for non-Roman numeral characters in the nString
+//  of a RomNumeral struct. It returns true for a clean nString and false otherwise
+//
+//  This function was created for early unit testing and is not used by the RomNumCalcApp
+//////
 bool numeralStringIsClean(RomNumeral *rN)
 {
     return stringIsClean(rN->nString);
 }
 
+//////
+//  stringIsClean() checks for non-Roman numeral characters in a string
+//  It returns true for a clean string and false otherwise
+//////
 bool stringIsClean(const char *s)
 {
     // String is clean if it only contains valid Roman numeral characters
@@ -119,11 +184,25 @@ bool stringIsClean(const char *s)
     return true;
 }
 
+//////
+//  sequenceInRomNumeralIsValid() checks to see if the nString of a
+//  RomNumeral struct has valid repeating string sequences
+//
+//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
+//////
 int sequenceInRomNumeralIsValid(RomNumeral *rN)
 {
     return sequenceInStringIsValid(rN->nString);
 }
 
+//////
+//  sequenceInStringIsValid() takes a string and and counts the number of times the
+//  first character is repeated and compares that to the accepted sequence size for
+//  a particular character. It returns the a proper sequence count or a 0 indicating
+//  a problem was found.
+//
+//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
+//////
 int sequenceInStringIsValid(const char *s)
 {
     // Seeking uniform sequence of chars (III, XXX, etc.)
@@ -187,11 +266,23 @@ int sequenceInStringIsValid(const char *s)
     return seqCount;
 }
 
+//////
+//  subtractiveSequenceInRomNumeralIsValid() checks to see if the nString of a
+//  RomNumeral struct adheres to thebproper subtractive form and returns the integer value of the string.
+//
+//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
+//////
 int subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN)
 {
     return subtractiveSequenceInStringIsValid(rN->nString);
 }
 
+//////
+//  subtractiveSequenceInStringIsValid() checks to see if a string adheres to the
+//  proper subtractive form and returns the integer value of the string.
+//
+//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
+//////
 int subtractiveSequenceInStringIsValid(const char *s)
 {
     // Check for empty string or single char (neither can be subtractive)
@@ -265,6 +356,12 @@ int subtractiveSequenceInStringIsValid(const char *s)
     }
 }
 
+//////
+//  isValid() checks to see if the Roman numeral string and integer of a RomNumeral struct
+//  match each other.
+//
+//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
+//////
 bool isValid(RomNumeral *rN)
 {
     if (numeralStringIsClean(rN))
@@ -282,12 +379,11 @@ bool isValid(RomNumeral *rN)
     }
 }
 
-bool isValidString(const char *s)
-{
-    // Not used yet
-    return false;
-}
-
+//////
+//  romNumToInt() takes a Roman numeral string and returns an integer value
+//
+//  This function was created for sanity checking and is not used by the RomNumCalcApp
+//////
 int romNumToInt(const char *s)
 {
     int retVal = 0;
@@ -427,6 +523,10 @@ int romNumToInt(const char *s)
     return retVal;
 }
 
+//////
+//  intToRomNum() takes an integer value and returns a Roman numeral string
+//  This function was created for sanity checking and is not used by the RomNumCalcApp
+//////
 char *intToRomNum(int num, char *s)
 {
     // Create a Roman numeral string in an existing buffer
@@ -561,25 +661,11 @@ char *intToRomNum(int num, char *s)
     printf("num = %d, s = %s\n", num, s);
     return s;
 }
-/*
-RomNumeral romNumAddition(RomNumeral *rN1, RomNumeral *rN2)
-{
-    RomNumeral *rN3 = numeralCreate (
 
-}
-
-RomNumeral romNumSubtraction(RomNumeral *rN1, RomNumeral *rN2)
-{
-
-}
-
-RomNumeral romNumConcatenation(RomNumeral *rN1, RomNumeral *rN2)
-{
-
-}
-*/
-
-/* New with attachment */
+//////
+//  valString() returns true/false whether a string represents a
+//  valid Roman numeral
+//////
 bool valString (const char *s)
 {
     // Check for NULL string
@@ -594,8 +680,8 @@ bool valString (const char *s)
     StrHolder vH;
     attachHolder(s, &vH);
 
-    // Quick check - if any order lengths are negative then
-    // they are out of order and hence invalid
+    // Quick check - if any order lengths are negative
+    // If so, they are out of order and hence invalid
     if (vH.orderLen[ONES] < 0 ||
         vH.orderLen[TENS] < 0 ||
         vH.orderLen[HUNS] < 0 ||
@@ -691,20 +777,25 @@ bool valString (const char *s)
     }
 }
 
+//////
+//  addition() adds two Roman numerals and returns a pointer
+//  to the output buffer or NULL if something goes wrong
+//////
 char *addition (const char *as, const char *bs, char *cs)
 {
     char onesStr[BUFRSIZE];
     char tensStr[BUFRSIZE];
     char hunsStr[BUFRSIZE];
     char thouStr[BUFRSIZE];
-    // Clear output buffer
+
+    // Clear buffers
     memset(cs, '\0', BUFRSIZE);
     memset(onesStr, '\0', BUFRSIZE);
     memset(tensStr, '\0', BUFRSIZE);
     memset(hunsStr, '\0', BUFRSIZE);
     memset(thouStr, '\0', BUFRSIZE);
 
-    printf("\n\n\nbuffer clear!\n");
+    printf("\n\n\naddition buffers clear!\n");
 
     // String holders
     StrHolder aH;
@@ -729,7 +820,8 @@ char *addition (const char *as, const char *bs, char *cs)
         return NULL;
     }
 
-    // Add two Roman numeral strings
+    // Add two Roman numeral strings by orders of magnitude
+    // carrying surplus to higher orders
     bool carry = false;
 
     carry = addOrder(&aH, &bH, onesStr, ONES, false);
@@ -769,35 +861,45 @@ char *addition (const char *as, const char *bs, char *cs)
     }
 }
 
+//////
+//  subtraction() finds the difference between two Roman numerals and returns a pointer
+//  to the output buffer or NULL if something goes wrong. It can handle negative output.
+//////
 char *subtraction (const char *as, const char *bs, char *cs)
 {
     char onesStr[BUFRSIZE];
     char tensStr[BUFRSIZE];
     char hunsStr[BUFRSIZE];
     char thouStr[BUFRSIZE];
-    // Clear output buffer
+
+    // Clear buffers
     memset(cs, '\0', BUFRSIZE);
     memset(onesStr, '\0', BUFRSIZE);
     memset(tensStr, '\0', BUFRSIZE);
     memset(hunsStr, '\0', BUFRSIZE);
     memset(thouStr, '\0', BUFRSIZE);
 
-    printf("\n\n\n sub buffer clear!\n");
+    printf("\n\n\nsubtraction buffers clear!\n");
 
+    // Compare strings and check input
     int val = romStrCmp(as, bs);
     bool negativeOutput = false;
 
     if (val > 0)
-    {
+    {   // Expected norm
         printf("CMP %s > %s %d\n", as, bs, val);
     }
+    else if (val == BAD_NUMERAL_A || val == BAD_NUMERAL_B)
+    {   // Bad input
+        return NULL;
+    }
     else if (val < 0)
-    {
+    {   // Negative output
         printf("CMP %s < %s %d\n", as, bs, val);
         negativeOutput = true;
     }
     else // (val == 0)
-    {
+    {   // Equality means zero or nihil outcome
         printf("CMP %s == %s %d\n", as, bs, val);
     }
 
@@ -813,27 +915,15 @@ char *subtraction (const char *as, const char *bs, char *cs)
         attachHolder(bs, &bH);
     }
     else
-    {
+    {   // Switch AAA and BBB for simple subtraction
         attachHolder(bs, &aH);
         attachHolder(as, &bH);
     }
 
     attachHolder(cs, &cH);
 
-    // Check input
-    if (!stringIsClean(aH.mainStr) || !valString(aH.mainStr))
-    {
-        fprintf(stderr, "%s is not a proper Roman numeral.\n", aH.mainStr);
-        return NULL;
-    }
-
-    if (!stringIsClean(bH.mainStr) || !valString(bH.mainStr))
-    {
-        fprintf(stderr, "%s is not a proper Roman numeral.\n", bH.mainStr);
-        return NULL;
-    }
-
-    // Subtract two Roman numeral strings
+    // Subtract two Roman numeral strings by orders of magnitude
+    // borrowing from higher orders as necessary
     bool borrow = false;
 
     borrow = subOrder(&aH, &bH, onesStr, ONES, false);
@@ -886,6 +976,12 @@ char *subtraction (const char *as, const char *bs, char *cs)
     }
 }
 
+//////
+//  attachHolder() associates an existing StrHolder struct with an existing Roman numeral string by analyzing
+//  the string and attaching pointers and string length markers to string in order to facilitate
+//  addition, subtraction and comparison operations that occur at various orders of magnitude
+//  within the strings
+//////
 void attachHolder(const char *s, StrHolder *sh)
 {
     // Check for NULLs
@@ -1110,7 +1206,14 @@ void attachHolder(const char *s, StrHolder *sh)
     }
 }
 
-//int subtractiveSequenceInStringIsValid(const char *s)
+//////
+//  isStringSubtractive() returns true if a Roman numeral string is subtractive meaning
+//  a character of a lower order precedes a higher order character to diminsh
+//  the numeric value of that character by a specific amount. Eg IV or XC. This
+//  function only checks the first two characters in the string so it is typically
+//  called by a function that has already divided a string into its respective orders
+//  of magnitude.
+//////
 bool isStringSubtractive(const char *s)
 {
     // Check for empty string or single char (neither can be subtractive)
@@ -1183,6 +1286,11 @@ bool isStringSubtractive(const char *s)
     }
 }
 
+//////
+//  addOrder() adds two strings and lower order carried surplus, saving the result into
+//  another string in the current order of magnitude and returning true there is a resultant
+//  surplus to be carried to a higher order of magnitude.
+//////
 bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool carriedOver)
 {
     int x10Count    = 0;
@@ -1191,6 +1299,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
     char x10        = '\0';
     bool carry      = false;
 
+    // Setup units
     switch (order) {
         case ONES:
             x1  = 'I';
@@ -1227,21 +1336,13 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
     }
 
     printf("\n---------------- > addOrder %d\n", order);
-//            if ( neither string has ones, skip )
-//            else if ( one string has ones, but not the other, take the one that has )
-//            else if ( both strings have ones, add/concatenate/merge them )
-//              if ( a string starts with a I, see if it's subractive and save the result for later )
-//                if ( neither is subtractive, line up strings together, largest letters first )
-//                  ( any Xs or VVs get passed up the food chain the remaining V&Is get arranged in order largest first and the
-//                       subtractives get taken away. Each subtractive is a -2 from the final tally
-//                       save results to buffer for merging later with output buffer )
 
     if (aH->orderPtr[order] != NULL && bH->orderPtr[order] == NULL && !carriedOver)
-    {
+    {   // Just copy the AAA string
         strncat(cStr, aH->orderPtr[order], aH->orderLen[order]);
     }
     else if (bH->orderPtr[order] != NULL && aH->orderPtr[order] == NULL && !carriedOver)
-    {
+    {   // Just copy the BBB string
         strncat(cStr, bH->orderPtr[order], bH->orderLen[order]);
     }
     else /* if (bH->orderPtr[order] != NULL && aH->orderPtr[order] != NULL) */
@@ -1252,6 +1353,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
         int subCount = 0;
         printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
+        // Track subtractive forms
         if (isStringSubtractive(aH->orderPtr[order]))
         {
             subCount++;
@@ -1293,11 +1395,12 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
             }
         }
         printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
-// Handle subtractives. When removing a subtractive it has to take another non-subtractive
-// with it. eg IV + IV = (V - I) + (V - I) = IIII + IIII = (IIII + I) + III = VIII
-// the second V had to be split up to satisfy both subtractives
-//             IX + IX = XXII = XVIII
-// the second X had to be split up to satisfy both subtractives
+
+        // Handle subtractives. When removing a subtractive it has to take another non-subtractive
+        // with it. eg IV + IV = (V - I) + (V - I) = IIII + IIII = (IIII + I) + III = VIII
+        // the second V had to be split up to satisfy both subtractives
+        //             IX + IX = XXII = XVIII
+        // the second X had to be split up to satisfy both subtractives
         for (i = 0; i < subCount; i++)
         {
             if (x1Count >= 2)
@@ -1320,8 +1423,8 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
 
         subCount = 0;
 
-// Adjust tally
-// if x1Count = 4, 5, 6 we get IV, V VI or XL, L, LX or CD, D, DC
+        // Adjust tally
+        // if x1Count = 4, 5, 6 we get IV, V VI or XL, L, LX or CD, D, DC
         switch (x1Count) {
             case 4:
                 x1Count = 1;
@@ -1343,7 +1446,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
                 break;
         }
 
-// if x5Count = 2, 3 we get X, XV or C, CL or M, MD
+        // if x5Count = 2, 3 we get X, XV or C, CL or M, MD
         switch (x5Count) {
             case 2:
                 x5Count = 0;
@@ -1373,8 +1476,6 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
             printf("output should be '");
             if (x10Count == 1)
             {
-//                printf("%c", x10);
-//                strncat(cStr, &x10, 1);
                 carry = true;
             }
 
@@ -1396,8 +1497,6 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
             printf("output should be '");
             if (x10Count == 1)
             {
-//                printf("%c", x10);
-//                strncat(cStr, &x10, 1);
                 carry = true;
             }
 
@@ -1436,6 +1535,11 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
     return carry;
 }
 
+//////
+//  subOrder() subtracts two strings possibly borrowing from higher order, saving the result into
+//  another string in the current order of magnitude and returning true if was required from a higher order
+//  value
+//////
 bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool borrowedFrom)
 {
     char x1         = '\0';
@@ -1480,15 +1584,6 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
 
     printf("\n---------------- > subOrder %d\n", order);
 
-//            if ( neither string has ones, skip )
-//            else if ( one string has ones, but not the other, take the one that has )
-//            else if ( both strings have ones, add/concatenate/merge them )
-//              if ( a string starts with a I, see if it's subractive and save the result for later )
-//                if ( neither is subtractive, line up strings together, largest letters first )
-//                  ( any Xs or VVs get passed up the food chain the remaining V&Is get arranged in order largest first and the
-//                       subtractives get taken away. Each subtractive is a -2 from the final tally
-//                       save results to buffer for merging later with output buffer )
-
     // If B string is empty and the lower order of magnitude subtraction didn't require a borrow then just copy A
     if (aH->orderPtr[order] != NULL && bH->orderPtr[order] == NULL && !borrowedFrom)
     {
@@ -1510,6 +1605,7 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
 
         printf("\n\nA tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
 
+        // Track subtractive forms
         if (isStringSubtractive(aH->orderPtr[order]))
         {
             aSub = true;
@@ -1534,6 +1630,7 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         }
         printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
 
+        // Track subtractive forms
         if (isStringSubtractive(bH->orderPtr[order]))
         {
             bSub = true;
@@ -1558,7 +1655,7 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         }
         printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bX10Count, bX5Count, bX1Count, bSub);
 
-        // Convert subtractive forms into non-subtractive forms
+        // Convert subtractive forms into non-subtractive forms to simplify subtraction
         // eg. IV: X(0), V(1), I(1), sub(1) = IV = (V - I) = IIIII - I = IIII = X(0), V(0), I(4), sub(0)
         //     IX: X(1), V(0), I(1), sub(1) = IX = (X - I) = V + (V - I) = V + (IIII) = X(0), V(1), I(4), sub(0)
         if (aSub)
@@ -1634,7 +1731,7 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
             }
         }
         else if (aX5Count < 0)
-        {   // need to borrow next order of magitude and set for 10-8=2
+        {   // need to borrow next order of magitude and calculate remainder eg. 10-8=2
             if (aX10Count == 0)
             {
                 aX10Count++;
@@ -1731,6 +1828,12 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
     return borrow;
 }
 
+//////
+//  romStrCmpSH() compares two StrHolder associated strings in a specific order of magnitude
+//  returning 1, -1 or 0 if the first is greater than, less than or equal to the second
+//  It does no string validation of its own so that must be handled by a calling function or higher
+//  It is recursive so it goes deeper and deeper into the strings until it gets a definitive answer
+//////
 int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order)
 {
     printf("--> romStrCmpSH: %s, %s %d\n", aH->orderPtr[order], bH->orderPtr[order], order);
@@ -1786,6 +1889,13 @@ int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order)
     } 
 }
 
+//////
+//  romStrCmp() compares two strings returning 1, -1 or 0 if the first is greater than,
+//  less than or equal to the second. It does validate the strings first will return numbers
+//  indicating that a string was invalid and which one was the problem. It associates StrHolders
+//  with the validated strings and calls romStrCmpSH() to do the work starting at the highest
+//  order of magnitude
+//////
 int romStrCmp(const char *as, const char *bs)
 {
     printf("\n--> romStrCmp: %s, %s\n", as, bs);
@@ -1793,13 +1903,13 @@ int romStrCmp(const char *as, const char *bs)
     if (!stringIsClean(as) || !valString(as))
     {
         fprintf(stderr, "%s is not a proper Roman numeral.\n", as);
-        return -999;
+        return BAD_NUMERAL_A;
     }
 
     if (!stringIsClean(bs) || !valString(bs))
     {
         fprintf(stderr, "%s is not a proper Roman numeral.\n", bs);
-        return -998;
+        return BAD_NUMERAL_B;
     }
 
     // String holders
@@ -1813,6 +1923,11 @@ int romStrCmp(const char *as, const char *bs)
     return romStrCmpSH(&aH, &bH, THOU);
 }
 
+//////
+//  romNumRelVal() compares a string with every standard numeral in a specific order of magnitude.
+//  until it finds a match to return the relative value for the input string within that order
+//  of magnitude. If no match is found it returns -1.
+//////
 int romNumRelVal(const char *str, int orderLength, OrderType order)
 {
     for (int i = 0; i < 9; i++)

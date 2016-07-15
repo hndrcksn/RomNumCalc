@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+// Enums, structs and consts.
 typedef enum {ONES = 0, TENS, HUNS, THOU, NUM_ORDERS} OrderType;
 typedef struct RomNumeral RomNumeral;
 typedef struct StrHolder StrHolder;
@@ -22,7 +23,6 @@ int sequenceInStringIsValid(const char *s);
 int subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN);
 int subtractiveSequenceInStringIsValid(const char *s);
 bool isValid(RomNumeral *rN);
-bool isValidString(const char *s);
 int romNumToInt(const char *s);
 char *intToRomNum(int num, char *s);
 RomNumeral romNumAddition(RomNumeral *rN1, RomNumeral *rN2);
