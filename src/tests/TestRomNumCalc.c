@@ -159,6 +159,7 @@ START_TEST (testIsStringValid)
     ck_assert(isCleanValidString("XXXVII"));
     ck_assert(isCleanValidString("XXXVIII"));
     ck_assert(isCleanValidString("XXXIX"));
+    ck_assert(!isCleanValidString("XXXX"));
     ck_assert(isCleanValidString("XL"));
     ck_assert(isCleanValidString("XLI"));
 
@@ -179,6 +180,7 @@ START_TEST (testIsStringValid)
 
     // Skip to more complicated number
     ck_assert(isCleanValidString("CXLIX"));
+    ck_assert(!isCleanValidString("CXLXI"));
     ck_assert(isCleanValidString("CL"));
     ck_assert(isCleanValidString("CLI"));
 
@@ -457,6 +459,8 @@ START_TEST (testAdditionValidation)
     ck_assert_str_eq(output, "MMCMLXXIV");
     addition("MCM", "M", output);
     ck_assert_str_eq(output, "MMCM");
+    addition("XLVII", "XXIX", output);
+    ck_assert_str_eq(output, "LXXVI");
 //    ck_assert(isCleanValidString("LCCX"));
 }
 END_TEST
@@ -521,6 +525,10 @@ START_TEST (testSubtractionValidation)
     ck_assert_str_eq(output, "-II");
     subtraction("I", "MMM", output);
     ck_assert_str_eq(output, "-MMCMXCIX");
+    subtraction("XLVII", "XXIX", output);
+    ck_assert_str_eq(output, "XVIII");
+    subtraction("XXIX", "XLVII", output);
+    ck_assert_str_eq(output, "-XVIII");
 //    ck_assert(isCleanValidString("LCCX"));
 }
 END_TEST

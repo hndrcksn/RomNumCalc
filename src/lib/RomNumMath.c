@@ -1266,6 +1266,7 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
             {   // Must borrow
                 aX10Count++;
                 aX1Count = aX10Count*10 + aX5Count*5 + aX1Count;
+                aX10Count = 0;
                 aX5Count = 0;
                 borrow = true;
             }
@@ -1301,6 +1302,16 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
 
             case 6:
                 aX1Count = 1;
+                aX5Count = 1;
+                break;
+
+            case 7:
+                aX1Count = 2;
+                aX5Count = 1;
+                break;
+
+            case 8:
+                aX1Count = 3;
                 aX5Count = 1;
                 break;
 
