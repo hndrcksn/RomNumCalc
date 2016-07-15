@@ -5,412 +5,218 @@
 START_TEST (testNumeralCreate)
 {
     // Simple test code to verify that check works as expected //
-
+/*
     RomNumeral *romNum;
 
     romNum = numeralCreate(4, "IV");
     ck_assert_int_eq(numeralValue(romNum), 4);
     ck_assert_str_eq(numeralString(romNum), "IV");
-    numeralDestroy(romNum);
+    numeralDestroy(romNum);*/
 }
 END_TEST
 
 START_TEST (testFirstCharInNumeralStringIs_I)
 {
     // Test if first character in the numeral string "I"
-    RomNumeral *romNum;
+/*    RomNumeral *romNum;
 
     romNum = numeralCreate(1, "I");
     ck_assert(char0Is_I(romNum));
-    numeralDestroy(romNum);
+    numeralDestroy(romNum);*/
 }
 END_TEST
 
 START_TEST (testSecondCharInNumeralStringIs_V)
 {
     // Test if second character in the numeral string "V"
-    RomNumeral *romNum;
+/*    RomNumeral *romNum;
 
     romNum = numeralCreate(4, "IV");
     ck_assert(char1Is_V(romNum));
-    numeralDestroy(romNum);
+    numeralDestroy(romNum);*/
 }
 END_TEST
 
-START_TEST (testEachCharInNumeralStringIsClean)
+START_TEST (testEachCharInStringIsCleanAndValid)
 {
     // Test that every character in the numeral string is a I, V, X, L, C, D or M and nothing else
-    RomNumeral *romNum;
-
-    romNum = numeralCreate(0, "IVXLCDMMDCLXVIIVXLCDM");
-    ck_assert(numeralStringIsClean(romNum));
-    numeralDestroy(romNum);
+    ck_assert(isCleanValidString("MMDCCXLVII"));
+    ck_assert(!isCleanValidString("IVXLCDMMDCLXVIIVXLCDM"));
+    ck_assert(!isCleanValidString("IIIIVVVVXXXXLLLLCCCCDDDDMMMM"));
 }
 END_TEST
 
-START_TEST (testFindDirtyCharInNumeralString)
+START_TEST (testFindDirtyCharInString)
 {
     // Find an invalid character in the numeral string (not I, V, X, L, C, D or M)
-    RomNumeral *romNum;
-
-    romNum = numeralCreate(0, "IVXLCDMAMDCLXVIIVXLCDM");
-    ck_assert(!numeralStringIsClean(romNum));
-    numeralDestroy(romNum);
+    ck_assert(!isCleanValidString("IVXLADMMDC4VIIVXLCQM"));
+    ck_assert(!isCleanValidString("1234ADMMDC4VIIVXLQDRG"));
+    ck_assert(!isCleanValidString("ivxlcdm"));
 }
 END_TEST
 
-START_TEST (testIsSequenceInNumeralStringValid)
+START_TEST (testIsSequenceInStringValid)
 {
     // Is a valid sequence of I's in string?
-    RomNumeral *romNum;
-
-    romNum = numeralCreate(1, "I");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-
-    numeralReplace(romNum, 2, "II");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 2);
-
-    numeralReplace(romNum, 3, "III");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 3);
-
-    numeralReplace(romNum, 0, "IIII");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
+    ck_assert(isCleanValidString("MCCCXXXII"));
+    ck_assert(isCleanValidString("I"));
+    ck_assert(isCleanValidString("II"));
+    ck_assert(isCleanValidString("III"));
 
     // Is a sequence of 5 I's valid?
-    numeralReplace(romNum, 0, "IIIII");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
+    ck_assert(!isCleanValidString("IIII"));
+
+    // Is a sequence of 5 I's valid?
+    ck_assert(!isCleanValidString("IIIII"));
 
     // Start with invalid character
-    numeralReplace(romNum, 0, "AII");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
+    ck_assert(!isCleanValidString("AII"));
 
     // Invalid character in the middle
-    numeralReplace(romNum, 0, "IAI");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
+    ck_assert(!isCleanValidString("IAI"));
 
     // Invalid character at the end
-    numeralReplace(romNum, 0, "IIA");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
+    ck_assert(!isCleanValidString("IIA"));
 
     // Is a sequence of X's C's or M's valid?
-    numeralReplace(romNum, 10, "X");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-
-    numeralReplace(romNum, 20, "XX");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 2);
-
-    numeralReplace(romNum, 30, "XXX");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 3);
-
-    numeralReplace(romNum, 100, "C");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-
-    numeralReplace(romNum, 200, "CC");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 2);
-
-    numeralReplace(romNum, 300, "CCC");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 3);
-
-    numeralReplace(romNum, 1000, "M");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-
-    numeralReplace(romNum, 2000, "MM");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 2);
-
-    numeralReplace(romNum, 3000, "MMM");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 3);
-
-    numeralReplace(romNum, 0, "XXXX");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 5, "V");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-
-    numeralReplace(romNum, 0, "VV");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 50, "L");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-
-    numeralReplace(romNum, 0, "LL");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 500, "D");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 1);
-
-    numeralReplace(romNum, 0, "DD");
-    ck_assert_int_eq(sequenceInRomNumeralIsValid(romNum), 0);
-    numeralDestroy(romNum);
+    ck_assert(isCleanValidString("X"));
+    ck_assert(isCleanValidString("XX"));
+    ck_assert(isCleanValidString("XXX"));
+    ck_assert(isCleanValidString("C"));
+    ck_assert(isCleanValidString("CC"));
+    ck_assert(isCleanValidString("CCC"));
+    ck_assert(isCleanValidString("M"));
+    ck_assert(isCleanValidString("MM"));
+    ck_assert(!isCleanValidString("XXXX"));
+    ck_assert(isCleanValidString("V"));
+    ck_assert(!isCleanValidString("VV"));
+    ck_assert(isCleanValidString("L"));
+    ck_assert(!isCleanValidString("LL"));
+    ck_assert(isCleanValidString("D"));
+    ck_assert(!isCleanValidString("DD"));
 }
 END_TEST
 
-START_TEST (testIsSubtractiveSequenceInNumeralStringValid)
+START_TEST (testIsSubtractiveSequenceInStringValid)
 {
     // Handle sequences where a lower character modifies a half
     // or full magnitude higher one
-    RomNumeral *romNum;
-
-    romNum = numeralCreate(4, "IV");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 4);
-
-    numeralReplace(romNum, 9, "IX");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 9);
-
-    numeralReplace(romNum, 0, "IL");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 0, "IC");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 0, "ID");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 0, "IM");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 40, "XL");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 40);
-
-    numeralReplace(romNum, 90, "XC");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 90);
-
-    numeralReplace(romNum, 0, "XD");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 0, "XM");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 0);
-
-    numeralReplace(romNum, 400, "CD");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 400);
-
-    numeralReplace(romNum, 900, "CM");
-    ck_assert_int_eq(subtractiveSequenceInRomNumeralIsValid(romNum), 900);
-    numeralDestroy(romNum);
+    ck_assert(isStringSubtractive("IV"));
+    ck_assert(isStringSubtractive("IX"));
+    ck_assert(!isStringSubtractive("IL"));
+    ck_assert(!isStringSubtractive("IC"));
+    ck_assert(!isStringSubtractive("ID"));
+    ck_assert(!isStringSubtractive("IM"));
+    ck_assert(isStringSubtractive("XL"));
+    ck_assert(isStringSubtractive("XC"));
+    ck_assert(!isStringSubtractive("XD"));
+    ck_assert(!isStringSubtractive("XM"));
+    ck_assert(isStringSubtractive("CD"));
+    ck_assert(isStringSubtractive("CM"));
 }
 END_TEST
 
-START_TEST (testIsNumeralStringValid)
+START_TEST (testIsStringValid)
 {
     // Validate a RomNumeral as having a proper Roman numeral
     // string with a matching integer
-    RomNumeral *romNum;
-
-    romNum = numeralCreate(1, "I");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 2, "II");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 3, "III");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 0, "IIII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 4, "IV");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 5, "V");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 6, "VI");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 7, "VII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 8, "VIII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 9, "IX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 10, "X");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 11, "XI");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 12, "XII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 13, "XIII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 14, "XIV");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 15, "XV");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 16, "XVI");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 17, "XVII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 18, "XVIII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 19, "XIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 20, "XX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 21, "XXI");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 22, "XXII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 23, "XXIII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 24, "XXIV");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 25, "XXV");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 26, "XXVI");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 27, "XXVII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 28, "XXVIII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 29, "XXIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 30, "XXX");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("I"));
+    ck_assert(isCleanValidString("II"));
+    ck_assert(isCleanValidString("III"));
+    ck_assert(isCleanValidString("IV"));
+    ck_assert(isCleanValidString("V"));
+    ck_assert(isCleanValidString("VI"));
+    ck_assert(isCleanValidString("VII"));
+    ck_assert(isCleanValidString("VIII"));
+    ck_assert(isCleanValidString("IX"));
+    ck_assert(isCleanValidString("X"));
+    ck_assert(isCleanValidString("XI"));
+    ck_assert(isCleanValidString("XII"));
+    ck_assert(isCleanValidString("XIII"));
+    ck_assert(isCleanValidString("XIV"));
+    ck_assert(isCleanValidString("XV"));
+    ck_assert(isCleanValidString("XVI"));
+    ck_assert(isCleanValidString("XVII"));
+    ck_assert(isCleanValidString("XVIII"));
+    ck_assert(isCleanValidString("XIX"));
+    ck_assert(isCleanValidString("XX"));
+    ck_assert(isCleanValidString("XXI"));
+    ck_assert(isCleanValidString("XXII"));
+    ck_assert(isCleanValidString("XXIII"));
+    ck_assert(isCleanValidString("XXIV"));
+    ck_assert(isCleanValidString("XXV"));
+    ck_assert(isCleanValidString("XXVI"));
+    ck_assert(isCleanValidString("XXVII"));
+    ck_assert(isCleanValidString("XXVIII"));
+    ck_assert(isCleanValidString("XXIX"));
+    ck_assert(isCleanValidString("XXX"));
+    ck_assert(isCleanValidString("XXXI"));
+    ck_assert(isCleanValidString("XXXII"));
+    ck_assert(isCleanValidString("XXXIII"));
+    ck_assert(isCleanValidString("XXXIV"));
+    ck_assert(isCleanValidString("XXXV"));
+    ck_assert(isCleanValidString("XXXVI"));
+    ck_assert(isCleanValidString("XXXVII"));
+    ck_assert(isCleanValidString("XXXVIII"));
+    ck_assert(isCleanValidString("XXXIX"));
+    ck_assert(isCleanValidString("XL"));
+    ck_assert(isCleanValidString("XLI"));
 
     // Skip to more complicated numbers
-    numeralReplace(romNum, 39, "XXXIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 40, "XL");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 41, "XLI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("XLIX"));
+    ck_assert(isCleanValidString("XL"));
+    ck_assert(isCleanValidString("XLI"));
 
     // Skip to more complicated numbers
-    numeralReplace(romNum, 49, "XLIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 50, "L");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 51, "LI");
-    ck_assert(isValid(romNum));
-
-    // Skip to more complicated numbers
-    numeralReplace(romNum, 89, "LXXXIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 90, "XC");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 91, "XCI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("LXXXIX"));
+    ck_assert(isCleanValidString("XC"));
+    ck_assert(isCleanValidString("XCI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 99, "XCIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 100, "C");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 101, "CI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("XCIX"));
+    ck_assert(isCleanValidString("C"));
+    ck_assert(isCleanValidString("CI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 149, "CXLIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 150, "CL");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 151, "CLI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("CXLIX"));
+    ck_assert(isCleanValidString("CL"));
+    ck_assert(isCleanValidString("CLI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 199, "CXCIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 200, "CC");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 201, "CCI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("CXCIX"));
+    ck_assert(isCleanValidString("CC"));
+    ck_assert(isCleanValidString("CCI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 499, "CDXCIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 500, "D");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 501, "DI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("CDXCIX"));
+    ck_assert(isCleanValidString("D"));
+    ck_assert(isCleanValidString("DI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 599, "DXCIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 550, "DL");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 551, "DLI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("DXCIX"));
+    ck_assert(isCleanValidString("DL"));
+    ck_assert(isCleanValidString("DLI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 999, "CMXCIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 1000, "M");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 1001, "MI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("CMXCIX"));
+    ck_assert(isCleanValidString("M"));
+    ck_assert(isCleanValidString("MI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 1999, "MCMXCIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 2000, "MM");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 2001, "MMI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("MCMXCIX"));
+    ck_assert(isCleanValidString("MM"));
+    ck_assert(isCleanValidString("MMI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 2999, "MMCMXCIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 3000, "MMM");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 3001, "MMMI");
-    ck_assert(isValid(romNum));
+    ck_assert(isCleanValidString("MMCMXCIX"));
+    ck_assert(isCleanValidString("MMM"));
+    ck_assert(isCleanValidString("MMMI"));
 
     // Skip to more complicated number
-    numeralReplace(romNum, 3997, "MMMCMXCVII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 3998, "MMMCMXCVIII");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 3999, "MMMCMXCIX");
-    ck_assert(isValid(romNum));
-
-    numeralReplace(romNum, 54, "LIV");
-    ck_assert(isValid(romNum));
-    numeralDestroy(romNum);
+    ck_assert(isCleanValidString("MMMCMXCVII"));
+    ck_assert(isCleanValidString("MMMCMXCVIII"));
+    ck_assert(isCleanValidString("MMMCMXCIX"));
+    ck_assert(isCleanValidString("LIV"));
 }
 END_TEST
 
@@ -538,16 +344,14 @@ END_TEST
 
 START_TEST (testStringValidation)
 {
-    char output[255];
+    char output[32];
     char *outValue = NULL;
-    memset(output, 0, 255);
-    int input = 1332;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert(valString("MCCCXXXII"));
-    ck_assert(valString("MCDLXXVIII"));
-    ck_assert(valString("MMCMXCIX"));
-    ck_assert(valString("I"));
-    ck_assert(valString("X"));
+    memset(output, 0, 32);
+    ck_assert(isCleanValidString("MCCCXXXII"));
+    ck_assert(isCleanValidString("MCDLXXVIII"));
+    ck_assert(isCleanValidString("MMCMXCIX"));
+    ck_assert(isCleanValidString("I"));
+    ck_assert(isCleanValidString("X"));
 }
 END_TEST
 
@@ -653,7 +457,7 @@ START_TEST (testAdditionValidation)
     ck_assert_str_eq(output, "MMCMLXXIV");
     addition("MCM", "M", output);
     ck_assert_str_eq(output, "MMCM");
-//    ck_assert(valString("LCCX"));
+//    ck_assert(isCleanValidString("LCCX"));
 }
 END_TEST
 
@@ -717,7 +521,7 @@ START_TEST (testSubtractionValidation)
     ck_assert_str_eq(output, "-II");
     subtraction("I", "MMM", output);
     ck_assert_str_eq(output, "-MMCMXCIX");
-//    ck_assert(valString("LCCX"));
+//    ck_assert(isCleanValidString("LCCX"));
 }
 END_TEST
 
@@ -756,11 +560,11 @@ Suite *romNumTestSuite (void)
     suite_add_tcase (s, tc_core);
 
     TCase *tc_parsing = tcase_create ("Parsing");
-    tcase_add_test (tc_parsing, testEachCharInNumeralStringIsClean);
-    tcase_add_test (tc_parsing, testFindDirtyCharInNumeralString);
-    tcase_add_test (tc_parsing, testIsSequenceInNumeralStringValid);
-    tcase_add_test (tc_parsing, testIsSubtractiveSequenceInNumeralStringValid);
-    tcase_add_test (tc_parsing, testIsNumeralStringValid);
+    tcase_add_test (tc_parsing, testEachCharInStringIsCleanAndValid);
+    tcase_add_test (tc_parsing, testFindDirtyCharInString);
+    tcase_add_test (tc_parsing, testIsSequenceInStringValid);
+    tcase_add_test (tc_parsing, testIsSubtractiveSequenceInStringValid);
+    tcase_add_test (tc_parsing, testIsStringValid);
     // String output attempt
     tcase_add_test (tc_parsing, testIntToRomNumStringConversion);
     tcase_add_test (tc_parsing, testStringValidation);

@@ -9,12 +9,6 @@
 #define printf(fmt, ...) (0)
 #endif
 
-// All Roman numerals in separate orders of magnitude
-const char ones[9][5] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
-const char tens[9][5] = {"X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
-const char huns[9][5] = {"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
-const char thou[9][5] = {"M", "MM", "MMM", "", "", "", "", "", ""};
-
 // All Roman numerals in increasing magnitude order
 const char numerals[NUM_ORDERS][9][5] = {{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"},
                                          {"X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"},
@@ -24,38 +18,6 @@ const char numerals[NUM_ORDERS][9][5] = {{"I", "II", "III", "IV", "V", "VI", "VI
 // Represents bad input strings
 const int BAD_NUMERAL_A = -999;
 const int BAD_NUMERAL_B = -998;
-
-//////
-//  RomNumeral is a struct for Roman numeral strings and their integer values
-//
-//  This struct isn't used by the RomNumCalcApp
-//////
-struct RomNumeral
-{
-    int value;
-    char *nString;
-};
-
-//////
-//  numeralCreate() was created for unit testing of RomNumeral structs
-//
-//  This function was never used by the RomNumCalcApp
-//////
-RomNumeral *numeralCreate(int numValue, char *numString)
-{
-    RomNumeral *rN = malloc(sizeof(RomNumeral));
-
-    if (rN != NULL)
-    {
-        rN->value = numValue;
-        rN->nString = numString;
-        return rN;
-    }
-    else
-    {
-        return NULL;
-    }
-}
 
 //////
 //  StrHolder is a struct for dividing up the a string into
@@ -83,445 +45,6 @@ struct StrHolder
     // Main string pointer
     char *mainStr;
 };
-
-//////
-//  numeralReplace() replaces the internal values of a RomNumeral struct
-//
-//  This function was never used by the RomNumCalcApp
-//////
-void numeralReplace(RomNumeral *rN, int newValue, char *newStrPtr)
-{
-    rN->value = newValue;
-    rN->nString = newStrPtr;
-}
-
-//////
-//  numeralValue() returns the integer value of a RomNumeral struct
-//  used for initial unit testing
-//
-//  This function was never used by the RomNumCalcApp
-//////
-int numeralValue(RomNumeral *rN)
-{
-    return rN->value;
-}
-
-//////
-//  numeralString() returns the nString of a RomNumeral struct
-//  used for initial unit testing
-//
-//  This function was never used by the RomNumCalcApp
-//////
-char *numeralString(RomNumeral *rN)
-{
-    return rN->nString;
-}
-
-//////
-//  numeralDestroy() was created for deleting RomNumeral structs
-//  used for initial unit testing
-//
-//  This function was never used by the RomNumCalcApp
-//////
-void numeralDestroy(RomNumeral *rN)
-{
-    free(rN);
-    return;
-}
-
-//////
-//  char0Is_I() was created simply to investigate unit testing using check
-//
-//  This function was never used by the RomNumCalcApp
-//////
-bool char0Is_I(RomNumeral *rN)
-{
-    return !strncmp(&(rN->nString)[0], "I", 1);
-}
-
-//////
-//  char1Is_V() was created simply to investigate unit testing using check
-//
-//  This function was never used by the RomNumCalcApp
-//////
-bool char1Is_V(RomNumeral *rN)
-{
-    return !strncmp(&(rN->nString)[1], "V", 1);
-}
-
-//////
-//  numeralStringIsClean() checks for non-Roman numeral characters in the nString
-//  of a RomNumeral struct. It returns true for a clean nString and false otherwise
-//
-//  This function was created for early unit testing and is not used by the RomNumCalcApp
-//////
-bool numeralStringIsClean(RomNumeral *rN)
-{
-    return stringIsClean(rN->nString);
-}
-
-//////
-//  stringIsClean() checks for non-Roman numeral characters in a string
-//  It returns true for a clean string and false otherwise
-//////
-bool stringIsClean(const char *s)
-{
-    // String is clean if it only contains valid Roman numeral characters
-    char *validRomanChars = "IVXLCMD";
-    printf("Checking if '%s' is clean...\n", s);
-    for (int i = 0; i < strlen(s); i++)
-    {
-        printf("i = %d, c = '%c'\n", i, s[i]);
-        if (strchr(validRomanChars, s[i]) == NULL)
-        {
-            // Invalid char found
-            fprintf(stderr, "Found invalid character '%c'\n", s[i]);
-            return false;
-        }
-    }
-    // All chars are valid
-    printf("'%s' is clean!\n", s);
-    return true;
-}
-
-//////
-//  sequenceInRomNumeralIsValid() checks to see if the nString of a
-//  RomNumeral struct has valid repeating string sequences
-//
-//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
-//////
-int sequenceInRomNumeralIsValid(RomNumeral *rN)
-{
-    return sequenceInStringIsValid(rN->nString);
-}
-
-//////
-//  sequenceInStringIsValid() takes a string and and counts the number of times the
-//  first character is repeated and compares that to the accepted sequence size for
-//  a particular character. It returns the a proper sequence count or a 0 indicating
-//  a problem was found.
-//
-//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
-//////
-int sequenceInStringIsValid(const char *s)
-{
-    // Seeking uniform sequence of chars (III, XXX, etc.)
-    // Check for NULL
-    if (s == NULL)
-    {
-        return 0;
-    }
-
-    // Show string where sequence starts and get first character
-    printf("Checking if '%s' is valid...\n", s);
-    char firstChar = s[0];
-    int maxChar = 0;
-
-    // Assign maximum number of chars per sequence
-    switch (firstChar) {
-        case 'V' :
-        case 'L' :
-        case 'D' :
-            maxChar = 1;
-            break;
-
-        case 'I' :
-        case 'X' :
-        case 'C' :
-            maxChar = 3;
-            break;
-
-        case 'M' :
-            maxChar = 3;
-            break;
-
-        default:
-            // Oops invalid character found!
-            printf("Found invalid character (%d:%c) found!\n", firstChar, firstChar);
-            return 0;
-            break;
-    }
-
-    int seqCount = 0;
-    for (int i = 0; i < strlen(s) && s[i] != '\0' ; i++)
-    {
-        printf("i = %d, c = '%c'\n", i, s[i]);
-        seqCount++;
-        if (s[i] == firstChar && i >= maxChar)
-        {
-            // Too many chars found in a row
-            printf("Too many sequential '%c's. Exiting after number of chars hit %d\n", s[i], i+1);
-            return 0;
-        }
-        else if (s[i] != firstChar)
-        {
-            // Sequence has ended early
-            printf("Sequence ended %c != %c\n", s[i], firstChar);
-            return 0;
-        }
-    }
-
-    // Sequence is valid
-    printf("%d chars in valid sequence\n", seqCount);
-    return seqCount;
-}
-
-//////
-//  subtractiveSequenceInRomNumeralIsValid() checks to see if the nString of a
-//  RomNumeral struct adheres to thebproper subtractive form and returns the integer value of the string.
-//
-//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
-//////
-int subtractiveSequenceInRomNumeralIsValid(RomNumeral *rN)
-{
-    return subtractiveSequenceInStringIsValid(rN->nString);
-}
-
-//////
-//  subtractiveSequenceInStringIsValid() checks to see if a string adheres to the
-//  proper subtractive form and returns the integer value of the string.
-//
-//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
-//////
-int subtractiveSequenceInStringIsValid(const char *s)
-{
-    // Check for empty string or single char (neither can be subtractive)
-    if (s == NULL)
-    {
-        return 0;
-    }
-    else if (strlen(s) == 1)
-    {
-        return 0;
-    }
-
-    // Show string where sequence starts and get first character
-    printf("Checking if '%s' is subtractive...\n", s);
-    char firstChar = s[0];
-
-    if (strlen(s) >= 2)
-    {
-        // For  'I'
-        switch (firstChar) {
-            case 'I':
-                if (s[1] == 'V')
-                {
-                    return 4;
-                }
-                else if (s[1] == 'X')
-                {
-                    return 9;
-                }
-                else
-                {
-                    return 0;
-                }
-                break;
-
-            case 'X':
-                if (s[1] == 'L')
-                {
-                    return 40;
-                }
-                else if (s[1] == 'C')
-                {
-                    return 90;
-                }
-                else
-                {
-                    return 0;
-                }
-                break;
-
-            case 'C':
-                if (s[1] == 'D')
-                {
-                    return 400;
-                }
-                else if (s[1] == 'M')
-                {
-                    return 900;
-                }
-                else
-                {
-                    return 0;
-                }
-                break;
-
-            default:
-                printf("... not a valid subtractive sequence!\n");
-                return 0;
-                break;
-        }
-    }
-}
-
-//////
-//  isValid() checks to see if the Roman numeral string and integer of a RomNumeral struct
-//  match each other.
-//
-//  This function was created for earlier attempts and is no longer used by the RomNumCalcApp
-//////
-bool isValid(RomNumeral *rN)
-{
-    if (numeralStringIsClean(rN))
-    {
-        // No foreign characters detected
-        if (romNumToInt(rN->nString) == rN->value)
-        {
-            // Entered test value matches parsed value
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-}
-
-//////
-//  romNumToInt() takes a Roman numeral string and returns an integer value
-//
-//  This function was created for sanity checking and is not used by the RomNumCalcApp
-//////
-int romNumToInt(const char *s)
-{
-    int retVal = 0;
-
-    // Return 0 for NULL strings
-    if (s == NULL)
-    {
-        return retVal;
-    }
-
-    // Setup variables for parsing
-    // Setup magnitude counters
-    int ones      = 0;
-    int tens      = 0;
-    int hundreds  = 0;
-    int thousands = 0;
-
-    // Setup magnitude markers
-    bool inOnes      = false;
-    bool inTens      = false;
-    bool inHundreds  = false;
-    bool inThousands = false;
-
-    char prevChar = '\0';
-    char currChar = '\0';
-    char nextChar = '\0';
-
-    int length = strlen(s);
-    int charCount = 0;
-
-    while (charCount < length)
-    {
-        int seqCount = 0;
-        currChar = prevChar;
-        currChar = s[charCount];
-        if (currChar == 'I')
-        {
-            inOnes = true;
-
-            if ((seqCount = subtractiveSequenceInStringIsValid(&s[charCount])) != 0)
-            {
-                ones += seqCount;
-                charCount += 2;
-            }
-            else if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
-            {
-                ones += seqCount;
-                charCount += seqCount;
-            }
-            else
-            {
-                return retVal;
-            }
-        }
-        else if (currChar == 'V')
-        {
-            inOnes = true;
-            ones += 5;
-            charCount++;
-        }
-        else if (currChar == 'X')
-        {
-            inTens = true;
-            if ((seqCount = subtractiveSequenceInStringIsValid(&s[charCount])) != 0)
-            {
-                tens += seqCount;
-                charCount += 2;
-            }
-            else if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
-            {
-                tens += seqCount * 10;
-                charCount += seqCount;
-            }
-            else
-            {
-                // Lone character
-                tens += 10;
-                charCount++;
-            }
-        }
-        else if (currChar == 'L')
-        {
-            inTens = true;
-            tens += 50;
-            charCount++;
-        }
-        else if (currChar == 'C')
-        {
-            inHundreds = true;
-            if ((seqCount = subtractiveSequenceInStringIsValid(&s[charCount])) != 0)
-            {
-                hundreds += seqCount;
-                charCount += 2;
-            }
-            else if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
-            {
-                hundreds += seqCount * 100;
-                charCount += seqCount;
-            }
-            else
-            {
-                // Lone character
-                hundreds += 100;
-                charCount++;
-            }
-        }
-        else if (currChar == 'D')
-        {
-            inHundreds = true;
-            hundreds += 500;
-            charCount++;
-        }
-        else if (currChar == 'M')
-        {
-            inThousands = true;
-            if ((seqCount = sequenceInStringIsValid(&s[charCount])) != 0)
-            {
-                thousands += seqCount * 1000;
-                charCount += seqCount;
-            }
-            else
-            {
-                // Lone character
-                thousands += 1000;
-                charCount++;
-            }
-        }
-        else
-        {
-            // Continue to avoid infinite loop
-            charCount++;
-        }
-    }
-
-    retVal = thousands + hundreds + tens + ones;
-    printf("%s = %d\n", s, retVal);
-    return retVal;
-}
 
 //////
 //  intToRomNum() takes an integer value and returns a Roman numeral string
@@ -663,16 +186,33 @@ char *intToRomNum(int num, char *s)
 }
 
 //////
-//  valString() returns true/false whether a string represents a
-//  valid Roman numeral
+//  isCleanValidString() returns true/false whether a string represents a
+//  clean and valid Roman numeral. Combining two previous functions
+//  into one.
 //////
-bool valString (const char *s)
+bool isCleanValidString (const char *s)
 {
     // Check for NULL string
     if (s == NULL)
     {
         return false;
     }
+
+    // String is clean if it only contains valid Roman numeral characters
+    char *validRomanChars = "IVXLCMD";
+    printf("Checking if '%s' is clean...\n", s);
+    for (int i = 0; i < strlen(s); i++)
+    {
+        printf("i = %d, c = '%c'\n", i, s[i]);
+        if (strchr(validRomanChars, s[i]) == NULL)
+        {
+            // Invalid char found
+            fprintf(stderr, "Found invalid character '%c'\n", s[i]);
+            return false;
+        }
+    }
+    // All chars are valid
+    printf("'%s' is clean!\n", s);
 
     int length = strlen(s);
     printf("'%s' at 0x%p, Length = %d\n", s, s, length);
@@ -808,13 +348,13 @@ char *addition (const char *as, const char *bs, char *cs)
     attachHolder(cs, &cH);
 
     // Check input
-    if (!stringIsClean(aH.mainStr) || !valString(aH.mainStr))
+    if (!isCleanValidString(aH.mainStr))
     {
         fprintf(stderr, "%s is not a proper Roman numeral.\n", aH.mainStr);
         return NULL;
     }
 
-    if (!stringIsClean(bH.mainStr) || !valString(bH.mainStr))
+    if (!isCleanValidString(bH.mainStr))
     {
         fprintf(stderr, "%s is not a proper Roman numeral.\n", bH.mainStr);
         return NULL;
@@ -847,7 +387,7 @@ char *addition (const char *as, const char *bs, char *cs)
     strncat(cH.mainStr, tensStr, strlen(tensStr));
     strncat(cH.mainStr, onesStr, strlen(onesStr));
 
-    if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
+    if (isCleanValidString(cH.mainStr))
     {
         printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
         printf("%s + %s = %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
@@ -949,7 +489,7 @@ char *subtraction (const char *as, const char *bs, char *cs)
     strncat(cH.mainStr, tensStr, strlen(tensStr));
     strncat(cH.mainStr, onesStr, strlen(onesStr));
 
-    if (stringIsClean(cH.mainStr) && valString(cH.mainStr))
+    if (isCleanValidString(cH.mainStr))
     {
         printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
         printf("%s - %s = %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
@@ -1900,13 +1440,13 @@ int romStrCmp(const char *as, const char *bs)
 {
     printf("\n--> romStrCmp: %s, %s\n", as, bs);
     // Check input
-    if (!stringIsClean(as) || !valString(as))
+    if (!isCleanValidString(as))
     {
         fprintf(stderr, "%s is not a proper Roman numeral.\n", as);
         return BAD_NUMERAL_A;
     }
 
-    if (!stringIsClean(bs) || !valString(bs))
+    if (!isCleanValidString(bs))
     {
         fprintf(stderr, "%s is not a proper Roman numeral.\n", bs);
         return BAD_NUMERAL_B;
