@@ -1,54 +1,32 @@
-Currently just running compile/build commands with gcc.
-//// First make output directories if they don't already exist
-mkdir bin
-mkdir obj
-
-//// next build shared lib and main executable
-cd src/lib
-
-// compile shared library source to object file
-gcc -c -Wall -Werror -fPIC RomNumMath.c -o ../../obj/RomNumMath.o
-
-// build shared library from object file
-gcc -shared -o ../../bin/libRomNumMath.so ../../obj/RomNumMath.o
-
-// moe to app directory
-cd ../app
-
-// compile and link app with shared library
-gcc -L../../bin -Wall -Werror RomNumCalcApp.c -o ../../bin/RomNumCalcApp -lRomNumMath
-
-// run executable from command line
-LD_LIBRARY_PATH=../../bin ../../bin/RomNumCalcApp
-
-//// Next build test executable
-cd ../tests
-
-// compile and link test executable with shared library
-gcc -L../../bin -Wall -Werror TestRomNumCalc.c -o ../../bin/TestRomNumCalc -lRomNumMath
-
-// run text executable from command line
-LD_LIBRARY_PATH=../../bin ../../bin/TestRomNumCalc
-
-// ------------ New Autoconf directives
-// run autoscan
-autoscan
-
-// Compare old configure.ac and configure.scan.
-// Save any differences you like into a new configure.ac
-
+// Build with autoconf tools
 // Run autoreconf to create Makefile.in
 autoreconf --install
 
-// Add a build directory if you like
+// Add a build directory
 mkdir build
 
 // Run configure to get new Makefile
-./configure (or cd build and run ../configure)
+cd build
+../configure
+
+// Run unit tests
+make check
 
 // Run make to build the binaries
 make
 
-// Run unit tests
-make check
+// The app resides in a subdirectory of the build directory at ./src/app/.libs/RomNumCalcApp
+// The library resides in ./src/lib/.libs/libRomNumMath.so
+// You can run the app from a convenient shell script at ./src/app/RomNumCalcApp that knows
+// where to find the library at runtime.
+
+// Run shell script for app on command line from build directory
+./src/app/RomNumCalcApp
+ - this gives brief app description
+./src/app/RomNumCalcApp -a IX IX
+ - outputs: IX + IX = XVIII
+./src/app/RomNumCalcApp -s IX I
+ - outputs: IX - I = VIII
+./src/app/RomNumCalcApp -c X IX
+ - outputs: X > IX
 
