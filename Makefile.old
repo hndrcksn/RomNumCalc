@@ -3,18 +3,23 @@
 SHELL        = /bin/sh
 CC           = gcc
 MKDIR_P      = mkdir -p
-#FLAGS        = -std=gnu99 -Iinclude
-LIBCFLAGS    = -c -Wall -Werror -fPIC
+#FLAGS        = -std=c99
+FLAGS        = -std=gnu99
+LIBCFLAGS    = -c -Wall -Werror -fPIC  $(FLAGS)
 LIBLDFLAGS   = -shared
-CFLAGS       = -Wall -Werror
+CFLAGS       = -Wall -Werror $(FLAGS)
+LIBCHECKLDFLAGS = -lrt -lm -pthread
 
 LIBSRCDIR  = ./src/lib
 APPSRCDIR  = ./src/app
 TESTSRCDIR = ./src/tests
-LIBCHECKDIR = /usr/lib/arm-linux-gnueabihf/
+#LIBCHECKDIR = /usr/lib/arm-linux-gnueabihf/
+LIBCHECKDIR = /usr/lib/x86_64-linux-gnu/
 
 OBJDIR = ./obj
 BINDIR = ./bin
+LDLIBPATHHERE = LD_LIBRARY_PATH=.
+LDLIBPATHBIN  = LD_LIBRARY_PATH=bin
 
 LIB        = RomNumMath
 APPTARGET  = RomNumCalcApp
@@ -61,8 +66,10 @@ $(BINDIR)/$(APPTARGET) : directories $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGE
 	$(CC) -L$(BINDIR) $(CFLAGS) $(APPSRCDIR)/$(APPSRC) -o $(BINDIR)/$(APPTARGET) -l$(LIB)
 
 $(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
-	$(CC) -L$(BINDIR) -L$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK)
+	$(CC) -L$(BINDIR) -L$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK) $(LIBCHECKLDFLAGS)
+	$(TESTTARGET)
 
 $(BINDIR)/$(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
-	$(CC) -L$(BINDIR) -L$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK)
+	$(CC) -L$(BINDIR) -L$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK) $(LIBCHECKLDFLAGS)
+	$(LDLIBPATHBIN) $(BINDIR)/$(TESTTARGET)
 

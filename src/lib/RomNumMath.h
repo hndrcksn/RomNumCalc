@@ -2,11 +2,18 @@
 #define ROMNUMMATH_H
 
 #include <stdbool.h>
+#include <stdarg.h>
 
 // Enums, structs and consts.
 typedef enum {ONES = 0, TENS, HUNS, THOU, NUM_ORDERS} OrderType;
 typedef struct StrHolder StrHolder;
 static const int BUFRSIZE = 32;
+
+// External global
+extern bool global_debugging;
+
+// Debug printf
+void debug_printf(const char* format, ...);
 
 // String functions
 char *intToRomNum(int num, char *s);

@@ -347,7 +347,6 @@ END_TEST
 START_TEST (testStringValidation)
 {
     char output[32];
-    char *outValue = NULL;
     memset(output, 0, 32);
     ck_assert(isCleanValidString("MCCCXXXII"));
     ck_assert(isCleanValidString("MCDLXXVIII"));
@@ -360,7 +359,6 @@ END_TEST
 START_TEST (testAdditionValidation)
 {
     char output[32];
-    char *outValue = NULL;
     memset(output, 0, 32);
 
     addition("XX", "II", output);
@@ -468,7 +466,6 @@ END_TEST
 START_TEST (testSubtractionValidation)
 {
     char output[32];
-    char *outValue = NULL;
     memset(output, 0, 32);
 
     subtraction("III", "I", output);
@@ -618,6 +615,7 @@ Suite *romNumTestSuite (void)
 
 int main(void)
 {
+    global_debugging = true;
     int number_failed;
     Suite *s = romNumTestSuite ();
     SRunner *sr = srunner_create (s);
