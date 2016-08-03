@@ -1,4 +1,4 @@
-.PHONY : clean all directories
+.PHONY : clean dist-clean all directories check check-debug
 
 SHELL        = /bin/sh
 CC           = gcc
@@ -7,8 +7,9 @@ MKDIR_P      = mkdir -p
 FLAGS        = -std=gnu99
 LIBCFLAGS    = -c -Wall -Werror -fPIC  $(FLAGS)
 LIBLDFLAGS   = -shared
+CPPFLAGS     = -DCHECK_DEBUG
 CFLAGS       = -Wall -Werror $(FLAGS)
-LIBCHECKLDFLAGS = -lrt -lm -pthread
+LIBCHECKLDFLAGS = -pthread -lrt -lm
 
 LIBSRCDIR  = ./src/lib
 APPSRCDIR  = ./src/app
@@ -24,6 +25,7 @@ LDLIBPATHBIN  = LD_LIBRARY_PATH=bin
 LIB        = RomNumMath
 APPTARGET  = RomNumCalcApp
 TESTTARGET = TestRomNumCalc
+TESTTARGETD = TestRomNumCalcD
 LIBSRC     = $(LIB).c
 APPSRC     = $(APPTARGET).c
 TESTSRC    = $(TESTTARGET).c
@@ -33,13 +35,22 @@ TESTOBJ    = $(TESTTARGET).o
 LIBTARGET  = lib$(LIB).so
 LIBCHECK   = check
 
-all : directories $(BINDIR)/$(LIBTARGET) $(BINDIR)/$(APPTARGET) $(BINDIR)/$(TESTTARGET)
+all : directories $(BINDIR) $(LIBTARGET) $(APPTARGET) $(TESTTARGET) $(TESTTARGETD)
 	echo "Building all..."
 
 clean : directories
 	rm -f $(OBJDIR)/* $(BINDIR)/*
 
+dist-clean :
+	rm -rf $(OBJDIR) $(BINDIR)
+
 directories : $(OBJDIR) $(BINDIR)
+
+check: $(TESTTARGET)
+	$(LDLIBPATHBIN) $(BINDIR)/$(TESTTARGET)
+
+check-debug: $(TESTTARGETD)
+	$(LDLIBPATHBIN) $(BINDIR)/$(TESTTARGETD)
 
 $(OBJDIR):
 	$(MKDIR_P) $(OBJDIR)
@@ -47,29 +58,33 @@ $(OBJDIR):
 $(BINDIR):
 	$(MKDIR_P) $(BINDIR)
 
-$(LIBOBJ) : directories $(LIBSRCDIR)/$(LIBSRC)
+$(LIBSRC):
+ifeq (,$(wildcard $(LIBSRCDIR)/$(LIBSRC)))
+	$(error $(LIBSRCDIR)/$(LIBSRC) not found!)
+endif
+
+$(LIBOBJ) : directories $(LIBSRCDIR) $(LIBSRC)
 	$(CC) $(LIBCFLAGS) $(LIBSRCDIR)/$(LIBSRC) -o $(OBJDIR)/$(LIBOBJ)
 
-$(OBJDIR)/$(LIBOBJ) : directories $(LIBSRCDIR)/$(LIBSRC)
-	$(CC) $(LIBCFLAGS) $(LIBSRCDIR)/$(LIBSRC) -o $(OBJDIR)/$(LIBOBJ)
-
-$(LIBTARGET) : directories $(OBJDIR)/$(LIBOBJ)
+$(LIBTARGET) : directories $(OBJDIR) $(LIBOBJ)
 	$(CC) $(LIBLDFLAGS) -o $(BINDIR)/$(LIBTARGET) $(OBJDIR)/$(LIBOBJ)
 
-$(BINDIR)/$(LIBTARGET) : directories $(OBJDIR)/$(LIBOBJ)
-	$(CC) $(LIBLDFLAGS) -o $(BINDIR)/$(LIBTARGET) $(OBJDIR)/$(LIBOBJ)
+$(APPSRC):
+ifeq (,$(wildcard $(APPSRCDIR)/$(APPSRC)))
+	$(error $(APPSRCDIR)/$(APPSRC) not found!)
+endif
 
-$(APPTARGET) : directories $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGET)
+$(APPTARGET) : directories $(APPSRCDIR) $(APPSRC) $(BINDIR) $(LIBTARGET)
 	$(CC) -L$(BINDIR) $(CFLAGS) $(APPSRCDIR)/$(APPSRC) -o $(BINDIR)/$(APPTARGET) -l$(LIB)
 
-$(BINDIR)/$(APPTARGET) : directories $(APPSRCDIR)/$(APPSRC) $(BINDIR)/$(LIBTARGET)
-	$(CC) -L$(BINDIR) $(CFLAGS) $(APPSRCDIR)/$(APPSRC) -o $(BINDIR)/$(APPTARGET) -l$(LIB)
+$(TESTSRC):
+ifeq (,$(wildcard $(TESTSRCDIR)/$(TESTSRC)))
+	$(error $(TESTSRCDIR)/$(TESTSRC) not found!)
+endif
 
-$(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
+$(TESTTARGET) : directories $(TESTSRCDIR) $(TESTSRC) $(BINDIR) $(LIBTARGET)
 	$(CC) -L$(BINDIR) -L$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK) $(LIBCHECKLDFLAGS)
-	$(TESTTARGET)
 
-$(BINDIR)/$(TESTTARGET) : directories $(TESTSRCDIR)/$(TESTSRC) $(BINDIR)/$(LIBTARGET)
-	$(CC) -L$(BINDIR) -L$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGET) -l$(LIB) -l$(LIBCHECK) $(LIBCHECKLDFLAGS)
-	$(LDLIBPATHBIN) $(BINDIR)/$(TESTTARGET)
+$(TESTTARGETD) : directories $(TESTSRCDIR) $(TESTSRC) $(BINDIR) $(LIBTARGET)
+	$(CC) $(CPPFLAGS) -L$(BINDIR) -L$(LIBCHECKDIR) $(CFLAGS) $(TESTSRCDIR)/$(TESTSRC) -o $(BINDIR)/$(TESTTARGETD) -l$(LIB) -l$(LIBCHECK) $(LIBCHECKLDFLAGS)
 

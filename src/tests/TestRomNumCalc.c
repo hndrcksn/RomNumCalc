@@ -615,7 +615,9 @@ Suite *romNumTestSuite (void)
 
 int main(void)
 {
+#ifdef CHECK_DEBUG
     global_debugging = true;
+#endif
     int number_failed;
     Suite *s = romNumTestSuite ();
     SRunner *sr = srunner_create (s);
