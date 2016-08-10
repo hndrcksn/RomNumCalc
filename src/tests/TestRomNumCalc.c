@@ -2,41 +2,6 @@
 #include <check.h>
 #include "../lib/RomNumMath.h"
 
-START_TEST (testNumeralCreate)
-{
-    // Simple test code to verify that check works as expected //
-/*
-    RomNumeral *romNum;
-
-    romNum = numeralCreate(4, "IV");
-    ck_assert_int_eq(numeralValue(romNum), 4);
-    ck_assert_str_eq(numeralString(romNum), "IV");
-    numeralDestroy(romNum);*/
-}
-END_TEST
-
-START_TEST (testFirstCharInNumeralStringIs_I)
-{
-    // Test if first character in the numeral string "I"
-/*    RomNumeral *romNum;
-
-    romNum = numeralCreate(1, "I");
-    ck_assert(char0Is_I(romNum));
-    numeralDestroy(romNum);*/
-}
-END_TEST
-
-START_TEST (testSecondCharInNumeralStringIs_V)
-{
-    // Test if second character in the numeral string "V"
-/*    RomNumeral *romNum;
-
-    romNum = numeralCreate(4, "IV");
-    ck_assert(char1Is_V(romNum));
-    numeralDestroy(romNum);*/
-}
-END_TEST
-
 START_TEST (testEachCharInStringIsCleanAndValid)
 {
     // Test that every character in the numeral string is a I, V, X, L, C, D or M and nothing else
@@ -225,122 +190,35 @@ END_TEST
 START_TEST (testIntToRomNumStringConversion)
 {
     char output[255];
-    char *outValue = NULL;
-    int input = 1332;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "MCCCXXXII");
-
-    input = 1;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "I");
-
-    input = 2;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "II");
-
-    input = 3;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "III");
-
-    input = 4;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "IV");
-
-    input = 5;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "V");
-
-    input = 6;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "VI");
-
-    input = 7;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "VII");
-
-    input = 8;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "VIII");
-
-    input = 9;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "IX");
-
-    input = 10;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "X");
-
-    input = 11;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XI");
-
-    input = 14;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XIV");
-
-    input = 19;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XIX");
-
-    input = 20;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XX");
-
-    input = 21;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XXI");
-
-    input = 25;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XXV");
-
-    input = 29;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XXIX");
-
-    input = 30;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XXX");
-
-    input = 31;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XXXI");
-
-    input = 39;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XXXIX");
-
-    input = 40;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XL");
-
-    input = 41;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XLI");
-
-    input = 49;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XLIX");
-
-    input = 50;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "L");
-
-    input = 51;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "LI");
-
-    input = 99;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "XCIX");
-
-    input = 100;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "C");
-
-    input = 101;
-    outValue = intToRomNum(input,  &output[0]);
-    ck_assert_str_eq(outValue, "CI");
+    ck_assert_str_eq(intToRomNum(1,  &output[0]), "I");
+    ck_assert_str_eq(intToRomNum(2,  &output[0]), "II");
+    ck_assert_str_eq(intToRomNum(3,  &output[0]), "III");
+    ck_assert_str_eq(intToRomNum(4,  &output[0]), "IV");
+    ck_assert_str_eq(intToRomNum(5,  &output[0]), "V");
+    ck_assert_str_eq(intToRomNum(6,  &output[0]), "VI");
+    ck_assert_str_eq(intToRomNum(7,  &output[0]), "VII");
+    ck_assert_str_eq(intToRomNum(8,  &output[0]), "VIII");
+    ck_assert_str_eq(intToRomNum(9,  &output[0]), "IX");
+    ck_assert_str_eq(intToRomNum(10,  &output[0]), "X");
+    ck_assert_str_eq(intToRomNum(11,  &output[0]), "XI");
+    ck_assert_str_eq(intToRomNum(14,  &output[0]), "XIV");
+    ck_assert_str_eq(intToRomNum(19,  &output[0]), "XIX");
+    ck_assert_str_eq(intToRomNum(20,  &output[0]), "XX");
+    ck_assert_str_eq(intToRomNum(21,  &output[0]), "XXI");
+    ck_assert_str_eq(intToRomNum(25,  &output[0]), "XXV");
+    ck_assert_str_eq(intToRomNum(29,  &output[0]), "XXIX");
+    ck_assert_str_eq(intToRomNum(30,  &output[0]), "XXX");
+    ck_assert_str_eq(intToRomNum(31,  &output[0]), "XXXI");
+    ck_assert_str_eq(intToRomNum(39,  &output[0]), "XXXIX");
+    ck_assert_str_eq(intToRomNum(40,  &output[0]), "XL");
+    ck_assert_str_eq(intToRomNum(41,  &output[0]), "XLI");
+    ck_assert_str_eq(intToRomNum(49,  &output[0]), "XLIX");
+    ck_assert_str_eq(intToRomNum(50,  &output[0]), "L");
+    ck_assert_str_eq(intToRomNum(51,  &output[0]), "LI");
+    ck_assert_str_eq(intToRomNum(99,  &output[0]), "XCIX");
+    ck_assert_str_eq(intToRomNum(100,  &output[0]), "C");
+    ck_assert_str_eq(intToRomNum(101,  &output[0]), "CI");
+    ck_assert_str_eq(intToRomNum(1332,  &output[0]), "MCCCXXXII");
 }
 END_TEST
 
@@ -581,13 +459,7 @@ Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
 
-    /* Core test case */
-    TCase *tc_core = tcase_create ("Core");
-    tcase_add_test (tc_core, testNumeralCreate);
-    tcase_add_test (tc_core, testFirstCharInNumeralStringIs_I);
-    tcase_add_test (tc_core, testSecondCharInNumeralStringIs_V);
-    suite_add_tcase (s, tc_core);
-
+    /* Parsing test case */
     TCase *tc_parsing = tcase_create ("Parsing");
     tcase_add_test (tc_parsing, testEachCharInStringIsCleanAndValid);
     tcase_add_test (tc_parsing, testFindDirtyCharInString);
@@ -599,12 +471,14 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_parsing, testStringValidation);
     suite_add_tcase (s, tc_parsing);
 
+    /* Calculation test case */
     TCase *tc_calculation = tcase_create ("Calculation");
     // Addition and Subtraction tests
     tcase_add_test (tc_calculation, testAdditionValidation);
     tcase_add_test (tc_calculation, testSubtractionValidation);
     suite_add_tcase (s, tc_calculation);
 
+    /* Comparison test case */
     TCase *tc_comparison = tcase_create ("Comparison");
     // Compare number string values
     tcase_add_test (tc_comparison, testComparison);
