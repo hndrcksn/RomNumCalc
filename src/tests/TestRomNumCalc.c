@@ -187,45 +187,8 @@ START_TEST (testIsStringValid)
 }
 END_TEST
 
-START_TEST (testIntToRomNumStringConversion)
-{
-    char output[255];
-    ck_assert_str_eq(intToRomNum(1,  &output[0]), "I");
-    ck_assert_str_eq(intToRomNum(2,  &output[0]), "II");
-    ck_assert_str_eq(intToRomNum(3,  &output[0]), "III");
-    ck_assert_str_eq(intToRomNum(4,  &output[0]), "IV");
-    ck_assert_str_eq(intToRomNum(5,  &output[0]), "V");
-    ck_assert_str_eq(intToRomNum(6,  &output[0]), "VI");
-    ck_assert_str_eq(intToRomNum(7,  &output[0]), "VII");
-    ck_assert_str_eq(intToRomNum(8,  &output[0]), "VIII");
-    ck_assert_str_eq(intToRomNum(9,  &output[0]), "IX");
-    ck_assert_str_eq(intToRomNum(10,  &output[0]), "X");
-    ck_assert_str_eq(intToRomNum(11,  &output[0]), "XI");
-    ck_assert_str_eq(intToRomNum(14,  &output[0]), "XIV");
-    ck_assert_str_eq(intToRomNum(19,  &output[0]), "XIX");
-    ck_assert_str_eq(intToRomNum(20,  &output[0]), "XX");
-    ck_assert_str_eq(intToRomNum(21,  &output[0]), "XXI");
-    ck_assert_str_eq(intToRomNum(25,  &output[0]), "XXV");
-    ck_assert_str_eq(intToRomNum(29,  &output[0]), "XXIX");
-    ck_assert_str_eq(intToRomNum(30,  &output[0]), "XXX");
-    ck_assert_str_eq(intToRomNum(31,  &output[0]), "XXXI");
-    ck_assert_str_eq(intToRomNum(39,  &output[0]), "XXXIX");
-    ck_assert_str_eq(intToRomNum(40,  &output[0]), "XL");
-    ck_assert_str_eq(intToRomNum(41,  &output[0]), "XLI");
-    ck_assert_str_eq(intToRomNum(49,  &output[0]), "XLIX");
-    ck_assert_str_eq(intToRomNum(50,  &output[0]), "L");
-    ck_assert_str_eq(intToRomNum(51,  &output[0]), "LI");
-    ck_assert_str_eq(intToRomNum(99,  &output[0]), "XCIX");
-    ck_assert_str_eq(intToRomNum(100,  &output[0]), "C");
-    ck_assert_str_eq(intToRomNum(101,  &output[0]), "CI");
-    ck_assert_str_eq(intToRomNum(1332,  &output[0]), "MCCCXXXII");
-}
-END_TEST
-
 START_TEST (testStringValidation)
 {
-    char output[32];
-    memset(output, 0, 32);
     ck_assert(isCleanValidString("MCCCXXXII"));
     ck_assert(isCleanValidString("MCDLXXVIII"));
     ck_assert(isCleanValidString("MMCMXCIX"));
@@ -467,7 +430,6 @@ Suite *romNumTestSuite (void)
     tcase_add_test (tc_parsing, testIsSubtractiveSequenceInStringValid);
     tcase_add_test (tc_parsing, testIsStringValid);
     // String output attempt
-    tcase_add_test (tc_parsing, testIntToRomNumStringConversion);
     tcase_add_test (tc_parsing, testStringValidation);
     suite_add_tcase (s, tc_parsing);
 

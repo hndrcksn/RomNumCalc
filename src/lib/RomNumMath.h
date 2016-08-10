@@ -16,7 +16,6 @@ extern bool global_debugging;
 void debug_printf(const char* format, ...);
 
 // String functions
-char *intToRomNum(int num, char *s);
 bool isCleanValidString (const char *s);
 char *addition (const char *as, const char *bs, char *cs);
 char *subtraction (const char *as, const char *bs, char *cs);
