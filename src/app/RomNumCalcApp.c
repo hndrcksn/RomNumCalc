@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                fprintf(stderr, "Error! No data output!\n");
+                debug_printf("ERROR! No data output!\n");
                 return -1;
             }
         }
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                fprintf(stderr, "Error! No Data output!\n");
+                debug_printf("ERROR! No Data output!\n");
                 return -2;
             }
         }
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                fprintf(stderr, "Error! No comparison!\n");
+                debug_printf("ERROR! No comparison!\n");
                 return -3;
             }
         }

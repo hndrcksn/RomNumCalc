@@ -80,7 +80,7 @@ bool isCleanValidString (const char *s)
         if (strchr(validRomanChars, s[i]) == NULL)
         {
             // Invalid char found
-            fprintf(stderr, "Found invalid character '%c'\n", s[i]);
+            debug_printf("ERROR! Found invalid character '%c'\n", s[i]);
             return false;
         }
     }
@@ -214,13 +214,13 @@ char *addition (const char *as, const char *bs, char *cs)
     // Check input
     if (!isCleanValidString(aH.mainStr))
     {
-        fprintf(stderr, "%s is not a proper Roman numeral.\n", aH.mainStr);
+        debug_printf("ERROR! %s is not a proper Roman numeral.\n", aH.mainStr);
         return NULL;
     }
 
     if (!isCleanValidString(bH.mainStr))
     {
-        fprintf(stderr, "%s is not a proper Roman numeral.\n", bH.mainStr);
+        debug_printf("ERROR! %s is not a proper Roman numeral.\n", bH.mainStr);
         return NULL;
     }
 
@@ -259,7 +259,7 @@ char *addition (const char *as, const char *bs, char *cs)
     }
     else
     {
-        fprintf(stderr, "NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
+        debug_printf("ERROR! NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
         debug_printf("%s + %s != %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
         return NULL;
     }
@@ -373,7 +373,7 @@ char *subtraction (const char *as, const char *bs, char *cs)
     }
     else
     {
-        fprintf(stderr, "NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
+        debug_printf("ERROR! NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
         debug_printf("%s - %s != %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
         return NULL;
     }
@@ -871,7 +871,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
         if (order == THOU && (x10Count > 0 || x5Count > 0))
         {
             // Only values up to MMMCMXCIX (3999) are supported
-            fprintf(stderr, "Fatal Error: Only values up to MMMCMXCIX (3999) are supported\n");
+            debug_printf("ERROR! Fatal Error: Only values up to MMMCMXCIX (3999) are supported\n");
             return false;
         }
 
@@ -1195,7 +1195,7 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         if (order == THOU && (aX10Count > 0 || aX5Count > 0))
         {
             // Only values up to MMMCMXCIX (3999) are supported
-            fprintf(stderr, "Fatal Error: Only values up to MMMCMXCIX (3999) are supported\n");
+            debug_printf("ERROR! Fatal Error: Only values up to MMMCMXCIX (3999) are supported\n");
             return false;
         }
 
@@ -1318,13 +1318,13 @@ int romStrCmp(const char *as, const char *bs)
     // Check input
     if (!isCleanValidString(as))
     {
-        fprintf(stderr, "%s is not a proper Roman numeral.\n", as);
+        debug_printf("ERROR! %s is not a proper Roman numeral.\n", as);
         return BAD_NUMERAL_A;
     }
 
     if (!isCleanValidString(bs))
     {
-        fprintf(stderr, "%s is not a proper Roman numeral.\n", bs);
+        debug_printf("ERROR! %s is not a proper Roman numeral.\n", bs);
         return BAD_NUMERAL_B;
     }
 
