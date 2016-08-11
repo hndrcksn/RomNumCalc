@@ -206,6 +206,29 @@ char *addition (const char *as, const char *bs, char *cs)
     StrHolder bH;
     StrHolder cH;
 
+    // Negation indicators
+    bool asNegative = false;
+    bool bsNegative = false;
+
+    // Check for negative input numbers
+    if (strchr(as, '-') != NULL)
+    {
+        asNegative = true;
+        debug_printf("Parameter #1, %s, is negative\n", as);
+    }
+    if (strchr(bs, '-') != NULL)
+    {
+        bsNegative = true;
+        debug_printf("Parameter #2, %s, is negative\n", bs);
+    }
+
+    if (asNegative && !bsNegative)
+    {
+        debug_printf("Reversing parameters and switching from addition to subtraction\n");
+        // Negative symbol is ignored for the subtraction
+        return subtraction(bs, as+1, cs);
+    }
+
     // Attach holders
     attachHolder(as, &aH);
     attachHolder(bs, &bH);

@@ -328,6 +328,28 @@ START_TEST (testComparison)
 }
 END_TEST
 
+START_TEST (testNegation)
+{
+    char output[32];
+    memset(output, 0, 32);
+
+    ck_assert_str_eq(addition("I", "I", output), "II");
+//    ck_assert_str_eq(addition("-I", "I", output), "");
+//    ck_assert_str_eq(addition("I", "-I", output), "");
+//    ck_assert_str_eq(addition("-I", "-I", output), "-II");
+
+    ck_assert_str_eq(subtraction("I", "I", output), "");
+//    ck_assert_str_eq(subtraction("-I", "I", output), "-II");
+//    ck_assert_str_eq(subtraction("I", "-I", output), "II");
+//    ck_assert_str_eq(subtraction("-I", "-I", output), "");
+
+    ck_assert_int_eq(romStrCmp("I", "I"), 0);
+//    ck_assert_int_eq(romStrCmp("-I", "I"), -1);
+//    ck_assert_int_eq(romStrCmp("I", "-I"), 1);
+//    ck_assert_int_eq(romStrCmp("-I", "-I"), 0);
+}
+END_TEST
+
 Suite *romNumTestSuite (void)
 {
     Suite *s = suite_create ("RomNumeral");
@@ -355,6 +377,12 @@ Suite *romNumTestSuite (void)
     // Compare number string values
     tcase_add_test (tc_comparison, testComparison);
     suite_add_tcase (s, tc_comparison);
+
+    /* Negation test case */
+    TCase *tc_negation = tcase_create ("Negation");
+    // Test proper handling of negative input
+    tcase_add_test (tc_negation, testNegation);
+    suite_add_tcase (s, tc_negation);
 
     return s;
 }
