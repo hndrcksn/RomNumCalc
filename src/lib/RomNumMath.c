@@ -170,7 +170,7 @@ bool isCleanValidString (const char *s)
         }
     }
 
-    // For each order of magnitude present there is a valid string representation
+    // For each order of magnitude present there must be a valid string representation
     if (ordersPresent == ordersValid)
     {
         return true;
