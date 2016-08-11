@@ -334,7 +334,7 @@ START_TEST (testNegation)
     memset(output, 0, 32);
 
     ck_assert_str_eq(addition("I", "I", output), "II");
-//    ck_assert_str_eq(addition("-I", "I", output), "");
+    ck_assert_str_eq(addition("-I", "I", output), "");
 //    ck_assert_str_eq(addition("I", "-I", output), "");
 //    ck_assert_str_eq(addition("-I", "-I", output), "-II");
 
