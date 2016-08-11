@@ -228,6 +228,12 @@ char *addition (const char *as, const char *bs, char *cs)
         // Negative symbol is ignored for the subtraction
         return subtraction(bs, as+1, cs);
     }
+    else if (!asNegative && bsNegative)
+    {
+        debug_printf("Switching from addition to subtraction\n");
+        // Negative symbol is ignored for the subtraction
+        return subtraction(as, bs+1, cs);
+    }
 
     // Attach holders
     attachHolder(as, &aH);
