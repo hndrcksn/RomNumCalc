@@ -336,7 +336,7 @@ START_TEST (testNegation)
     ck_assert_str_eq(addition("I", "I", output), "II");
     ck_assert_str_eq(addition("-I", "I", output), "");
     ck_assert_str_eq(addition("I", "-I", output), "");
-//    ck_assert_str_eq(addition("-I", "-I", output), "-II");
+    ck_assert_str_eq(addition("-I", "-I", output), "-II");
 
     ck_assert_str_eq(subtraction("I", "I", output), "");
 //    ck_assert_str_eq(subtraction("-I", "I", output), "-II");

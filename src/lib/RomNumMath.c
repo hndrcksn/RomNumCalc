@@ -209,6 +209,7 @@ char *addition (const char *as, const char *bs, char *cs)
     // Negation indicators
     bool asNegative = false;
     bool bsNegative = false;
+    bool finalNegative = false;
 
     // Check for negative input numbers
     if (strchr(as, '-') != NULL)
@@ -234,11 +235,24 @@ char *addition (const char *as, const char *bs, char *cs)
         // Negative symbol is ignored for the subtraction
         return subtraction(as, bs+1, cs);
     }
+    else if (asNegative && bsNegative)
+    {
+        debug_printf("Handling addition with double negative\n");
+        // Negative symbol is ignored until the end
+        finalNegative = true;
 
-    // Attach holders
-    attachHolder(as, &aH);
-    attachHolder(bs, &bH);
-    attachHolder(cs, &cH);
+        // Attach holders
+        attachHolder(as+1, &aH);
+        attachHolder(bs+1, &bH);
+        attachHolder(cs, &cH);
+    }
+    else
+    {   // !asNegative && !bsNegative
+        // Attach holders
+        attachHolder(as, &aH);
+        attachHolder(bs, &bH);
+        attachHolder(cs, &cH);
+    }
 
     // Check input
     if (!isCleanValidString(aH.mainStr))
@@ -282,14 +296,25 @@ char *addition (const char *as, const char *bs, char *cs)
 
     if (isCleanValidString(cH.mainStr))
     {
-        debug_printf("CLEAN and VALID +++ %s strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-        debug_printf("%s + %s = %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
+        if (!finalNegative)
+        {
+            debug_printf("CLEAN and VALID +++ %s strlen(%zu)\n", cs, strlen(cs));
+            debug_printf("%s + %s = %s\n\n", as, bs, strlen(cs)!=0?cs:"nihil");
+        }
+        else
+        {
+            memmove(cs + 1, cs, strlen(cs) + 1);
+            cs[0] = '-';
+            debug_printf("CLEAN and VALID +++ %s strlen(%zu)\n", cs, strlen(cs));
+            debug_printf("%s + %s = %s\n\n", as, bs, strlen(cs)!=0?cs:"nihil");
+        }
+
         return cs;
     }
     else
     {
-        debug_printf("ERROR! NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cH.mainStr, strlen(cH.mainStr));
-        debug_printf("%s + %s != %s\n\n", aH.mainStr, bH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
+        debug_printf("ERROR! NOT CLEAN/VALID --- '%s' strlen(%zu)\n", cs, strlen(cs));
+        debug_printf("%s + %s != %s\n\n", as, bs, strlen(cs)!=0?cs:"nihil");
         return NULL;
     }
 }
