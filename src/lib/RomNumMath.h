@@ -19,7 +19,7 @@ void debug_printf(const char* format, ...);
 bool isCleanValidString (const char *s);
 char *addition (const char *as, const char *bs, char *cs);
 char *subtraction (const char *as, const char *bs, char *cs);
-void attachHolder(const char *s, StrHolder *sh);
+void attachHolder(const char *s, StrHolder *sh, bool isNegative);
 bool isStringSubtractive(const char *s);
 bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool carriedOver);
 bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool carriedOver);

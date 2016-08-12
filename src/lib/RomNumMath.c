@@ -24,6 +24,9 @@ bool global_debugging = false;
 //////
 struct StrHolder
 {
+    // Negation
+    bool negative;
+
     // String lengths
     int orderLen[NUM_ORDERS];
 
@@ -91,7 +94,7 @@ bool isCleanValidString (const char *s)
     debug_printf("'%s' at 0x%p, Length = %d\n", s, s, length);
 
     StrHolder vH;
-    attachHolder(s, &vH);
+    attachHolder(s, &vH, false);
 
     // Quick check - if any order lengths are negative
     // If so, they are out of order and hence invalid
@@ -242,16 +245,16 @@ char *addition (const char *as, const char *bs, char *cs)
         finalNegative = true;
 
         // Attach holders
-        attachHolder(as+1, &aH);
-        attachHolder(bs+1, &bH);
-        attachHolder(cs, &cH);
+        attachHolder(as+1, &aH, asNegative);
+        attachHolder(bs+1, &bH, bsNegative);
+        attachHolder(cs, &cH, true);
     }
     else
     {   // !asNegative && !bsNegative
         // Attach holders
-        attachHolder(as, &aH);
-        attachHolder(bs, &bH);
-        attachHolder(cs, &cH);
+        attachHolder(as, &aH, false);
+        attachHolder(bs, &bH, false);
+        attachHolder(cs, &cH, false);
     }
 
     // Check input
@@ -366,19 +369,68 @@ char *subtraction (const char *as, const char *bs, char *cs)
     StrHolder bH;
     StrHolder cH;
 
+    // Negation indicators
+//    bool asNegative = false;
+//    bool bsNegative = false;
+//    bool finalNegative = false;
+
+    // Check for negative input numbers
+    if (strchr(as, '-') != NULL)
+    {
+//        asNegative = true;
+        debug_printf("Parameter #1, %s, is negative\n", as);
+    }
+    if (strchr(bs, '-') != NULL)
+    {
+//        bsNegative = true;
+        debug_printf("Parameter #2, %s, is negative\n", bs);
+    }
+/*
+    if (asNegative && !bsNegative)
+    {
+        debug_printf("Reversing parameters and switching from addition to subtraction\n");
+        // Negative symbol is ignored for the subtraction
+        return subtraction(bs, as+1, cs);
+    }
+    else if (!asNegative && bsNegative)
+    {
+        debug_printf("Switching from addition to subtraction\n");
+        // Negative symbol is ignored for the subtraction
+        return subtraction(as, bs+1, cs);
+    }
+    else if (asNegative && bsNegative)
+    {
+        debug_printf("Handling addition with double negative\n");
+        // Negative symbol is ignored until the end
+        finalNegative = true;
+
+        // Attach holders
+        attachHolder(as+1, &aH, asNegative);
+        attachHolder(bs+1, &bH, bsNegative);
+        attachHolder(cs, &cH, true);
+    }
+    else
+    {   // !asNegative && !bsNegative
+        // Attach holders
+        attachHolder(as, &aH, asNegative);
+        attachHolder(bs, &bH, asNegative);
+        attachHolder(cs, &cH, false);
+    }
+*/
+
     // Attach holders
     if (!negativeOutput)
     {
-        attachHolder(as, &aH);
-        attachHolder(bs, &bH);
+        attachHolder(as, &aH, false);
+        attachHolder(bs, &bH, false);
     }
     else
     {   // Switch AAA and BBB for simple subtraction
-        attachHolder(bs, &aH);
-        attachHolder(as, &bH);
+        attachHolder(bs, &aH, false);
+        attachHolder(as, &bH, false);
     }
 
-    attachHolder(cs, &cH);
+    attachHolder(cs, &cH, false);
 
     // Subtract two Roman numeral strings by orders of magnitude
     // borrowing from higher orders as necessary
@@ -439,13 +491,16 @@ char *subtraction (const char *as, const char *bs, char *cs)
 //  addition, subtraction and comparison operations that occur at various orders of magnitude
 //  within the strings
 //////
-void attachHolder(const char *s, StrHolder *sh)
+void attachHolder(const char *s, StrHolder *sh, bool isNegative)
 {
     // Check for NULLs
     if (s == NULL || sh == NULL)
     {
         return;
     }
+
+    // Negative string?
+    sh->negative = isNegative;
 
     // Initialize everything
     // Attach string
@@ -1330,9 +1385,18 @@ int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order)
         }
     }
     else if (aH->orderPtr[order] != NULL && bH->orderPtr[order] != NULL)
-    {
+    {   // Relative values used for ranking and thus comparing numerals are negative if the number is negative
         int aNumRelVal = romNumRelVal(aH->orderPtr[order], aH->orderLen[order], order);
+        if (aH->negative)
+        {
+            aNumRelVal = -1 * (aNumRelVal+1);
+        }
+
         int bNumRelVal = romNumRelVal(bH->orderPtr[order], bH->orderLen[order], order);
+        if (bH->negative)
+        {
+            bNumRelVal = -1 * (bNumRelVal+1);
+        }
 
         if (aNumRelVal > bNumRelVal)
         {
@@ -1369,14 +1433,31 @@ int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order)
 int romStrCmp(const char *as, const char *bs)
 {
     debug_printf("\n--> romStrCmp: %s, %s\n", as, bs);
+
+    // Negation indicators
+    bool asNegative = false;
+    bool bsNegative = false;
+
+    // Check for negative input numbers
+    if (strchr(as, '-') != NULL)
+    {
+        asNegative = true;
+        debug_printf("Parameter #1, %s, is negative\n", as);
+    }
+    if (strchr(bs, '-') != NULL)
+    {
+        bsNegative = true;
+        debug_printf("Parameter #2, %s, is negative\n", bs);
+    }
+
     // Check input
-    if (!isCleanValidString(as))
+    if (!isCleanValidString(asNegative?as+1:as))
     {
         debug_printf("ERROR! %s is not a proper Roman numeral.\n", as);
         return BAD_NUMERAL_A;
     }
 
-    if (!isCleanValidString(bs))
+    if (!isCleanValidString(bsNegative?bs+1:bs))
     {
         debug_printf("ERROR! %s is not a proper Roman numeral.\n", bs);
         return BAD_NUMERAL_B;
@@ -1387,8 +1468,8 @@ int romStrCmp(const char *as, const char *bs)
     StrHolder bH;
 
     // Attach holders
-    attachHolder(as, &aH);
-    attachHolder(bs, &bH);
+    attachHolder(asNegative?as+1:as, &aH, asNegative);
+    attachHolder(bsNegative?bs+1:bs, &bH, bsNegative);
 
     return romStrCmpSH(&aH, &bH, THOU);
 }
