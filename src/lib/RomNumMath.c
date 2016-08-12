@@ -397,7 +397,6 @@ char *subtraction (const char *as, const char *bs, char *cs)
         {
             memmove(cs + 1, cs, strlen(cs) + 1);
             cs[0] = '-';
-            debug_printf("%s - %s = %s\n\n", bH.mainStr, aH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
         }
         return cs;
     }
