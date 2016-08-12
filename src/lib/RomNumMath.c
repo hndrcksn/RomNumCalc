@@ -401,13 +401,13 @@ char *subtraction (const char *as, const char *bs, char *cs)
         }
         return cs;
     }
-/*    else if (!asNegative && bsNegative)
+    else if (!asNegative && bsNegative)
     {
-        debug_printf("Switching from addition to subtraction\n");
-        // Negative symbol is ignored for the subtraction
-        return subtraction(as, bs+1, cs);
+        debug_printf("Switching from subtraction to addition\n");
+        // Negative symbol is ignored for the addition
+        return addition(as, bs+1, cs);
     }
-    else if (asNegative && bsNegative)
+/*    else if (asNegative && bsNegative)
     {
         debug_printf("Handling addition with double negative\n");
         // Negative symbol is ignored until the end
