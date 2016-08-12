@@ -252,8 +252,8 @@ char *addition (const char *as, const char *bs, char *cs)
     else
     {   // !asNegative && !bsNegative
         // Attach holders
-        attachHolder(as, &aH, false);
-        attachHolder(bs, &bH, false);
+        attachHolder(as, &aH, asNegative);
+        attachHolder(bs, &bH, bsNegative);
         attachHolder(cs, &cH, false);
     }
 
@@ -370,29 +370,38 @@ char *subtraction (const char *as, const char *bs, char *cs)
     StrHolder cH;
 
     // Negation indicators
-//    bool asNegative = false;
-//    bool bsNegative = false;
-//    bool finalNegative = false;
+    bool asNegative = false;
+    bool bsNegative = false;
+    bool finalNegative = false;
 
     // Check for negative input numbers
     if (strchr(as, '-') != NULL)
     {
-//        asNegative = true;
+        asNegative = true;
         debug_printf("Parameter #1, %s, is negative\n", as);
     }
     if (strchr(bs, '-') != NULL)
     {
-//        bsNegative = true;
+        bsNegative = true;
         debug_printf("Parameter #2, %s, is negative\n", bs);
     }
-/*
+
     if (asNegative && !bsNegative)
     {
-        debug_printf("Reversing parameters and switching from addition to subtraction\n");
-        // Negative symbol is ignored for the subtraction
-        return subtraction(bs, as+1, cs);
+        debug_printf("Switching from subtraction to addition of two negatives\n");
+        // Negative symbol is ignored until the end
+        finalNegative = true;
+        addition(as+1, bs, cs);
+
+        if (finalNegative)
+        {
+            memmove(cs + 1, cs, strlen(cs) + 1);
+            cs[0] = '-';
+            debug_printf("%s - %s = %s\n\n", bH.mainStr, aH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
+        }
+        return cs;
     }
-    else if (!asNegative && bsNegative)
+/*    else if (!asNegative && bsNegative)
     {
         debug_printf("Switching from addition to subtraction\n");
         // Negative symbol is ignored for the subtraction
@@ -409,14 +418,15 @@ char *subtraction (const char *as, const char *bs, char *cs)
         attachHolder(bs+1, &bH, bsNegative);
         attachHolder(cs, &cH, true);
     }
+*/
     else
     {   // !asNegative && !bsNegative
         // Attach holders
         attachHolder(as, &aH, asNegative);
-        attachHolder(bs, &bH, asNegative);
+        attachHolder(bs, &bH, bsNegative);
         attachHolder(cs, &cH, false);
     }
-*/
+
 
     // Attach holders
     if (!negativeOutput)
