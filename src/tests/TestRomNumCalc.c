@@ -199,8 +199,8 @@ END_TEST
 
 START_TEST (testAdditionValidation)
 {
-    char output[32];
-    memset(output, 0, 32);
+    char output[BUFRSIZE];
+    memset(output, 0, BUFRSIZE);
 
     ck_assert_str_eq(addition("XX", "II", output), "XXII");
     ck_assert_str_eq(addition("II", "XX", output), "XXII");
@@ -257,8 +257,8 @@ END_TEST
 
 START_TEST (testSubtractionValidation)
 {
-    char output[32];
-    memset(output, 0, 32);
+    char output[BUFRSIZE];
+    memset(output, 0, BUFRSIZE);
 
     ck_assert_str_eq(subtraction("III", "I", output), "II");
     ck_assert_str_eq(subtraction("III", "II", output), "I");
@@ -330,8 +330,8 @@ END_TEST
 
 START_TEST (testNegation)
 {
-    char output[32];
-    memset(output, 0, 32);
+    char output[BUFRSIZE];
+    memset(output, 0, BUFRSIZE);
 
 	// Simple addition
     ck_assert_str_eq(addition("I", "I", output), "II");
