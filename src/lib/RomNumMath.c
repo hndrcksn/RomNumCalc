@@ -306,8 +306,7 @@ char *addition (const char *as, const char *bs, char *cs)
         }
         else
         {
-            memmove(cs + 1, cs, strlen(cs) + 1);
-            cs[0] = '-';
+            prependStr(cs, '-');
             debug_printf("CLEAN and VALID +++ %s strlen(%zu)\n", cs, strlen(cs));
             debug_printf("%s + %s = %s\n\n", as, bs, strlen(cs)!=0?cs:"nihil");
         }
@@ -372,7 +371,6 @@ char *subtraction (const char *as, const char *bs, char *cs)
     // Negation indicators
     bool asNegative = false;
     bool bsNegative = false;
-    bool finalNegative = false;
 
     // Check for negative input numbers
     if (strchr(as, '-') != NULL)
@@ -390,14 +388,8 @@ char *subtraction (const char *as, const char *bs, char *cs)
     {
         debug_printf("Switching from subtraction to addition of two negatives\n");
         // Negative symbol is ignored until the end
-        finalNegative = true;
         addition(as+1, bs, cs);
-
-        if (finalNegative)
-        {
-            memmove(cs + 1, cs, strlen(cs) + 1);
-            cs[0] = '-';
-        }
+        prependStr(cs, '-');
         return cs;
     }
     else if (!asNegative && bsNegative)
@@ -406,27 +398,43 @@ char *subtraction (const char *as, const char *bs, char *cs)
         // Negative symbol is ignored for the addition
         return addition(as, bs+1, cs);
     }
-/*    else if (asNegative && bsNegative)
+    else if (asNegative && bsNegative)
     {
-        debug_printf("Handling addition with double negative\n");
-        // Negative symbol is ignored until the end
-        finalNegative = true;
+        debug_printf("Handling subtraction with double negative\n");
+        // Subtracting a negative is like adding a positive so just switch the parameters
 
         // Attach holders
-        attachHolder(as+1, &aH, asNegative);
-        attachHolder(bs+1, &bH, bsNegative);
-        attachHolder(cs, &cH, true);
+        if (!negativeOutput)
+        {
+            attachHolder(bs+1, &aH, !bsNegative);
+            attachHolder(as+1, &bH, !asNegative);
+            attachHolder(cs, &cH, false);
+        }
+        else
+        {
+            attachHolder(as+1, &aH, !bsNegative);
+            attachHolder(bs+1, &bH, !asNegative);
+            attachHolder(cs, &cH, false);
+        }
     }
-*/
     else
     {   // !asNegative && !bsNegative
         // Attach holders
-        attachHolder(as, &aH, asNegative);
-        attachHolder(bs, &bH, bsNegative);
-        attachHolder(cs, &cH, false);
+        if (!negativeOutput)
+        {
+            attachHolder(as, &aH, asNegative);
+            attachHolder(bs, &bH, bsNegative);
+            attachHolder(cs, &cH, false);
+        }
+        else
+        {
+            attachHolder(bs, &aH, asNegative);
+            attachHolder(as, &bH, bsNegative);
+            attachHolder(cs, &cH, false);
+        }
     }
 
-
+/*
     // Attach holders
     if (!negativeOutput)
     {
@@ -440,7 +448,7 @@ char *subtraction (const char *as, const char *bs, char *cs)
     }
 
     attachHolder(cs, &cH, false);
-
+*/
     // Subtract two Roman numeral strings by orders of magnitude
     // borrowing from higher orders as necessary
     bool borrow = false;
@@ -475,8 +483,7 @@ char *subtraction (const char *as, const char *bs, char *cs)
 
         if (negativeOutput)
         {
-            memmove(cs + 1, cs, strlen(cs) + 1);
-            cs[0] = '-';
+            prependStr(cs, '-');
             debug_printf("%s - %s = %s\n\n", bH.mainStr, aH.mainStr, strlen(cH.mainStr)!=0?cH.mainStr:"nihil");
         }
         else
@@ -1503,3 +1510,18 @@ int romNumRelVal(const char *str, int orderLength, OrderType order)
     return -1;
 }
 
+//////
+//  prependStr() puts a char at the front of a string. Currently used for putting a '-' at 
+//  the front of a Roman numeral to make it a negative number. It returns a pointer to the
+//  new string.
+//////
+char *prependStr(char *str, char c)
+{
+    int length = 0;
+    if ((length = strlen(str)) != 0)
+    {
+        memmove(str + 1, str, length + 1);
+    }
+    str[0] = c;
+    return str;
+}

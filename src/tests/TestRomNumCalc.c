@@ -341,7 +341,8 @@ START_TEST (testNegation)
     ck_assert_str_eq(subtraction("I", "I", output), "");
     ck_assert_str_eq(subtraction("-I", "I", output), "-II");
     ck_assert_str_eq(subtraction("I", "-I", output), "II");
-//    ck_assert_str_eq(subtraction("-I", "-I", output), "");
+    ck_assert_str_eq(subtraction("-I", "-I", output), "");
+    ck_assert_str_eq(subtraction("-I", "-V", output), "IV");
 
     ck_assert_int_eq(romStrCmp("I", "I"), 0);
     ck_assert_int_eq(romStrCmp("-I", "I"), -1);

@@ -26,5 +26,6 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
 int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order);
 int romStrCmp(const char *as, const char *bs);
 int romNumRelVal(const char *str, int length, OrderType order);
+char *prependStr(char *str, char c);
 
 #endif /* ROMNUMMATH_H */
