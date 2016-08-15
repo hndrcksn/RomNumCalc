@@ -333,21 +333,83 @@ START_TEST (testNegation)
     char output[32];
     memset(output, 0, 32);
 
+	// Simple addition
     ck_assert_str_eq(addition("I", "I", output), "II");
     ck_assert_str_eq(addition("-I", "I", output), "");
     ck_assert_str_eq(addition("I", "-I", output), "");
     ck_assert_str_eq(addition("-I", "-I", output), "-II");
 
+	// Addition of different values within order of magnitude
+    ck_assert_str_eq(addition("I", "V", output), "VI");
+    ck_assert_str_eq(addition("V", "I", output), "VI");
+    ck_assert_str_eq(addition("-I", "V", output), "IV");
+    ck_assert_str_eq(addition("-V", "I", output), "-IV");
+    ck_assert_str_eq(addition("I", "-V", output), "-IV");
+    ck_assert_str_eq(addition("V", "-I", output), "IV");
+    ck_assert_str_eq(addition("-I", "-V", output), "-VI");
+    ck_assert_str_eq(addition("-V", "-I", output), "-VI");
+
+	// Addition of different values across order of magnitude
+    ck_assert_str_eq(addition("I", "X", output), "XI");
+    ck_assert_str_eq(addition("X", "I", output), "XI");
+    ck_assert_str_eq(addition("-I", "X", output), "IX");
+    ck_assert_str_eq(addition("-X", "I", output), "-IX");
+    ck_assert_str_eq(addition("I", "-X", output), "-IX");
+    ck_assert_str_eq(addition("X", "-I", output), "IX");
+    ck_assert_str_eq(addition("-I", "-X", output), "-XI");
+    ck_assert_str_eq(addition("-X", "-I", output), "-XI");
+
+	// Simple subtraction
     ck_assert_str_eq(subtraction("I", "I", output), "");
     ck_assert_str_eq(subtraction("-I", "I", output), "-II");
     ck_assert_str_eq(subtraction("I", "-I", output), "II");
     ck_assert_str_eq(subtraction("-I", "-I", output), "");
-    ck_assert_str_eq(subtraction("-I", "-V", output), "IV");
 
+	// Subtraction of different values within order of magnitude
+    ck_assert_str_eq(subtraction("I", "V", output), "-IV");
+    ck_assert_str_eq(subtraction("V", "I", output), "IV");
+    ck_assert_str_eq(subtraction("-I", "V", output), "-VI");
+    ck_assert_str_eq(subtraction("-V", "I", output), "-VI");
+    ck_assert_str_eq(subtraction("I", "-V", output), "VI");
+    ck_assert_str_eq(subtraction("V", "-I", output), "VI");
+    ck_assert_str_eq(subtraction("-I", "-V", output), "IV");
+    ck_assert_str_eq(subtraction("-V", "-I", output), "-IV");
+
+	// Subtraction of different values across order of magnitude
+//    ck_assert_str_eq(subtraction("I", "X", output), "-IX");
+//    ck_assert_str_eq(subtraction("X", "I", output), "IX");
+//    ck_assert_str_eq(subtraction("-I", "X", output), "-XI");
+//    ck_assert_str_eq(subtraction("-X", "I", output), "-XI");
+//    ck_assert_str_eq(subtraction("I", "-X", output), "XI");
+//    ck_assert_str_eq(subtraction("X", "-I", output), "XI");
+//    ck_assert_str_eq(subtraction("-I", "-X", output), "IX");
+//    ck_assert_str_eq(subtraction("-X", "-I", output), "-IX");
+
+	// Simple comparison
     ck_assert_int_eq(romStrCmp("I", "I"), 0);
     ck_assert_int_eq(romStrCmp("-I", "I"), -1);
     ck_assert_int_eq(romStrCmp("I", "-I"), 1);
     ck_assert_int_eq(romStrCmp("-I", "-I"), 0);
+
+	// Comparison of different values within order of magnitude
+    ck_assert_int_eq(romStrCmp("I", "V"), -1);
+    ck_assert_int_eq(romStrCmp("V", "I"), 1);
+    ck_assert_int_eq(romStrCmp("-I", "V"), -1);
+    ck_assert_int_eq(romStrCmp("-V", "I"), -1);
+    ck_assert_int_eq(romStrCmp("I", "-V"), 1);
+    ck_assert_int_eq(romStrCmp("V", "-I"), 1);
+    ck_assert_int_eq(romStrCmp("-I", "-V"), 1);
+    ck_assert_int_eq(romStrCmp("-V", "-I"), -1);
+
+	// Comparison of different values across order of magnitude
+    ck_assert_int_eq(romStrCmp("I", "X"), -1);
+    ck_assert_int_eq(romStrCmp("X", "I"), 1);
+    ck_assert_int_eq(romStrCmp("-I", "X"), -1);
+    ck_assert_int_eq(romStrCmp("-X", "I"), -1);
+//    ck_assert_int_eq(romStrCmp("I", "-X"), 1);
+//    ck_assert_int_eq(romStrCmp("X", "-I"), 1);
+//    ck_assert_int_eq(romStrCmp("-I", "-X"), 1);
+//    ck_assert_int_eq(romStrCmp("-X", "-I"), -1);
 }
 END_TEST
 

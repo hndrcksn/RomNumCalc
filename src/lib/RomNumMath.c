@@ -1381,13 +1381,29 @@ int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order)
     // Compare strings from the highest to the lowest order
     if (aH->orderPtr[order] != NULL && bH->orderPtr[order] == NULL)
     {
-        debug_printf("%s > %s\n", aH->mainStr, bH->mainStr);
-        return 1;
+        if (!aH->negative)
+        {
+            debug_printf("%s > %s\n", aH->mainStr, bH->mainStr);
+            return 1;
+        }
+        else
+        {
+            debug_printf("%s < %s\n", aH->mainStr, bH->mainStr);
+            return -1;
+        }
     }
     else if (aH->orderPtr[order] == NULL && bH->orderPtr[order] != NULL)
     {
-        debug_printf("%s < %s\n", aH->mainStr, bH->mainStr);
-        return -1;
+        if (!bH->negative)
+        {
+            debug_printf("%s < %s\n", aH->mainStr, bH->mainStr);
+            return -1;
+        }
+        else
+        {
+            debug_printf("%s > %s\n", aH->mainStr, bH->mainStr);
+            return 1;
+        }
     }
     else if (aH->orderPtr[order] == NULL && bH->orderPtr[order] == NULL)
     {
