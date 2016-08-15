@@ -376,14 +376,14 @@ START_TEST (testNegation)
     ck_assert_str_eq(subtraction("-V", "-I", output), "-IV");
 
 	// Subtraction of different values across order of magnitude
-//    ck_assert_str_eq(subtraction("I", "X", output), "-IX");
-//    ck_assert_str_eq(subtraction("X", "I", output), "IX");
-//    ck_assert_str_eq(subtraction("-I", "X", output), "-XI");
-//    ck_assert_str_eq(subtraction("-X", "I", output), "-XI");
-//    ck_assert_str_eq(subtraction("I", "-X", output), "XI");
-//    ck_assert_str_eq(subtraction("X", "-I", output), "XI");
-//    ck_assert_str_eq(subtraction("-I", "-X", output), "IX");
-//    ck_assert_str_eq(subtraction("-X", "-I", output), "-IX");
+    ck_assert_str_eq(subtraction("I", "X", output), "-IX");
+    ck_assert_str_eq(subtraction("X", "I", output), "IX");
+    ck_assert_str_eq(subtraction("-I", "X", output), "-XI");
+    ck_assert_str_eq(subtraction("-X", "I", output), "-XI");
+    ck_assert_str_eq(subtraction("I", "-X", output), "XI");
+    ck_assert_str_eq(subtraction("X", "-I", output), "XI");
+    ck_assert_str_eq(subtraction("-I", "-X", output), "IX");
+    ck_assert_str_eq(subtraction("-X", "-I", output), "-IX");
 
 	// Simple comparison
     ck_assert_int_eq(romStrCmp("I", "I"), 0);
@@ -406,10 +406,10 @@ START_TEST (testNegation)
     ck_assert_int_eq(romStrCmp("X", "I"), 1);
     ck_assert_int_eq(romStrCmp("-I", "X"), -1);
     ck_assert_int_eq(romStrCmp("-X", "I"), -1);
-//    ck_assert_int_eq(romStrCmp("I", "-X"), 1);
-//    ck_assert_int_eq(romStrCmp("X", "-I"), 1);
-//    ck_assert_int_eq(romStrCmp("-I", "-X"), 1);
-//    ck_assert_int_eq(romStrCmp("-X", "-I"), -1);
+    ck_assert_int_eq(romStrCmp("I", "-X"), 1);
+    ck_assert_int_eq(romStrCmp("X", "-I"), 1);
+    ck_assert_int_eq(romStrCmp("-I", "-X"), 1);
+    ck_assert_int_eq(romStrCmp("-X", "-I"), -1);
 }
 END_TEST
 
