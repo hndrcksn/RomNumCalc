@@ -9,10 +9,6 @@ const char numerals[NUM_ORDERS][9][5] = {{"I", "II", "III", "IV", "V", "VI", "VI
                                          {"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"},
                                          {"M", "MM", "MMM", "", "", "", "", "", ""}};
 
-// Represents bad input strings
-const int BAD_NUMERAL_A = -999;
-const int BAD_NUMERAL_B = -998;
-
 // Initialize global_debugging to default setting
 bool global_debugging = false;
 

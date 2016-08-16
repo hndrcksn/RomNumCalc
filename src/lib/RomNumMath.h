@@ -9,6 +9,10 @@ typedef enum {ONES = 0, TENS, HUNS, THOU, NUM_ORDERS} OrderType;
 typedef struct StrHolder StrHolder;
 static const int BUFRSIZE = 32;
 
+// Represents bad input strings
+const int BAD_NUMERAL_A = -999;
+const int BAD_NUMERAL_B = -998;
+
 // External global
 extern bool global_debugging;
 

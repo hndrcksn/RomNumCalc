@@ -4,8 +4,8 @@
 int main(int argc, char *argv[])
 {
     // Prepare output buffer
-    char output[32];
-    memset(output, '\0', 32);
+    char output[BUFRSIZE];
+    memset(output, '\0', BUFRSIZE);
 
     // Set expected operation argument
     int operation_arg = 1;
