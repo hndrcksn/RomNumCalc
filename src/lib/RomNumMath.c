@@ -48,13 +48,7 @@ struct StrHolder
     int orderLen[NUM_ORDERS];
 
     // Substring pointers
-    char *iPtr;
-    char *vPtr;
-    char *xPtr;
-    char *lPtr;
-    char *cPtr;
-    char *dPtr;
-    char *mPtr;
+    char *sPtr[NUM_ORDERS][NUM_PTRS];
 
     // Order pointers
     char *orderPtr[NUM_ORDERS];
@@ -531,13 +525,13 @@ void attachHolder(const char *s, StrHolder *sh, bool isNegative)
     sh->orderLen[THOU] = 0;
 
     // Substring pointers
-    sh->iPtr = NULL;
-    sh->vPtr = NULL;
-    sh->xPtr = NULL;
-    sh->lPtr = NULL;
-    sh->cPtr = NULL;
-    sh->dPtr = NULL;
-    sh->mPtr = NULL;
+    for (int i = 0; i < NUM_ORDERS; i++)
+    {
+        for (int j = 0; j < NUM_PTRS; j++)
+        {
+            sh->sPtr[i][j] = NULL;
+        }
+    }
 
     // Order pointers
     sh->orderPtr[ONES] = NULL;
@@ -547,135 +541,31 @@ void attachHolder(const char *s, StrHolder *sh, bool isNegative)
 
     // Specify pointers to existing numerals
     // ONES
-    if ((sh->iPtr = strchr(sh->mainStr, 'I')) != NULL)
+    // Attempt to attach pointer to the X1 (I) base numeral and find the start of this order of magnitude within the string
+    if ((sh->sPtr[ONES][P1] = strchr(sh->mainStr, base_numerals[ONES][X1])) != NULL)
     {
-        debug_printf("I at 0x%p\n", sh->iPtr);
+        debug_printf("%c at 0x%p\n", base_numerals[ONES][X1], sh->sPtr[ONES][P1]);
         // We have ones
-        sh->orderPtr[ONES] = sh->iPtr;
+        sh->orderPtr[ONES] = sh->sPtr[ONES][P1];
     }
-    if ((sh->vPtr = strchr(sh->mainStr, 'V')) != NULL)
-    {
-        debug_printf("V at 0x%p\n", sh->vPtr);
-        if (sh->orderPtr[ONES] != NULL)
-        {
-            if (sh->vPtr < sh->orderPtr[ONES])
-            {
-                // We have ones
-                sh->orderPtr[ONES] = sh->vPtr;
-            }
-        }
-        else
-        {
-            // We have ones
-            sh->orderPtr[ONES] = sh->vPtr;
-        }
-    }
+    // Attempt to attach pointer to the X5 (V) base numeral and find the start of this order of magnitude within the string
+    attachP5Ptrs(ONES, sh);
 
     // TENS
-    if ((sh->xPtr = strchr(sh->mainStr, 'X')) != NULL)
-    {
-        debug_printf("X at 0x%p\n", sh->xPtr);
-        // Check if there is a subtractive
-        if (sh->orderPtr[ONES] != NULL)
-        {
-            if (sh->orderPtr[ONES] > sh->xPtr)
-            {
-                // We have tens
-                sh->orderPtr[TENS] = sh->xPtr;
-            }
-            else
-            {
-                debug_printf("subtractive\n");
-            }
-        }
-        else
-        {
-            // We have tens
-            sh->orderPtr[TENS] = sh->xPtr;
-        }
-    }
-    if ((sh->lPtr = strchr(sh->mainStr, 'L')) != NULL)
-    {
-        debug_printf("L at 0x%p\n", sh->lPtr);
-        if (sh->orderPtr[TENS] != NULL)
-        {
-            if (sh->lPtr < sh->orderPtr[TENS])
-            {
-                // We have tens
-                sh->orderPtr[TENS] = sh->lPtr;
-            }
-        }
-        else
-        {
-            // We have tens
-            sh->orderPtr[TENS] = sh->lPtr;
-        }
-    }
+    // Attempt to attach pointer to the X1 (X) base numeral and find the start of this order of magnitude within the string
+    attachP1Ptrs(TENS, sh);
+    // Attempt to attach pointer to the X5 (L) base numeral and find the start of this order of magnitude within the string
+    attachP5Ptrs(TENS, sh);
 
     // HUNDREDS
-    if ((sh->cPtr = strchr(sh->mainStr, 'C')) != NULL)
-    {
-        debug_printf("C at 0x%p\n", sh->cPtr);
-        // Check if there is a subtractive
-        if (sh->orderPtr[TENS] != NULL)
-        {
-            if (sh->orderPtr[TENS] > sh->cPtr)
-            {
-                // We have hundreds
-                sh->orderPtr[HUNS] = sh->cPtr;
-            }
-            else
-            {
-                debug_printf("subtractive\n");
-            }
-        }
-        else
-        {
-            // We have hundreds
-            sh->orderPtr[HUNS] = sh->cPtr;
-        }
-    }
-    if ((sh->dPtr = strchr(sh->mainStr, 'D')) != NULL)
-    {
-        debug_printf("D at 0x%p\n", sh->dPtr);
-        if (sh->orderPtr[HUNS] != NULL)
-        {
-            if (sh->dPtr < sh->orderPtr[HUNS])
-            {
-                // We have hundreds
-                sh->orderPtr[HUNS] = sh->dPtr;
-            }
-        }
-        else
-        {
-            // We have hundreds
-            sh->orderPtr[HUNS] = sh->dPtr;
-        }
-    }
+    // Attempt to attach pointer to the X1 (C) base numeral and find the start of this order of magnitude within the string
+    attachP1Ptrs(HUNS, sh);
+    // Attempt to attach pointer to the X5 (D) base numeral and find the start of this order of magnitude within the string
+    attachP5Ptrs(HUNS, sh);
 
     // THOUSANDS
-    if ((sh->mPtr = strchr(sh->mainStr, 'M')) != NULL)
-    {
-        debug_printf("M at 0x%p\n", sh->mPtr);
-        // Check if there is a subtractive
-        if (sh->orderPtr[HUNS] != NULL)
-        {
-            if (sh->orderPtr[HUNS] > sh->mPtr)
-            {
-                // We have thousands
-                sh->orderPtr[THOU] = sh->mPtr;
-            }
-            else
-            {
-                debug_printf("subtractive\n");
-            }
-        }
-        else
-        {
-            // We have thousands
-            sh->orderPtr[THOU] = sh->mPtr;
-        }
-    }
+    // Attempt to attach pointer to the X1 (M) base numeral and find the start of this order of magnitude within the string
+    attachP1Ptrs(THOU, sh);
 
     if (sh->orderPtr[ONES] != NULL)
     {
@@ -1521,5 +1411,63 @@ void convertToSubtractive(BaseCounter *bC)
 
         default:
             break;
+    }
+}
+
+//////
+// attachP1Ptrs() locates and attaches pointers to the X1 base numerals
+// in a string (X, C, M) as well as locating the position of this order
+// of magnitude within the string
+//////
+void attachP1Ptrs(OrderType order, StrHolder *sH)
+{
+    if ((sH->sPtr[order][P1] = strchr(sH->mainStr, base_numerals[order][X1])) != NULL)
+    {
+        debug_printf("%c at 0x%p\n", base_numerals[order][X1], sH->sPtr[order][P1]);
+        // Check if there is a subtractive
+        if (sH->orderPtr[order-1] != NULL)
+        {
+            if (sH->orderPtr[order-1] > sH->sPtr[order][P1])
+            {
+                // Set order pointer for this order of magnitude
+                sH->orderPtr[order] = sH->sPtr[order][P1];
+            }
+            else
+            {
+                // We have a subtractive form
+                debug_printf("subtractive\n");
+            }
+        }
+        else
+        {
+            // Set order pointer for this order of magnitude
+            sH->orderPtr[order] = sH->sPtr[order][P1];
+        }
+    }
+}
+
+//////
+// attachP5Ptrs() locates and attaches pointers to the X5 base numerals
+// in a string (V, L, D) as well as locating the position of this order
+// of magnitude within the string
+//////
+void attachP5Ptrs(OrderType order, StrHolder *sH)
+{
+    if ((sH->sPtr[order][P5] = strchr(sH->mainStr, base_numerals[order][X5])) != NULL)
+    {
+        debug_printf("%c at 0x%p\n", base_numerals[order][X5], sH->sPtr[order][P5]);
+        if (sH->orderPtr[order] != NULL)
+        {
+            if (sH->sPtr[order][P5] < sH->orderPtr[order])
+            {
+                // Set order pointer for this order of magnitude
+                sH->orderPtr[order] = sH->sPtr[order][P5];
+            }
+        }
+        else
+        {
+            // Set order pointer for this order of magnitude
+            sH->orderPtr[order] = sH->sPtr[order][P5];
+        }
     }
 }

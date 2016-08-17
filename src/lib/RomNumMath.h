@@ -7,6 +7,7 @@
 // Enums, structs and consts.
 typedef enum {ONES = 0, TENS, HUNS, THOU, NUM_ORDERS} OrderType;
 typedef enum {X1 = 0, X5, X10, NUM_BASES} BaseType;
+typedef enum {P1 = 0, P5, NUM_PTRS} PtrType;
 typedef struct BaseCounter BaseCounter;
 typedef struct StrHolder StrHolder;
 static const int BUFRSIZE = 32;
@@ -42,5 +43,7 @@ void adjustX5Tally(BaseCounter *bC);
 void postProcAddOrder(OrderType order, const BaseCounter *bC, bool *outCarry, char *outStr);
 void postProcSubOrder(OrderType order, const BaseCounter *bC, char *outStr);
 bool reconcileNegatives(BaseCounter *bC);
+void attachP1Ptrs(OrderType order, StrHolder *sH);
+void attachP5Ptrs(OrderType order, StrHolder *sH);
 
 #endif /* ROMNUMMATH_H */
