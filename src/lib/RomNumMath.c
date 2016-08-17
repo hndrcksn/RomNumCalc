@@ -923,8 +923,6 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
     }
     else
     {
-        int i = 0;
-
         BaseCounter aBC;
         aBC.x1  = borrowedFrom?-1:0;
         aBC.x5  = 0;
@@ -1004,44 +1002,9 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
             return false;
         }
 
-        if (!aBC.sub)
-        {
-            debug_printf("output should be '");
-            if (aBC.x5 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X5]);
-                strncat(cStr, &(base_numerals[order][X5]), 1);
-            }
+        // Post process to handle carrying and output result
+        postProcSubOrder(order, &aBC, cStr);
 
-            for (i = 0; i < aBC.x1; i++)
-            {
-                debug_printf("%c", base_numerals[order][X1]);
-                strncat(cStr, &(base_numerals[order][X1]), 1);
-            }
-            debug_printf("'\n");
-        }
-        else
-        {
-            debug_printf("output should be '");
-            if (aBC.x1 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X1]);
-                strncat(cStr, &(base_numerals[order][X1]), 1);
-            }
-
-            if (aBC.x10 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X10]);
-                strncat(cStr, &(base_numerals[order][X10]), 1);
-            }
-
-            if (aBC.x5 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X5]);
-                strncat(cStr, &(base_numerals[order][X5]), 1);
-            }
-            debug_printf("'\n");
-        }
     }
     debug_printf("subOrder: got %s, returning borrow:%d\n", cStr, borrow);
 
@@ -1419,6 +1382,51 @@ void postProcAddOrder(OrderType order, const BaseCounter *bC, bool *outCarry, ch
         {
             debug_printf("%c", base_numerals[order][X10]);
             strncat(outStr, &(base_numerals[order][X10]), 1);
+        }
+        debug_printf("'\n");
+    }
+}
+
+//////
+// postProcSubOrder() fills out result string for current order of magnitude
+//////
+void postProcSubOrder(OrderType order, const BaseCounter *bC, char *outStr)
+{
+    if (!bC->sub)
+    {
+        debug_printf("output should be '");
+        if (bC->x5 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X5]);
+            strncat(outStr, &(base_numerals[order][X5]), 1);
+        }
+
+        for (int i = 0; i < bC->x1; i++)
+        {
+            debug_printf("%c", base_numerals[order][X1]);
+            strncat(outStr, &(base_numerals[order][X1]), 1);
+        }
+        debug_printf("'\n");
+    }
+    else
+    {
+        debug_printf("output should be '");
+        if (bC->x1 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X1]);
+            strncat(outStr, &(base_numerals[order][X1]), 1);
+        }
+
+        if (bC->x10 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X10]);
+            strncat(outStr, &(base_numerals[order][X10]), 1);
+        }
+
+        if (bC->x5 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X5]);
+            strncat(outStr, &(base_numerals[order][X5]), 1);
         }
         debug_printf("'\n");
     }

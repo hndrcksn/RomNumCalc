@@ -40,6 +40,7 @@ void convertToSubtractive(BaseCounter *bC);
 void adjustX1Tally(BaseCounter *bC);
 void adjustX5Tally(BaseCounter *bC);
 void postProcAddOrder(OrderType order, const BaseCounter *bC, bool *outCarry, char *outStr);
+void postProcSubOrder(OrderType order, const BaseCounter *bC, char *outStr);
 bool reconcileNegatives(BaseCounter *bC);
 
 #endif /* ROMNUMMATH_H */
