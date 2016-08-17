@@ -968,15 +968,15 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         //     IX: X(1), V(0), I(1), sub(1) = IX = (X - I) = V + (V - I) = V + (IIII) = X(0), V(1), I(4), sub(0)
         if (aBC.sub)
         {
-            // Convert subtractive forms
-            borrow = convertSubtractives(&aBC);
+            // Convert from subtractive forms
+            borrow = convertFromSubtractive(&aBC);
             debug_printf("aBC conv... x10 = %d, x5 = %d, x1 = %d, sub = %d, borrow = %c\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub, borrow?'t':'f');
         }
 
         if (bBC.sub)
         {
-            // Convert subtractive forms
-            borrow = convertSubtractives(&bBC);
+            // Convert from subtractive forms
+            borrow = convertFromSubtractive(&bBC);
             debug_printf("bBC conv... x10 = %d, x5 = %d, x1 = %d, sub = %d, borrow = %c\n", bBC.x10, bBC.x5, bBC.x1, bBC.sub, borrow?'t':'f');
         }
 
@@ -992,46 +992,7 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         debug_printf("reconciled     x10 = %d, x5 = %d, x1 = %d, sub = %d, borrow = %c\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub, borrow?'t':'f');
 
         // Convert back to subtractive form
-        // eg. IV: X(0), V(0), I(4), sub(0) = IIII = IIIII - I = (V - I) = IV = X(0), V(1), I(1), sub(1)
-        //     IX: X(0), V(1), I(4), sub(0) = V + (IIII) = V + (V - I) = (V + V) - I = (X - I) = IX
-        //                                  = X(1), V(0), I(1), sub(1)
-        // if aBC.x1 = 4, 5, 6, 9 we get IV, V, VI, IX or XL, L, LX, XC or CD, D, DC, CM
-        switch (aBC.x1) {
-            case 4:
-                aBC.x1 = 1;
-                aBC.x5 = 1;
-                aBC.sub = true;
-                break;
-
-            case 5:
-                aBC.x1 = 0;
-                aBC.x5 = 1;
-                break;
-
-            case 6:
-                aBC.x1 = 1;
-                aBC.x5 = 1;
-                break;
-
-            case 7:
-                aBC.x1 = 2;
-                aBC.x5 = 1;
-                break;
-
-            case 8:
-                aBC.x1 = 3;
-                aBC.x5 = 1;
-                break;
-
-            case 9:
-                aBC.x1 = 1;
-                aBC.x10 = 1;
-                aBC.sub = true;
-                break;
-
-            default:
-                break;
-        }
+        convertToSubtractive(&aBC);
 
         debug_printf("final form   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
 
@@ -1318,11 +1279,11 @@ void handleSubtractives(BaseCounter *bC)
 }
 
 //////
-// convertSubtractives() converts subtractive forms into non-subtractive forms to simplify subtraction
+// convertFromSubtractive() converts subtractive forms into non-subtractive forms to simplify subtraction
 // eg. IV: X(0), V(1), I(1), sub(true) = IV = (V - I) = IIIII - I = IIII = X(0), V(0), I(4), sub(false)
 //     IX: X(1), V(0), I(1), sub(true) = IX = (X - I) = V + (V - I) = V + (IIII) = X(0), V(1), I(4), sub(false)
 //////
-bool convertSubtractives(BaseCounter *bC)
+bool convertFromSubtractive(BaseCounter *bC)
 {
     bool borrow = false;
     if (bC->x5 == 1)
@@ -1505,4 +1466,52 @@ bool reconcileNegatives(BaseCounter *bC)
         bC->x5 = 0;
     }
     return borrow;
+}
+
+//////
+// convertToSubtractive() converts a non-subtractive base numeral count back
+// to a subtractive form
+// eg. IV: X(0), V(0), I(4), sub(0) = IIII = IIIII - I = (V - I) = IV = X(0), V(1), I(1), sub(1)
+//     IX: X(0), V(1), I(4), sub(0) = V + (IIII) = V + (V - I) = (V + V) - I = (X - I) = IX
+//                                  = X(1), V(0), I(1), sub(1)
+// if x1 = 4, 5, 6, 9 we get IV, V, VI, IX or XL, L, LX, XC or CD, D, DC, CM
+//////
+void convertToSubtractive(BaseCounter *bC)
+{
+    switch (bC->x1) {
+        case 4:
+            bC->x1 = 1;
+            bC->x5 = 1;
+            bC->sub = true;
+            break;
+
+        case 5:
+            bC->x1 = 0;
+            bC->x5 = 1;
+            break;
+
+        case 6:
+            bC->x1 = 1;
+            bC->x5 = 1;
+            break;
+
+        case 7:
+            bC->x1 = 2;
+            bC->x5 = 1;
+            break;
+
+        case 8:
+            bC->x1 = 3;
+            bC->x5 = 1;
+            break;
+
+        case 9:
+            bC->x1 = 1;
+            bC->x10 = 1;
+            bC->sub = true;
+            break;
+
+        default:
+            break;
+    }
 }
