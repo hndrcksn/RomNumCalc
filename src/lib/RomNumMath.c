@@ -824,8 +824,7 @@ bool isStringSubtractive(const char *s)
 //////
 bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool carriedOver)
 {
-    int x10Count    = 0;
-    bool carry      = false;
+    bool carry = false;
 
     // If strings are empty, no further processing is necessary
     if (aH->orderLen[order] == 0 && bH->orderLen[order] == 0 && !carriedOver)
@@ -845,9 +844,10 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
     }
     else /* if (bH->orderPtr[order] != NULL && aH->orderPtr[order] != NULL) */
     {
-        int i = 0;
-        int x1Count = carriedOver?1:0;
-        int x5Count = 0;
+        int i        = 0;
+        int x1Count  = carriedOver?1:0;
+        int x5Count  = 0;
+        int x10Count = 0;
         int subCount = 0;
         debug_printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
@@ -869,30 +869,8 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
 
         debug_printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
-        // Handle subtractives. When removing a subtractive it has to take another non-subtractive
-        // with it. eg IV + IV = (V - I) + (V - I) = IIII + IIII = (IIII + I) + III = VIII
-        // the second V had to be split up to satisfy both subtractives
-        //             IX + IX = (X-I) + (X-I) = X + X - (I + I) = X + (X - II) = X + VIII = XVIII
-        // the second X had to be split up to satisfy both subtractives
-        for (i = 0; i < subCount; i++)
-        {
-            if (x1Count >= 2)
-            {
-                x1Count -= 2;
-            }
-            else if (x5Count != 0)
-            {
-                x5Count--;
-                x1Count += 3; // sacrifice one+one for the subtractive
-            }
-            else if (x10Count != 0)
-            {
-                x10Count--;   // split X into VV
-                x5Count++;    // one V goes here
-                x1Count += 3; // sacrifice one+one for the subtractive
-            }
-            debug_printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
-        }
+        // Handle subtractive forms
+        handleSubtractives(&subCount, &x1Count, &x5Count, &x10Count);
 
         // Reset subCount
         subCount = 0;
@@ -1016,7 +994,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
 //////
 bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool borrowedFrom)
 {
-    bool borrow     = false;
+    bool borrow = false;
 
     // If strings are empty, no further processing is necessary
     if (aH->orderLen[order] == 0 && bH->orderLen[order] == 0 && !borrowedFrom)
@@ -1038,12 +1016,12 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         int aX1Count = borrowedFrom?-1:0;
         int aX5Count = 0;
         int aX10Count = 0;
-        bool aSub = 0;
+        bool aSub = false;
 
         int bX1Count = 0;
         int bX5Count = 0;
         int bX10Count = 0;
-        bool bSub = 0;
+        bool bSub = false;
 
         debug_printf("\n\nA tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
 
@@ -1076,45 +1054,15 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         //     IX: X(1), V(0), I(1), sub(1) = IX = (X - I) = V + (V - I) = V + (IIII) = X(0), V(1), I(4), sub(0)
         if (aSub)
         {
-            if (aX5Count == 1)
-            {
-                aX5Count--;
-                aX1Count += 3; // sacrifice one+one for the subtractive
-            }
-            else if (aX10Count == 1)
-            {
-                aX10Count--;   // split X into VV
-                aX5Count++;    // one V goes here
-                aX1Count += 3; // sacrifice one+one for the subtractive
-            }
-            else if (aX1Count == 1)
-            {   // have a -I situation
-                aX10Count++;
-                borrow = true;
-            }
-            aSub = false;
+            // Convert subtractive forms
+            borrow = convertSubtractives(&aSub, &aX1Count, &aX5Count, &aX10Count);
             debug_printf("aSub conv... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
         }
 
         if (bSub)
         {
-            if (bX5Count == 1)
-            {
-                bX5Count--;
-                bX1Count += 3; // sacrifice one+one for the subtractive
-            }
-            else if (bX10Count == 1)
-            {
-                bX10Count--;   // split X into VV
-                bX5Count++;    // one V goes here
-                bX1Count += 3; // sacrifice one+one for the subtractive
-            }
-            else if (bX1Count == 1)
-            {   // have a -I situation
-                bX10Count++;
-                borrow = true;
-            }
-            bSub = false;
+            // Convert subtractive forms
+            borrow = convertSubtractives(&bSub, &bX1Count, &bX5Count, &bX10Count);
             debug_printf("bSub conv... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bX10Count, bX5Count, bX1Count, bSub);
         }
 
@@ -1452,4 +1400,63 @@ void tallyChar(StrHolder *sH, OrderType order, int *x1Count, int *x5Count, int *
             (*x1Count)++;
         }
     }
+}
+
+//////
+// handleSubtractives() handles numeral forms that place a lower numeral before a higher one
+// When removing a subtractive it has to take another non-subtractive
+// with it. eg IV + IV = (V - I) + (V - I) = IIII + IIII = (IIII + I) + III = VIII
+// the second V had to be split up to satisfy both subtractives
+//             IX + IX = (X-I) + (X-I) = X + X - (I + I) = X + (X - II) = X + VIII = XVIII
+// the second X had to be split up to satisfy both subtractives
+//////
+void handleSubtractives(int *subCount, int *x1Count, int *x5Count, int *x10Count)
+{
+    for (int i = 0; i < (*subCount); i++)
+    {
+        if (*x1Count >= 2)
+        {
+            *x1Count -= 2;
+        }
+        else if (*x5Count != 0)
+        {
+            (*x5Count)--;
+            *x1Count += 3; // sacrifice one+one for the subtractive
+        }
+        else if (x10Count != 0)
+        {
+            (*x10Count)--;   // split X into VV
+            (*x5Count)++;    // one V goes here
+            *x1Count += 3; // sacrifice one+one for the subtractive
+        }
+        debug_printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", *x10Count, *x5Count, *x1Count, *subCount);
+    }
+}
+
+//////
+// convertSubtractives() converts subtractive forms into non-subtractive forms to simplify subtraction
+// eg. IV: X(0), V(1), I(1), sub(true) = IV = (V - I) = IIIII - I = IIII = X(0), V(0), I(4), sub(false)
+//     IX: X(1), V(0), I(1), sub(true) = IX = (X - I) = V + (V - I) = V + (IIII) = X(0), V(1), I(4), sub(false)
+//////
+bool convertSubtractives(bool *subtractive, int *x1Count, int *x5Count, int *x10Count)
+{
+    bool borrow = false;
+    if (*x5Count == 1)
+    {
+        (*x5Count)--;
+        (*x1Count) += 3; // sacrifice one+one for the subtractive
+    }
+    else if ((*x10Count) == 1)
+    {
+        (*x10Count)--;   // split X into VV
+        (*x5Count)++;    // one V goes here
+        (*x1Count) += 3; // sacrifice one+one for the subtractive
+    }
+    else if ((*x1Count) == 1)
+    {   // have a -I situation
+        (*x10Count)++;
+        borrow = true;
+    }
+    *subtractive = false;
+    return borrow;
 }

@@ -33,5 +33,7 @@ int romStrCmp(const char *as, const char *bs);
 int romNumRelVal(const char *str, int length, OrderType order);
 char *prependStr(char *str, char c);
 void tallyChar(StrHolder *sH, OrderType order, int *x1Count, int *x5Count, int *x10Count);
+void handleSubtractives(int *subCount, int *x1Count, int *x5Count, int *x10Count);
+bool convertSubtractives(bool *subtractive, int *x1Count, int *x5Count, int *x10Count);
 
 #endif /* ROMNUMMATH_H */
