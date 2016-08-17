@@ -877,44 +877,11 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
         // Reset bC.sub
         bC.sub = 0;
 
-        // Adjust tally
-        // if bC.x1 = 4, 5, 6 we get IV, V VI or XL, L, LX or CD, D, DC
-        switch (bC.x1) {
-            case 4:
-                bC.x1 = 1;
-                bC.x5++;
-                bC.sub = 1;
-                break;
+        // Adjust x1 tally
+        adjustX1Tally(&bC);
 
-            case 5:
-                bC.x1 = 0;
-                bC.x5++;
-                break;
-
-            case 6:
-                bC.x1 = 1;
-                bC.x5++;
-                break;
-
-            default:
-                break;
-        }
-
-        // if bC.x5 = 2, 3 we get X, XV or C, CL or M, MD
-        switch (bC.x5) {
-            case 2:
-                bC.x5 = 0;
-                bC.x10++;
-                break;
-
-            case 3:
-                bC.x5 = 1;
-                bC.x10++;
-                break;
-
-            default:
-                break;
-        }
+        // Adjust x5 tally
+        adjustX5Tally(&bC);
 
         debug_printf("post tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bC.x10, bC.x5, bC.x1, bC.sub);
 
@@ -1463,4 +1430,56 @@ bool convertSubtractives(BaseCounter *bC)
     }
     bC->sub = false;
     return borrow;
+}
+
+//////
+// adjustX1Tally() adjusts the count of x1 base numerals to facilitate
+// conversion back to subtractive forms
+// eg. if x1 = 4, 5, 6 we get IV, V VI or XL, L, LX or CD, D, DC
+//////
+void adjustX1Tally(BaseCounter *bC)
+{
+    switch (bC->x1) {
+        case 4:
+            bC->x1 = 1;
+            bC->x5++;
+            bC->sub = 1;
+            break;
+
+        case 5:
+            bC->x1 = 0;
+            bC->x5++;
+            break;
+
+        case 6:
+            bC->x1 = 1;
+            bC->x5++;
+            break;
+
+        default:
+            break;
+    }
+}
+
+//////
+// adjustX5Tally() adjusts the count of x5 base numerals due to
+// restrictions because there can only be one x5 in a Roman numeral
+// eg. if x5 = 2, 3 we get X, XV or C, CL or M, MD
+//////
+void adjustX5Tally(BaseCounter *bC)
+{
+    switch (bC->x5) {
+        case 2:
+            bC->x5 = 0;
+            bC->x10++;
+            break;
+
+        case 3:
+            bC->x5 = 1;
+            bC->x10++;
+            break;
+
+        default:
+            break;
+    }
 }

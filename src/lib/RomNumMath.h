@@ -36,5 +36,7 @@ char *prependStr(char *str, char c);
 void tallyChar(StrHolder *sH, OrderType order, BaseCounter *bC);
 void handleSubtractives(BaseCounter *bC);
 bool convertSubtractives(BaseCounter *bC);
+void adjustX1Tally(BaseCounter *bC);
+void adjustX5Tally(BaseCounter *bC);
 
 #endif /* ROMNUMMATH_H */
