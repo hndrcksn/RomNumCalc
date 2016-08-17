@@ -19,6 +19,21 @@ const char base_numerals[NUM_ORDERS][NUM_BASES] = {{'I', 'V', 'X'},
 bool global_debugging = false;
 
 //////
+//  BaseCounter is a struct containing base numeral counter
+//  variables.
+//////
+struct BaseCounter
+{
+    // Base numeral counter for order of magnitude
+    int x1;
+    int x5;
+    int x10;
+
+    // Subtractive form counter
+    int sub;
+};
+
+//////
 //  StrHolder is a struct for dividing up the a string into
 //  chunks based on orders of magnitude and its pointer and
 //  length variables are used for addition, subtraction and
@@ -845,120 +860,122 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
     else /* if (bH->orderPtr[order] != NULL && aH->orderPtr[order] != NULL) */
     {
         int i        = 0;
-        int x1Count  = carriedOver?1:0;
-        int x5Count  = 0;
-        int x10Count = 0;
-        int subCount = 0;
-        debug_printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+        BaseCounter bC;
+        bC.x1  = carriedOver?1:0;
+        bC.x5  = 0;
+        bC.x10 = 0;
+        bC.sub = 0;
+
+        debug_printf("\n\nx10 = %d, x5 = %d, x1 = %d, sub = %d\n", bC.x10, bC.x5, bC.x1, bC.sub);
 
         // Track subtractive forms
         if (isStringSubtractive(aH->orderPtr[order]))
         {
-            subCount++;
+            bC.sub++;
         }
         if (isStringSubtractive(bH->orderPtr[order]))
         {
-            subCount++;
+            bC.sub++;
         }
 
         // Tally characters in current order of magnitude in first string
-        tallyChar(aH, order, &x1Count, &x5Count, &x10Count);
+        tallyChar(aH, order, &bC);
 
         // Tally characters in current order of magnitude in second string
-        tallyChar(bH, order, &x1Count, &x5Count, &x10Count);
+        tallyChar(bH, order, &bC);
 
-        debug_printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+        debug_printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bC.x10, bC.x5, bC.x1, bC.sub);
 
         // Handle subtractive forms
-        handleSubtractives(&subCount, &x1Count, &x5Count, &x10Count);
+        handleSubtractives(&bC);
 
-        // Reset subCount
-        subCount = 0;
+        // Reset bC.sub
+        bC.sub = 0;
 
         // Adjust tally
-        // if x1Count = 4, 5, 6 we get IV, V VI or XL, L, LX or CD, D, DC
-        switch (x1Count) {
+        // if bC.x1 = 4, 5, 6 we get IV, V VI or XL, L, LX or CD, D, DC
+        switch (bC.x1) {
             case 4:
-                x1Count = 1;
-                x5Count++;
-                subCount = 1;
+                bC.x1 = 1;
+                bC.x5++;
+                bC.sub = 1;
                 break;
 
             case 5:
-                x1Count = 0;
-                x5Count++;
+                bC.x1 = 0;
+                bC.x5++;
                 break;
 
             case 6:
-                x1Count = 1;
-                x5Count++;
+                bC.x1 = 1;
+                bC.x5++;
                 break;
 
             default:
                 break;
         }
 
-        // if x5Count = 2, 3 we get X, XV or C, CL or M, MD
-        switch (x5Count) {
+        // if bC.x5 = 2, 3 we get X, XV or C, CL or M, MD
+        switch (bC.x5) {
             case 2:
-                x5Count = 0;
-                x10Count++;
+                bC.x5 = 0;
+                bC.x10++;
                 break;
 
             case 3:
-                x5Count = 1;
-                x10Count++;
+                bC.x5 = 1;
+                bC.x10++;
                 break;
 
             default:
                 break;
         }
 
-        debug_printf("post tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
+        debug_printf("post tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bC.x10, bC.x5, bC.x1, bC.sub);
 
-        if (order == THOU && (x10Count > 0 || x5Count > 0))
+        if (order == THOU && (bC.x10 > 0 || bC.x5 > 0))
         {
             // Only values up to MMMCMXCIX (3999) are supported
             debug_printf("ERROR! Fatal Error: Only values up to MMMCMXCIX (3999) are supported\n");
             return false;
         }
 
-        if (subCount != 1)
+        if (bC.sub != 1)
         {
             debug_printf("output should be '");
-            if (x10Count == 1)
+            if (bC.x10 == 1)
             {
                 carry = true;
             }
 
-            if (x5Count == 1)
+            if (bC.x5 == 1)
             {
                 debug_printf("%c", base_numerals[order][X5]);
                 strncat(cStr, &(base_numerals[order][X5]), 1);
             }
 
-            for (i = 0; i < x1Count; i++)
+            for (i = 0; i < bC.x1; i++)
             {
                 debug_printf("%c", base_numerals[order][X1]);
                 strncat(cStr, &(base_numerals[order][X1]), 1);
             }
             debug_printf("'\n");
         }
-        else if (subCount == 1 && x5Count != 0)
+        else if (bC.sub == 1 && bC.x5 != 0)
         {
             debug_printf("output should be '");
-            if (x10Count == 1)
+            if (bC.x10 == 1)
             {
                 carry = true;
             }
 
-            if (x1Count == 1)
+            if (bC.x1 == 1)
             {
                 debug_printf("%c", base_numerals[order][X1]);
                 strncat(cStr, &(base_numerals[order][X1]), 1);
             }
 
-            if (x5Count == 1)
+            if (bC.x5 == 1)
             {
                 debug_printf("%c", base_numerals[order][X5]);
                 strncat(cStr, &(base_numerals[order][X5]), 1);
@@ -968,13 +985,13 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
         else
         {
             debug_printf("output should be '");
-            if (x1Count == 1)
+            if (bC.x1 == 1)
             {
                 debug_printf("%c", base_numerals[order][X1]);
                 strncat(cStr, &(base_numerals[order][X1]), 1);
             }
 
-            if (x10Count == 1)
+            if (bC.x10 == 1)
             {
                 debug_printf("%c", base_numerals[order][X10]);
                 strncat(cStr, &(base_numerals[order][X10]), 1);
@@ -1013,162 +1030,164 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
     {
         int i = 0;
 
-        int aX1Count = borrowedFrom?-1:0;
-        int aX5Count = 0;
-        int aX10Count = 0;
-        bool aSub = false;
+        BaseCounter aBC;
+        aBC.x1  = borrowedFrom?-1:0;
+        aBC.x5  = 0;
+        aBC.x10 = 0;
+        aBC.sub = 0;
 
-        int bX1Count = 0;
-        int bX5Count = 0;
-        int bX10Count = 0;
-        bool bSub = false;
+        BaseCounter bBC;
+        bBC.x1  = 0;
+        bBC.x5  = 0;
+        bBC.x10 = 0;
+        bBC.sub = 0;
 
-        debug_printf("\n\nA tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
+        debug_printf("\n\nA tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
 
-        // Track subtractive forms
+        // Track subtractive form of A
         if (isStringSubtractive(aH->orderPtr[order]))
         {
-            aSub = true;
+            aBC.sub = true;
             debug_printf("'%s' is subtractive\n", aH->orderPtr[order]);
         }
 
         // Tally characters in current order of magnitude in first string
-        tallyChar(aH, order, &aX1Count, &aX5Count, &aX10Count);
+        tallyChar(aH, order, &aBC);
 
-        debug_printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
+        debug_printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
 
-        // Track subtractive forms
+        // Track subtractive form of B
         if (isStringSubtractive(bH->orderPtr[order]))
         {
-            bSub = true;
+            bBC.sub = true;
             debug_printf("'%s' is subtractive\n", bH->orderPtr[order]);
         }
 
         // Tally characters in current order of magnitude in first string
-        tallyChar(bH, order, &bX1Count, &bX5Count, &bX10Count);
+        tallyChar(bH, order, &bBC);
 
-        debug_printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bX10Count, bX5Count, bX1Count, bSub);
+        debug_printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bBC.x10, bBC.x5, bBC.x1, bBC.sub);
 
         // Convert subtractive forms into non-subtractive forms to simplify subtraction
         // eg. IV: X(0), V(1), I(1), sub(1) = IV = (V - I) = IIIII - I = IIII = X(0), V(0), I(4), sub(0)
         //     IX: X(1), V(0), I(1), sub(1) = IX = (X - I) = V + (V - I) = V + (IIII) = X(0), V(1), I(4), sub(0)
-        if (aSub)
+        if (aBC.sub)
         {
             // Convert subtractive forms
-            borrow = convertSubtractives(&aSub, &aX1Count, &aX5Count, &aX10Count);
-            debug_printf("aSub conv... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
+            borrow = convertSubtractives(&aBC);
+            debug_printf("aBC conv... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
         }
 
-        if (bSub)
+        if (bBC.sub)
         {
             // Convert subtractive forms
-            borrow = convertSubtractives(&bSub, &bX1Count, &bX5Count, &bX10Count);
-            debug_printf("bSub conv... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bX10Count, bX5Count, bX1Count, bSub);
+            borrow = convertSubtractives(&bBC);
+            debug_printf("bBC conv... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bBC.x10, bBC.x5, bBC.x1, bBC.sub);
         }
 
         // Subtract B from A
-        aX10Count -= bX10Count;
-        aX5Count  -= bX5Count;
-        aX1Count  -= bX1Count;
-        debug_printf("subtraction  x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
+        aBC.x10 -= bBC.x10;
+        aBC.x5  -= bBC.x5;
+        aBC.x1  -= bBC.x1;
+        debug_printf("subtraction  x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
 
         // Reconcile negative numbers
-        if (aX1Count < 0)
+        if (aBC.x1 < 0)
         {
-            if (aX5Count >= 1)
+            if (aBC.x5 >= 1)
             {
-                aX5Count--;
-                aX1Count += 5;
+                aBC.x5--;
+                aBC.x1 += 5;
             }
-            else if (aX10Count >= 1)
+            else if (aBC.x10 >= 1)
             {
-                aX10Count--;
-                aX5Count = 1;
-                aX1Count += 5;
+                aBC.x10--;
+                aBC.x5 = 1;
+                aBC.x1 += 5;
             }
             else
             {   // Must borrow
-                aX10Count++;
-                aX1Count = aX10Count*10 + aX5Count*5 + aX1Count;
-                aX10Count = 0;
-                aX5Count = 0;
+                aBC.x10++;
+                aBC.x1 = aBC.x10*10 + aBC.x5*5 + aBC.x1;
+                aBC.x10 = 0;
+                aBC.x5 = 0;
                 borrow = true;
             }
         }
-        else if (aX5Count < 0)
+        else if (aBC.x5 < 0)
         {   // need to borrow next order of magitude and calculate remainder eg. 10-8=2
-            if (aX10Count == 0)
+            if (aBC.x10 == 0)
             {
-                aX10Count++;
+                aBC.x10++;
                 borrow = true;
             }
-            aX1Count = aX10Count*10 + aX5Count*5 + aX1Count;
-            aX5Count = 0;
+            aBC.x1 = aBC.x10*10 + aBC.x5*5 + aBC.x1;
+            aBC.x5 = 0;
         }
-        debug_printf("adjusted     x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
+        debug_printf("adjusted     x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
 
         // Convert back to subtractive form
         // eg. IV: X(0), V(0), I(4), sub(0) = IIII = IIIII - I = (V - I) = IV = X(0), V(1), I(1), sub(1)
         //     IX: X(0), V(1), I(4), sub(0) = V + (IIII) = V + (V - I) = (V + V) - I = (X - I) = IX
         //                                  = X(1), V(0), I(1), sub(1)
-        // if aX1Count = 4, 5, 6, 9 we get IV, V, VI, IX or XL, L, LX, XC or CD, D, DC, CM
-        switch (aX1Count) {
+        // if aBC.x1 = 4, 5, 6, 9 we get IV, V, VI, IX or XL, L, LX, XC or CD, D, DC, CM
+        switch (aBC.x1) {
             case 4:
-                aX1Count = 1;
-                aX5Count = 1;
-                aSub = true;
+                aBC.x1 = 1;
+                aBC.x5 = 1;
+                aBC.sub = true;
                 break;
 
             case 5:
-                aX1Count = 0;
-                aX5Count = 1;
+                aBC.x1 = 0;
+                aBC.x5 = 1;
                 break;
 
             case 6:
-                aX1Count = 1;
-                aX5Count = 1;
+                aBC.x1 = 1;
+                aBC.x5 = 1;
                 break;
 
             case 7:
-                aX1Count = 2;
-                aX5Count = 1;
+                aBC.x1 = 2;
+                aBC.x5 = 1;
                 break;
 
             case 8:
-                aX1Count = 3;
-                aX5Count = 1;
+                aBC.x1 = 3;
+                aBC.x5 = 1;
                 break;
 
             case 9:
-                aX1Count = 1;
-                aX10Count = 1;
-                aSub = true;
+                aBC.x1 = 1;
+                aBC.x10 = 1;
+                aBC.sub = true;
                 break;
 
             default:
                 break;
         }
 
-        debug_printf("final form   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
+        debug_printf("final form   x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
 
         // Return Output
-        if (order == THOU && (aX10Count > 0 || aX5Count > 0))
+        if (order == THOU && (aBC.x10 > 0 || aBC.x5 > 0))
         {
             // Only values up to MMMCMXCIX (3999) are supported
             debug_printf("ERROR! Fatal Error: Only values up to MMMCMXCIX (3999) are supported\n");
             return false;
         }
 
-        if (!aSub)
+        if (!aBC.sub)
         {
             debug_printf("output should be '");
-            if (aX5Count == 1)
+            if (aBC.x5 == 1)
             {
                 debug_printf("%c", base_numerals[order][X5]);
                 strncat(cStr, &(base_numerals[order][X5]), 1);
             }
 
-            for (i = 0; i < aX1Count; i++)
+            for (i = 0; i < aBC.x1; i++)
             {
                 debug_printf("%c", base_numerals[order][X1]);
                 strncat(cStr, &(base_numerals[order][X1]), 1);
@@ -1178,19 +1197,19 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         else
         {
             debug_printf("output should be '");
-            if (aX1Count == 1)
+            if (aBC.x1 == 1)
             {
                 debug_printf("%c", base_numerals[order][X1]);
                 strncat(cStr, &(base_numerals[order][X1]), 1);
             }
 
-            if (aX10Count == 1)
+            if (aBC.x10 == 1)
             {
                 debug_printf("%c", base_numerals[order][X10]);
                 strncat(cStr, &(base_numerals[order][X10]), 1);
             }
 
-            if (aX5Count == 1)
+            if (aBC.x5 == 1)
             {
                 debug_printf("%c", base_numerals[order][X5]);
                 strncat(cStr, &(base_numerals[order][X5]), 1);
@@ -1382,22 +1401,22 @@ char *prependStr(char *str, char c)
 //  a string. Base characters are the x1, x5 and x10 in an order eg. for ones that would
 //  be x1=I, x5=V and x10=X.
 //////
-void tallyChar(StrHolder *sH, OrderType order, int *x1Count, int *x5Count, int *x10Count)
+void tallyChar(StrHolder *sH, OrderType order, BaseCounter *bC)
 {
     // Tally characters in first string
     for (int i = 0; i < sH->orderLen[order]; i++)
     {
         if (sH->orderPtr[order][i] == base_numerals[order][X10])
         {
-            (*x10Count)++;
+            bC->x10++;
         }
         else if (sH->orderPtr[order][i] == base_numerals[order][X5])
         {
-            (*x5Count)++;
+            bC->x5++;
         }
         else if (sH->orderPtr[order][i] == base_numerals[order][X1])
         {
-            (*x1Count)++;
+            bC->x1++;
         }
     }
 }
@@ -1410,26 +1429,26 @@ void tallyChar(StrHolder *sH, OrderType order, int *x1Count, int *x5Count, int *
 //             IX + IX = (X-I) + (X-I) = X + X - (I + I) = X + (X - II) = X + VIII = XVIII
 // the second X had to be split up to satisfy both subtractives
 //////
-void handleSubtractives(int *subCount, int *x1Count, int *x5Count, int *x10Count)
+void handleSubtractives(BaseCounter *bC)
 {
-    for (int i = 0; i < (*subCount); i++)
+    for (int i = 0; i < bC->sub; i++)
     {
-        if (*x1Count >= 2)
+        if (bC->x1 >= 2)
         {
-            *x1Count -= 2;
+            bC->x1 -= 2;
         }
-        else if (*x5Count != 0)
+        else if (bC->x5 != 0)
         {
-            (*x5Count)--;
-            *x1Count += 3; // sacrifice one+one for the subtractive
+            bC->x5--;
+            bC->x1 += 3; // sacrifice one+one for the subtractive
         }
-        else if (x10Count != 0)
+        else if (bC->x10 != 0)
         {
-            (*x10Count)--;   // split X into VV
-            (*x5Count)++;    // one V goes here
-            *x1Count += 3; // sacrifice one+one for the subtractive
+            bC->x10--;   // split X into VV
+            bC->x5++;    // one V goes here
+            bC->x1 += 3; // sacrifice one+one for the subtractive
         }
-        debug_printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", *x10Count, *x5Count, *x1Count, *subCount);
+        debug_printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bC->x10, bC->x5, bC->x1, bC->sub);
     }
 }
 
@@ -1438,25 +1457,25 @@ void handleSubtractives(int *subCount, int *x1Count, int *x5Count, int *x10Count
 // eg. IV: X(0), V(1), I(1), sub(true) = IV = (V - I) = IIIII - I = IIII = X(0), V(0), I(4), sub(false)
 //     IX: X(1), V(0), I(1), sub(true) = IX = (X - I) = V + (V - I) = V + (IIII) = X(0), V(1), I(4), sub(false)
 //////
-bool convertSubtractives(bool *subtractive, int *x1Count, int *x5Count, int *x10Count)
+bool convertSubtractives(BaseCounter *bC)
 {
     bool borrow = false;
-    if (*x5Count == 1)
+    if (bC->x5 == 1)
     {
-        (*x5Count)--;
-        (*x1Count) += 3; // sacrifice one+one for the subtractive
+        bC->x5--;
+        bC->x1 += 3; // sacrifice one+one for the subtractive
     }
-    else if ((*x10Count) == 1)
+    else if (bC->x10 == 1)
     {
-        (*x10Count)--;   // split X into VV
-        (*x5Count)++;    // one V goes here
-        (*x1Count) += 3; // sacrifice one+one for the subtractive
+        bC->x10--;   // split X into VV
+        bC->x5++;    // one V goes here
+        bC->x1 += 3; // sacrifice one+one for the subtractive
     }
-    else if ((*x1Count) == 1)
+    else if (bC->x1 == 1)
     {   // have a -I situation
-        (*x10Count)++;
+        bC->x10++;
         borrow = true;
     }
-    *subtractive = false;
+    bC->sub = false;
     return borrow;
 }
