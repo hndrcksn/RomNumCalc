@@ -45,19 +45,12 @@ START_TEST (testIsSequenceInStringValid)
 
     // Is a sequence of X's C's or M's valid?
     ck_assert(isCleanValidString("X"));
-    ck_assert(isCleanValidString("XX"));
     ck_assert(isCleanValidString("XXX"));
-    ck_assert(isCleanValidString("C"));
-    ck_assert(isCleanValidString("CC"));
-    ck_assert(isCleanValidString("CCC"));
-    ck_assert(isCleanValidString("M"));
     ck_assert(isCleanValidString("MM"));
     ck_assert(!isCleanValidString("XXXX"));
     ck_assert(isCleanValidString("V"));
     ck_assert(!isCleanValidString("VV"));
     ck_assert(isCleanValidString("L"));
-    ck_assert(!isCleanValidString("LL"));
-    ck_assert(isCleanValidString("D"));
     ck_assert(!isCleanValidString("DD"));
 }
 END_TEST
@@ -86,47 +79,10 @@ START_TEST (testIsStringValid)
     // Validate a RomNumeral as having a proper Roman numeral
     // string with a matching integer
     ck_assert(isCleanValidString("I"));
-    ck_assert(isCleanValidString("II"));
-    ck_assert(isCleanValidString("III"));
     ck_assert(isCleanValidString("IV"));
     ck_assert(isCleanValidString("V"));
-    ck_assert(isCleanValidString("VI"));
-    ck_assert(isCleanValidString("VII"));
     ck_assert(isCleanValidString("VIII"));
     ck_assert(isCleanValidString("IX"));
-    ck_assert(isCleanValidString("X"));
-    ck_assert(isCleanValidString("XI"));
-    ck_assert(isCleanValidString("XII"));
-    ck_assert(isCleanValidString("XIII"));
-    ck_assert(isCleanValidString("XIV"));
-    ck_assert(isCleanValidString("XV"));
-    ck_assert(isCleanValidString("XVI"));
-    ck_assert(isCleanValidString("XVII"));
-    ck_assert(isCleanValidString("XVIII"));
-    ck_assert(isCleanValidString("XIX"));
-    ck_assert(isCleanValidString("XX"));
-    ck_assert(isCleanValidString("XXI"));
-    ck_assert(isCleanValidString("XXII"));
-    ck_assert(isCleanValidString("XXIII"));
-    ck_assert(isCleanValidString("XXIV"));
-    ck_assert(isCleanValidString("XXV"));
-    ck_assert(isCleanValidString("XXVI"));
-    ck_assert(isCleanValidString("XXVII"));
-    ck_assert(isCleanValidString("XXVIII"));
-    ck_assert(isCleanValidString("XXIX"));
-    ck_assert(isCleanValidString("XXX"));
-    ck_assert(isCleanValidString("XXXI"));
-    ck_assert(isCleanValidString("XXXII"));
-    ck_assert(isCleanValidString("XXXIII"));
-    ck_assert(isCleanValidString("XXXIV"));
-    ck_assert(isCleanValidString("XXXV"));
-    ck_assert(isCleanValidString("XXXVI"));
-    ck_assert(isCleanValidString("XXXVII"));
-    ck_assert(isCleanValidString("XXXVIII"));
-    ck_assert(isCleanValidString("XXXIX"));
-    ck_assert(!isCleanValidString("XXXX"));
-    ck_assert(isCleanValidString("XL"));
-    ck_assert(isCleanValidString("XLI"));
 
     // Skip to more complicated numbers
     ck_assert(isCleanValidString("XLIX"));
@@ -140,47 +96,13 @@ START_TEST (testIsStringValid)
 
     // Skip to more complicated number
     ck_assert(isCleanValidString("XCIX"));
-    ck_assert(isCleanValidString("C"));
-    ck_assert(isCleanValidString("CI"));
-
-    // Skip to more complicated number
-    ck_assert(isCleanValidString("CXLIX"));
-    ck_assert(!isCleanValidString("CXLXI"));
-    ck_assert(isCleanValidString("CL"));
-    ck_assert(isCleanValidString("CLI"));
-
-    // Skip to more complicated number
-    ck_assert(isCleanValidString("CXCIX"));
-    ck_assert(isCleanValidString("CC"));
-    ck_assert(isCleanValidString("CCI"));
-
-    // Skip to more complicated number
-    ck_assert(isCleanValidString("CDXCIX"));
-    ck_assert(isCleanValidString("D"));
-    ck_assert(isCleanValidString("DI"));
-
-    // Skip to more complicated number
     ck_assert(isCleanValidString("DXCIX"));
-    ck_assert(isCleanValidString("DL"));
-    ck_assert(isCleanValidString("DLI"));
 
     // Skip to more complicated number
     ck_assert(isCleanValidString("CMXCIX"));
-    ck_assert(isCleanValidString("M"));
     ck_assert(isCleanValidString("MI"));
 
     // Skip to more complicated number
-    ck_assert(isCleanValidString("MCMXCIX"));
-    ck_assert(isCleanValidString("MM"));
-    ck_assert(isCleanValidString("MMI"));
-
-    // Skip to more complicated number
-    ck_assert(isCleanValidString("MMCMXCIX"));
-    ck_assert(isCleanValidString("MMM"));
-    ck_assert(isCleanValidString("MMMI"));
-
-    // Skip to more complicated number
-    ck_assert(isCleanValidString("MMMCMXCVII"));
     ck_assert(isCleanValidString("MMMCMXCVIII"));
     ck_assert(isCleanValidString("MMMCMXCIX"));
     ck_assert(isCleanValidString("LIV"));
@@ -203,55 +125,23 @@ START_TEST (testAdditionValidation)
     memset(output, 0, BUFRSIZE);
 
     ck_assert_str_eq(addition("XX", "II", output), "XXII");
-    ck_assert_str_eq(addition("II", "XX", output), "XXII");
     ck_assert_str_eq(addition("XIX", "C", output), "CXIX");
     ck_assert_str_eq(addition("VI", "V", output), "XI");
-    ck_assert_str_eq(addition("V", "VI", output), "XI");
-    ck_assert_str_eq(addition("IV", "V", output), "IX");
     ck_assert_str_eq(addition("V", "IV", output), "IX");
     ck_assert_str_eq(addition("IV", "IV", output), "VIII");
     ck_assert_str_eq(addition("I", "III", output), "IV");
     ck_assert_str_eq(addition("VIII", "VIII", output), "XVI");
-    ck_assert_str_eq(addition("VIII", "VII", output), "XV");
     ck_assert_str_eq(addition("VII", "VII", output), "XIV");
-    ck_assert_str_eq(addition("III", "I", output), "IV");
-    ck_assert_str_eq(addition("CC", "XX", output), "CCXX");
-    ck_assert_str_eq(addition("XX", "CC", output), "CCXX");
     ck_assert_str_eq(addition("CXC", "M", output), "MCXC");
-    ck_assert_str_eq(addition("LX", "L", output), "CX");
-    ck_assert_str_eq(addition("L", "LX", output), "CX");
-    ck_assert_str_eq(addition("XL", "L", output), "XC");
     ck_assert_str_eq(addition("XL", "XL", output), "LXXX");
     ck_assert_str_eq(addition("X", "XXX", output), "XL");
     ck_assert_str_eq(addition("LXXX", "LXXX", output), "CLX");
-    ck_assert_str_eq(addition("LXXX", "LXX", output), "CL");
-    ck_assert_str_eq(addition("LXX", "LXX", output), "CXL");
-    ck_assert_str_eq(addition("MM", "CC", output), "MMCC");
-    ck_assert_str_eq(addition("CC", "MM", output), "MMCC");
-    ck_assert_str_eq(addition("MCM", "M", output), "MMCM");
     ck_assert_str_eq(addition("DC", "D", output), "MC");
-    ck_assert_str_eq(addition("D", "DC", output), "MC");
-    ck_assert_str_eq(addition("CD", "D", output), "CM");
-    ck_assert_str_eq(addition("CD", "CD", output), "DCCC");
     ck_assert_str_eq(addition("C", "CCC", output), "CD");
-    ck_assert_str_eq(addition("DCCC", "DCCC", output), "MDC");
-    ck_assert_str_eq(addition("DCCC", "DCC", output), "MD");
     ck_assert_str_eq(addition("DCC", "DCC", output), "MCD");
-    ck_assert_str_eq(addition("XX", "MM", output), "MMXX");
-    ck_assert_str_eq(addition("MM", "XX", output), "MMXX");
-    ck_assert_str_eq(addition("MXIX", "C", output), "MCXIX");
-    ck_assert_str_eq(addition("MVI", "V", output), "MXI");
-    ck_assert_str_eq(addition("V", "MVI", output), "MXI");
-    ck_assert_str_eq(addition("MV", "V", output), "MX");
-    ck_assert_str_eq(addition("V", "MV", output), "MX");
-    ck_assert_str_eq(addition("MV", "MV", output), "MMX");
-    ck_assert_str_eq(addition("M", "MMC", output), "MMMC");
     ck_assert_str_eq(addition("MMVIII", "MCVIII", output), "MMMCXVI");
     ck_assert_str_eq(addition("MVIII", "MMLXXVII", output), "MMMLXXXV");
-    ck_assert_str_eq(addition("MVII", "MCMLXVII", output), "MMCMLXXIV");
-    ck_assert_str_eq(addition("MCM", "M", output), "MMCM");
     ck_assert_str_eq(addition("XLVII", "XXIX", output), "LXXVI");
-//    ck_assert(isCleanValidString("LCCX"));
 }
 END_TEST
 
@@ -261,51 +151,27 @@ START_TEST (testSubtractionValidation)
     memset(output, 0, BUFRSIZE);
 
     ck_assert_str_eq(subtraction("III", "I", output), "II");
-    ck_assert_str_eq(subtraction("III", "II", output), "I");
     ck_assert_str_eq(subtraction("IV", "I", output), "III");
     ck_assert_str_eq(subtraction("XIV", "I", output), "XIII");
     ck_assert_str_eq(subtraction("IV", "II", output), "II");
-    ck_assert_str_eq(subtraction("IV", "III", output), "I");
     ck_assert_str_eq(subtraction("IX", "IV", output), "V");
     ck_assert_str_eq(subtraction("XIV", "III", output), "XI");
     ck_assert_str_eq(subtraction("XIV", "IV", output), "X");
-    ck_assert_str_eq(subtraction("XIV", "V", output), "IX");
-    ck_assert_str_eq(subtraction("XXXIV", "V", output), "XXIX");
-    ck_assert_str_eq(subtraction("XXXI", "II", output), "XXIX");
-    ck_assert_str_eq(subtraction("XXXV", "VI", output), "XXIX");
-    ck_assert_str_eq(subtraction("XX", "VIII", output), "XII");
-    ck_assert_str_eq(subtraction("IV", "I", output), "III");
-    ck_assert_str_eq(subtraction("CC", "I", output), "CXCIX");
     ck_assert_str_eq(subtraction("MMM", "I", output), "MMCMXCIX");
     ck_assert_str_eq(subtraction("MCM", "M", output), "CM");
-    ck_assert_str_eq(subtraction("VI", "II", output), "IV");
     ck_assert_str_eq(subtraction("XC", "XX", output), "LXX");
     ck_assert_str_eq(subtraction("D", "C", output), "CD");
-    ck_assert_str_eq(subtraction("MMM", "M", output), "MM");
     ck_assert_str_eq(subtraction("MMMDXCVI", "MXXII", output), "MMDLXXIV");
-    ck_assert_str_eq(subtraction("I", "II", output), "-I");
-    ck_assert_str_eq(subtraction("IV", "V", output), "-I");
     ck_assert_str_eq(subtraction("I", "III", output), "-II");
     ck_assert_str_eq(subtraction("I", "MMM", output), "-MMCMXCIX");
-    ck_assert_str_eq(subtraction("XLVII", "XXIX", output), "XVIII");
     ck_assert_str_eq(subtraction("XXIX", "XLVII", output), "-XVIII");
     ck_assert_str_eq(subtraction("IX", "IX", output), "");
     ck_assert_str_eq(subtraction("M", "MMC", output), "-MC");
-    ck_assert_str_eq(subtraction("MMC", "M", output), "MC");
-    ck_assert_str_eq(subtraction("MMVIII", "MCVIII", output), "CM");
-    ck_assert_str_eq(subtraction("MVIII", "MMLXXVII", output), "-MLXIX");
-    ck_assert_str_eq(subtraction("MMLXXVII", "MVIII", output), "MLXIX");
-    ck_assert_str_eq(subtraction("MCMLXVII", "MVII", output), "CMLX");
     ck_assert_str_eq(subtraction("MVII", "MCMLXVII", output), "-CMLX");
-    ck_assert_str_eq(subtraction("MCM", "M", output), "CM");
-    ck_assert_str_eq(subtraction("M", "MCM", output), "-CM");
-    ck_assert_str_eq(subtraction("XLVII", "XXIX", output), "XVIII");
-    ck_assert_str_eq(subtraction("XXIX", "XLVII", output), "-XVIII");
-//    ck_assert(isCleanValidString("LCCX"));
 }
 END_TEST
 
-START_TEST (testComparison)
+START_TEST (testPositiveComparison)
 {
     // Relative positions of Roman numerals within their magnitude
     ck_assert_int_eq(romNumRelVal("I", 1, 0), 0);
@@ -324,11 +190,10 @@ START_TEST (testComparison)
     ck_assert_int_eq(romStrCmp("XX", "XIX"), 1);
     ck_assert_int_eq(romStrCmp("DCCCXXIX", "CM"), -1);
     ck_assert_int_eq(romStrCmp("MCM", "MCMVII"), -1);
-//    ck_assert_int_eq(1, 0);
 }
 END_TEST
 
-START_TEST (testNegation)
+START_TEST (testNegativeAddition)
 {
     char output[BUFRSIZE];
     memset(output, 0, BUFRSIZE);
@@ -358,6 +223,13 @@ START_TEST (testNegation)
     ck_assert_str_eq(addition("X", "-I", output), "IX");
     ck_assert_str_eq(addition("-I", "-X", output), "-XI");
     ck_assert_str_eq(addition("-X", "-I", output), "-XI");
+}
+END_TEST
+
+START_TEST (testNegativeSubtraction)
+{
+    char output[BUFRSIZE];
+    memset(output, 0, BUFRSIZE);
 
 	// Simple subtraction
     ck_assert_str_eq(subtraction("I", "I", output), "");
@@ -384,6 +256,13 @@ START_TEST (testNegation)
     ck_assert_str_eq(subtraction("X", "-I", output), "XI");
     ck_assert_str_eq(subtraction("-I", "-X", output), "IX");
     ck_assert_str_eq(subtraction("-X", "-I", output), "-IX");
+}
+END_TEST
+
+START_TEST (testNegativeComparison)
+{
+    char output[BUFRSIZE];
+    memset(output, 0, BUFRSIZE);
 
 	// Simple comparison
     ck_assert_int_eq(romStrCmp("I", "I"), 0);
@@ -438,13 +317,15 @@ Suite *romNumTestSuite (void)
     /* Comparison test case */
     TCase *tc_comparison = tcase_create ("Comparison");
     // Compare number string values
-    tcase_add_test (tc_comparison, testComparison);
+    tcase_add_test (tc_comparison, testPositiveComparison);
     suite_add_tcase (s, tc_comparison);
 
     /* Negation test case */
     TCase *tc_negation = tcase_create ("Negation");
     // Test proper handling of negative input
-    tcase_add_test (tc_negation, testNegation);
+    tcase_add_test (tc_negation, testNegativeAddition);
+    tcase_add_test (tc_negation, testNegativeSubtraction);
+    tcase_add_test (tc_negation, testNegativeComparison);
     suite_add_tcase (s, tc_negation);
 
     return s;
