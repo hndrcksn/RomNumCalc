@@ -38,5 +38,6 @@ void handleSubtractives(BaseCounter *bC);
 bool convertSubtractives(BaseCounter *bC);
 void adjustX1Tally(BaseCounter *bC);
 void adjustX5Tally(BaseCounter *bC);
+void postProcAddOrder(OrderType order, const BaseCounter *bC, bool *outCarry, char *outStr);
 
 #endif /* ROMNUMMATH_H */

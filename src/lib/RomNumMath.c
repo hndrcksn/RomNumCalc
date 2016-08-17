@@ -844,7 +844,6 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
     }
     else /* if (bH->orderPtr[order] != NULL && aH->orderPtr[order] != NULL) */
     {
-        int i  = 0;
         BaseCounter bC;
         bC.x1  = carriedOver?1:0;
         bC.x5  = 0;
@@ -892,64 +891,8 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
             return false;
         }
 
-        if (bC.sub != 1)
-        {
-            debug_printf("output should be '");
-            if (bC.x10 == 1)
-            {
-                carry = true;
-            }
-
-            if (bC.x5 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X5]);
-                strncat(cStr, &(base_numerals[order][X5]), 1);
-            }
-
-            for (i = 0; i < bC.x1; i++)
-            {
-                debug_printf("%c", base_numerals[order][X1]);
-                strncat(cStr, &(base_numerals[order][X1]), 1);
-            }
-            debug_printf("'\n");
-        }
-        else if (bC.sub == 1 && bC.x5 != 0)
-        {
-            debug_printf("output should be '");
-            if (bC.x10 == 1)
-            {
-                carry = true;
-            }
-
-            if (bC.x1 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X1]);
-                strncat(cStr, &(base_numerals[order][X1]), 1);
-            }
-
-            if (bC.x5 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X5]);
-                strncat(cStr, &(base_numerals[order][X5]), 1);
-            }
-            debug_printf("'\n");
-        }
-        else
-        {
-            debug_printf("output should be '");
-            if (bC.x1 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X1]);
-                strncat(cStr, &(base_numerals[order][X1]), 1);
-            }
-
-            if (bC.x10 == 1)
-            {
-                debug_printf("%c", base_numerals[order][X10]);
-                strncat(cStr, &(base_numerals[order][X10]), 1);
-            }
-            debug_printf("'\n");
-        }
+        // Post process to handle carrying and output result
+        postProcAddOrder(order, &bC, &carry, cStr);
     }
     debug_printf("addOrder: got %s, returning carry:%d\n", cStr, carry);
 
@@ -1481,5 +1424,71 @@ void adjustX5Tally(BaseCounter *bC)
 
         default:
             break;
+    }
+}
+
+//////
+// postProcAddOrder() outputs carrying status and fills out result
+// string for current order of magnitude
+//////
+void postProcAddOrder(OrderType order, const BaseCounter *bC, bool *outCarry, char *outStr)
+{
+    if (bC->sub != 1)
+    {
+        debug_printf("output should be '");
+        if (bC->x10 == 1)
+        {
+            *outCarry = true;
+        }
+
+        if (bC->x5 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X5]);
+            strncat(outStr, &(base_numerals[order][X5]), 1);
+        }
+
+        for (int i = 0; i < bC->x1; i++)
+        {
+            debug_printf("%c", base_numerals[order][X1]);
+            strncat(outStr, &(base_numerals[order][X1]), 1);
+        }
+        debug_printf("'\n");
+    }
+    else if (bC->sub == 1 && bC->x5 != 0)
+    {
+        debug_printf("output should be '");
+        if (bC->x10 == 1)
+        {
+            *outCarry = true;
+        }
+
+        if (bC->x1 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X1]);
+            strncat(outStr, &(base_numerals[order][X1]), 1);
+        }
+
+        if (bC->x5 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X5]);
+            strncat(outStr, &(base_numerals[order][X5]), 1);
+        }
+        debug_printf("'\n");
+    }
+    else
+    {
+        debug_printf("output should be '");
+        if (bC->x1 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X1]);
+            strncat(outStr, &(base_numerals[order][X1]), 1);
+        }
+
+        if (bC->x10 == 1)
+        {
+            debug_printf("%c", base_numerals[order][X10]);
+            strncat(outStr, &(base_numerals[order][X10]), 1);
+        }
+        debug_printf("'\n");
     }
 }
