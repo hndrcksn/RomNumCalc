@@ -1,26 +1,31 @@
 //-------------- Using GNU Makefile --------------//
 
-// Build with Makefile.old
+// Build with Makefile.gnu
 // Make all files - this creates output directories, obj files and binary files
-make -f Makefile.old all
+make -f Makefile.gnu all
 
 // Make/Run test suite
-make -f Makefile.old check
+make -f Makefile.gnu check
 
 // Make/Run test suite with debugging output
-make -f Makefile.old check-debug
+make -f Makefile.gnu check-debug
 
 // Clean out object and binary directories
-make -f Makefile.old clean
+make -f Makefile.gnu clean
 
 // Return to pristine condition
-make -f Makefile.old dist-clean
+make -f Makefile.gnu dist-clean
 
 // Run the RomNumCalcApp from the top directory
 LD_LIBRARY_PATH=bin bin/RomNumCalcApp
 LD_LIBRARY_PATH=bin bin/RomNumCalcApp -a X X
 LD_LIBRARY_PATH=bin bin/RomNumCalcApp -s XI X
 LD_LIBRARY_PATH=bin bin/RomNumCalcApp -c IX X
+
+// RomNumCalcApp also handles negative input
+LD_LIBRARY_PATH=bin bin/RomNumCalcApp -a X -XI
+LD_LIBRARY_PATH=bin bin/RomNumCalcApp -s -XI -V
+LD_LIBRARY_PATH=bin bin/RomNumCalcApp -c -XI X
 
 // Run the RomNumCalcApp in debug mode
 LD_LIBRARY_PATH=bin bin/RomNumCalcApp -d -a X X
