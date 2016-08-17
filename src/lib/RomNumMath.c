@@ -970,56 +970,26 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
         {
             // Convert subtractive forms
             borrow = convertSubtractives(&aBC);
-            debug_printf("aBC conv... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
+            debug_printf("aBC conv... x10 = %d, x5 = %d, x1 = %d, sub = %d, borrow = %c\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub, borrow?'t':'f');
         }
 
         if (bBC.sub)
         {
             // Convert subtractive forms
             borrow = convertSubtractives(&bBC);
-            debug_printf("bBC conv... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bBC.x10, bBC.x5, bBC.x1, bBC.sub);
+            debug_printf("bBC conv... x10 = %d, x5 = %d, x1 = %d, sub = %d, borrow = %c\n", bBC.x10, bBC.x5, bBC.x1, bBC.sub, borrow?'t':'f');
         }
 
         // Subtract B from A
         aBC.x10 -= bBC.x10;
         aBC.x5  -= bBC.x5;
         aBC.x1  -= bBC.x1;
-        debug_printf("subtraction  x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
+        debug_printf("subtraction  x10 = %d, x5 = %d, x1 = %d, sub = %d, borrow = %c\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub, borrow?'t':'f');
 
         // Reconcile negative numbers
-        if (aBC.x1 < 0)
-        {
-            if (aBC.x5 >= 1)
-            {
-                aBC.x5--;
-                aBC.x1 += 5;
-            }
-            else if (aBC.x10 >= 1)
-            {
-                aBC.x10--;
-                aBC.x5 = 1;
-                aBC.x1 += 5;
-            }
-            else
-            {   // Must borrow
-                aBC.x10++;
-                aBC.x1 = aBC.x10*10 + aBC.x5*5 + aBC.x1;
-                aBC.x10 = 0;
-                aBC.x5 = 0;
-                borrow = true;
-            }
-        }
-        else if (aBC.x5 < 0)
-        {   // need to borrow next order of magitude and calculate remainder eg. 10-8=2
-            if (aBC.x10 == 0)
-            {
-                aBC.x10++;
-                borrow = true;
-            }
-            aBC.x1 = aBC.x10*10 + aBC.x5*5 + aBC.x1;
-            aBC.x5 = 0;
-        }
-        debug_printf("adjusted     x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub);
+        borrow = reconcileNegatives(&aBC);
+
+        debug_printf("reconciled     x10 = %d, x5 = %d, x1 = %d, sub = %d, borrow = %c\n", aBC.x10, aBC.x5, aBC.x1, aBC.sub, borrow?'t':'f');
 
         // Convert back to subtractive form
         // eg. IV: X(0), V(0), I(4), sub(0) = IIII = IIIII - I = (V - I) = IV = X(0), V(1), I(1), sub(1)
@@ -1491,4 +1461,48 @@ void postProcAddOrder(OrderType order, const BaseCounter *bC, bool *outCarry, ch
         }
         debug_printf("'\n");
     }
+}
+
+//////
+// reconcileNegatives() figures out what to do with negative x1 and x5
+// base numeral counts and returns whether we must borrow from a higher
+// order of magnitude
+//////
+bool reconcileNegatives(BaseCounter *bC)
+{
+    bool borrow = false;
+    // Reconcile negative numbers
+    if (bC->x1 < 0)
+    {
+        if (bC->x5 >= 1)
+        {
+            bC->x5--;
+            bC->x1 += 5;
+        }
+        else if (bC->x10 >= 1)
+        {
+            bC->x10--;
+            bC->x5 = 1;
+            bC->x1 += 5;
+        }
+        else
+        {   // Must borrow
+            bC->x10++;
+            bC->x1 = bC->x10*10 + bC->x5*5 + bC->x1;
+            bC->x10 = 0;
+            bC->x5 = 0;
+            borrow = true;
+        }
+    }
+    else if (bC->x5 < 0)
+    {   // need to borrow next order of magitude and calculate remainder eg. 10-8=2
+        if (bC->x10 == 0)
+        {
+            bC->x10++;
+            borrow = true;
+        }
+        bC->x1 = bC->x10*10 + bC->x5*5 + bC->x1;
+        bC->x5 = 0;
+    }
+    return borrow;
 }
