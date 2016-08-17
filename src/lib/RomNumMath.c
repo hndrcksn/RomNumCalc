@@ -451,21 +451,6 @@ char *subtraction (const char *as, const char *bs, char *cs)
         }
     }
 
-/*
-    // Attach holders
-    if (!negativeOutput)
-    {
-        attachHolder(as, &aH, false);
-        attachHolder(bs, &bH, false);
-    }
-    else
-    {   // Switch AAA and BBB for simple subtraction
-        attachHolder(bs, &aH, false);
-        attachHolder(as, &bH, false);
-    }
-
-    attachHolder(cs, &cH, false);
-*/
     // Subtract two Roman numeral strings by orders of magnitude
     // borrowing from higher orders as necessary
     bool borrow = false;
@@ -859,7 +844,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
     }
     else /* if (bH->orderPtr[order] != NULL && aH->orderPtr[order] != NULL) */
     {
-        int i        = 0;
+        int i  = 0;
         BaseCounter bC;
         bC.x1  = carriedOver?1:0;
         bC.x5  = 0;
