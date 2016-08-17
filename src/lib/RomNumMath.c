@@ -3,8 +3,12 @@
 #include <stdio.h>
 #include "RomNumMath.h"
 
+#define MAX_ORDER_NUMS 9
+#define MAX_ORDER_THOU 3
+
 // All Roman numerals in increasing magnitude order
-const char numerals[NUM_ORDERS][9][5] = {{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"},
+const char numerals[NUM_ORDERS][MAX_ORDER_NUMS][5] = 
+                                        {{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"},
                                          {"X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"},
                                          {"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"},
                                          {"M", "MM", "MMM", "", "", "", "", "", ""}};
@@ -125,15 +129,7 @@ bool isCleanValidString (const char *s)
     {
         // Validate
         ordersPresent++;
-        if ((strncmp(vH.orderPtr[ONES], "I",    vH.orderLen[ONES]) == 0) ||
-            (strncmp(vH.orderPtr[ONES], "II",   vH.orderLen[ONES]) == 0) ||
-            (strncmp(vH.orderPtr[ONES], "III",  vH.orderLen[ONES]) == 0) ||
-            (strncmp(vH.orderPtr[ONES], "IV",   vH.orderLen[ONES]) == 0) ||
-            (strncmp(vH.orderPtr[ONES], "V",    vH.orderLen[ONES]) == 0) ||
-            (strncmp(vH.orderPtr[ONES], "VI",   vH.orderLen[ONES]) == 0) ||
-            (strncmp(vH.orderPtr[ONES], "VII",  vH.orderLen[ONES]) == 0) ||
-            (strncmp(vH.orderPtr[ONES], "VIII", vH.orderLen[ONES]) == 0) ||
-            (strncmp(vH.orderPtr[ONES], "IX",   vH.orderLen[ONES]) == 0))
+        if (validateOrder(ONES, &vH))
         {
             ordersValid++;
         }
@@ -142,15 +138,7 @@ bool isCleanValidString (const char *s)
     {
         // Validate
         ordersPresent++;
-        if ((strncmp(vH.orderPtr[TENS], "X",    vH.orderLen[TENS]) == 0) ||
-            (strncmp(vH.orderPtr[TENS], "XX",   vH.orderLen[TENS]) == 0) ||
-            (strncmp(vH.orderPtr[TENS], "XXX",  vH.orderLen[TENS]) == 0) ||
-            (strncmp(vH.orderPtr[TENS], "XL",   vH.orderLen[TENS]) == 0) ||
-            (strncmp(vH.orderPtr[TENS], "L",    vH.orderLen[TENS]) == 0) ||
-            (strncmp(vH.orderPtr[TENS], "LX",   vH.orderLen[TENS]) == 0) ||
-            (strncmp(vH.orderPtr[TENS], "LXX",  vH.orderLen[TENS]) == 0) ||
-            (strncmp(vH.orderPtr[TENS], "LXXX", vH.orderLen[TENS]) == 0) ||
-            (strncmp(vH.orderPtr[TENS], "XC",   vH.orderLen[TENS]) == 0))
+        if (validateOrder(TENS, &vH))
         {
             ordersValid++;
         }
@@ -159,15 +147,7 @@ bool isCleanValidString (const char *s)
     {
         // Validate
         ordersPresent++;
-        if ((strncmp(vH.orderPtr[HUNS], "C",    vH.orderLen[HUNS]) == 0) ||
-            (strncmp(vH.orderPtr[HUNS], "CC",   vH.orderLen[HUNS]) == 0) ||
-            (strncmp(vH.orderPtr[HUNS], "CCC",  vH.orderLen[HUNS]) == 0) ||
-            (strncmp(vH.orderPtr[HUNS], "CD",   vH.orderLen[HUNS]) == 0) ||
-            (strncmp(vH.orderPtr[HUNS], "D",    vH.orderLen[HUNS]) == 0) ||
-            (strncmp(vH.orderPtr[HUNS], "DC",   vH.orderLen[HUNS]) == 0) ||
-            (strncmp(vH.orderPtr[HUNS], "DCC",  vH.orderLen[HUNS]) == 0) ||
-            (strncmp(vH.orderPtr[HUNS], "DCCC", vH.orderLen[HUNS]) == 0) ||
-            (strncmp(vH.orderPtr[HUNS], "CM",   vH.orderLen[HUNS]) == 0))
+        if (validateOrder(HUNS, &vH))
         {
             ordersValid++;
         }
@@ -176,9 +156,7 @@ bool isCleanValidString (const char *s)
     {
         // Validate
         ordersPresent++;
-        if ((strncmp(vH.orderPtr[THOU], "M",   vH.orderLen[THOU]) == 0) ||
-            (strncmp(vH.orderPtr[THOU], "MM",  vH.orderLen[THOU]) == 0) ||
-            (strncmp(vH.orderPtr[THOU], "MMM", vH.orderLen[THOU]) == 0))
+        if (validateOrder(THOU, &vH))
         {
             ordersValid++;
         }
@@ -1470,4 +1448,35 @@ void attachP5Ptrs(OrderType order, StrHolder *sH)
             sH->orderPtr[order] = sH->sPtr[order][P5];
         }
     }
+}
+
+//////
+// validateOrder() validates a portion of a string within the specified order of magnitude
+//////
+bool validateOrder(OrderType order, StrHolder *sH)
+{
+    int i;
+    if (order == THOU)
+    {
+        for (i = 0; i < MAX_ORDER_THOU; i++)
+        {
+            // Validate
+            if ((strncmp(sH->orderPtr[order], numerals[order][i], sH->orderLen[order]) == 0))
+            {
+                return true;
+            }
+        }
+    }
+    else
+    {
+        for (i = 0; i < MAX_ORDER_NUMS; i++)
+        {
+            // Validate
+            if ((strncmp(sH->orderPtr[order], numerals[order][i], sH->orderLen[order]) == 0))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }

@@ -45,5 +45,6 @@ void postProcSubOrder(OrderType order, const BaseCounter *bC, char *outStr);
 bool reconcileNegatives(BaseCounter *bC);
 void attachP1Ptrs(OrderType order, StrHolder *sH);
 void attachP5Ptrs(OrderType order, StrHolder *sH);
+bool validateOrder(OrderType order, StrHolder *sH);
 
 #endif /* ROMNUMMATH_H */
