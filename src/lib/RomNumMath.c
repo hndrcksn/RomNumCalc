@@ -9,6 +9,12 @@ const char numerals[NUM_ORDERS][9][5] = {{"I", "II", "III", "IV", "V", "VI", "VI
                                          {"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"},
                                          {"M", "MM", "MMM", "", "", "", "", "", ""}};
 
+// Base Roman numerals in increasing magnitude order
+const char base_numerals[NUM_ORDERS][NUM_BASES] = {{'I', 'V', 'X'},
+                                                   {'X', 'L', 'C'},
+                                                   {'C', 'D', 'M'},
+                                                   {'M', '\0', '\0'}};
+
 // Initialize global_debugging to default setting
 bool global_debugging = false;
 
@@ -819,40 +825,7 @@ bool isStringSubtractive(const char *s)
 bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool carriedOver)
 {
     int x10Count    = 0;
-    char x1         = '\0';
-    char x5         = '\0';
-    char x10        = '\0';
     bool carry      = false;
-
-    // Setup units
-    switch (order) {
-        case ONES:
-            x1  = 'I';
-            x5  = 'V';
-            x10 = 'X';
-            break;
-
-        case TENS:
-            x1  = 'X';
-            x5  = 'L';
-            x10 = 'C';
-            break;
-
-        case HUNS:
-            x1  = 'C';
-            x5  = 'D';
-            x10 = 'M';
-            break;
-
-        case THOU:
-            x1  = 'M';
-            break;
-
-        default:
-            debug_printf("incorrect order identifier '%d' exiting...", order);
-            return false;
-            break;
-    }
 
     // If strings are empty, no further processing is necessary
     if (aH->orderLen[order] == 0 && bH->orderLen[order] == 0 && !carriedOver)
@@ -888,43 +861,18 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
             subCount++;
         }
 
-        // Tally characters
-        for (i = 0; i < aH->orderLen[order]; i++)
-        {
-            if (aH->orderPtr[order][i] == x10)
-            {
-                x10Count++;
-            }
-            else if (aH->orderPtr[order][i] == x5)
-            {
-                x5Count++;
-            }
-            else if (aH->orderPtr[order][i] == x1)
-            {
-                x1Count++;
-            }
-        }
-        for (i = 0; i < bH->orderLen[order]; i++)
-        {
-            if (bH->orderPtr[order][i] == x10)
-            {
-                x10Count++;
-            }
-            else if (bH->orderPtr[order][i] == x5)
-            {
-                x5Count++;
-            }
-            else if (bH->orderPtr[order][i] == x1)
-            {
-                x1Count++;
-            }
-        }
+        // Tally characters in current order of magnitude in first string
+        tallyChar(aH, order, &x1Count, &x5Count, &x10Count);
+
+        // Tally characters in current order of magnitude in second string
+        tallyChar(bH, order, &x1Count, &x5Count, &x10Count);
+
         debug_printf("pre tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
 
         // Handle subtractives. When removing a subtractive it has to take another non-subtractive
         // with it. eg IV + IV = (V - I) + (V - I) = IIII + IIII = (IIII + I) + III = VIII
         // the second V had to be split up to satisfy both subtractives
-        //             IX + IX = XXII = XVIII
+        //             IX + IX = (X-I) + (X-I) = X + X - (I + I) = X + (X - II) = X + VIII = XVIII
         // the second X had to be split up to satisfy both subtractives
         for (i = 0; i < subCount; i++)
         {
@@ -946,6 +894,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
             debug_printf("sub looping... x10 = %d, x5 = %d, x1 = %d, sub = %d\n", x10Count, x5Count, x1Count, subCount);
         }
 
+        // Reset subCount
         subCount = 0;
 
         // Adjust tally
@@ -1006,14 +955,14 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
 
             if (x5Count == 1)
             {
-                debug_printf("%c", x5);
-                strncat(cStr, &x5, 1);
+                debug_printf("%c", base_numerals[order][X5]);
+                strncat(cStr, &(base_numerals[order][X5]), 1);
             }
 
             for (i = 0; i < x1Count; i++)
             {
-                debug_printf("%c", x1);
-                strncat(cStr, &x1, 1);
+                debug_printf("%c", base_numerals[order][X1]);
+                strncat(cStr, &(base_numerals[order][X1]), 1);
             }
             debug_printf("'\n");
         }
@@ -1027,14 +976,14 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
 
             if (x1Count == 1)
             {
-                debug_printf("%c", x1);
-                strncat(cStr, &x1, 1);
+                debug_printf("%c", base_numerals[order][X1]);
+                strncat(cStr, &(base_numerals[order][X1]), 1);
             }
 
             if (x5Count == 1)
             {
-                debug_printf("%c", x5);
-                strncat(cStr, &x5, 1);
+                debug_printf("%c", base_numerals[order][X5]);
+                strncat(cStr, &(base_numerals[order][X5]), 1);
             }
             debug_printf("'\n");
         }
@@ -1043,14 +992,14 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
             debug_printf("output should be '");
             if (x1Count == 1)
             {
-                debug_printf("%c", x1);
-                strncat(cStr, &x1, 1);
+                debug_printf("%c", base_numerals[order][X1]);
+                strncat(cStr, &(base_numerals[order][X1]), 1);
             }
 
             if (x10Count == 1)
             {
-                debug_printf("%c", x10);
-                strncat(cStr, &x10, 1);
+                debug_printf("%c", base_numerals[order][X10]);
+                strncat(cStr, &(base_numerals[order][X10]), 1);
             }
             debug_printf("'\n");
         }
@@ -1067,39 +1016,7 @@ bool addOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool ca
 //////
 bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool borrowedFrom)
 {
-    char x1         = '\0';
-    char x5         = '\0';
-    char x10        = '\0';
     bool borrow     = false;
-
-    switch (order) {
-        case ONES:
-            x1  = 'I';
-            x5  = 'V';
-            x10 = 'X';
-            break;
-
-        case TENS:
-            x1  = 'X';
-            x5  = 'L';
-            x10 = 'C';
-            break;
-
-        case HUNS:
-            x1  = 'C';
-            x5  = 'D';
-            x10 = 'M';
-            break;
-
-        case THOU:
-            x1  = 'M';
-            break;
-
-        default:
-            debug_printf("incorrect order identifier '%d' exiting...", order);
-            return false;
-            break;
-    }
 
     // If strings are empty, no further processing is necessary
     if (aH->orderLen[order] == 0 && bH->orderLen[order] == 0 && !borrowedFrom)
@@ -1137,22 +1054,9 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
             debug_printf("'%s' is subtractive\n", aH->orderPtr[order]);
         }
 
-        // Tally characters for A
-        for (i = 0; i < aH->orderLen[order]; i++)
-        {
-            if (aH->orderPtr[order][i] == x10)
-            {
-                aX10Count++;
-            }
-            else if (aH->orderPtr[order][i] == x5)
-            {
-                aX5Count++;
-            }
-            else if (aH->orderPtr[order][i] == x1)
-            {
-                aX1Count++;
-            }
-        }
+        // Tally characters in current order of magnitude in first string
+        tallyChar(aH, order, &aX1Count, &aX5Count, &aX10Count);
+
         debug_printf("post A tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", aX10Count, aX5Count, aX1Count, aSub);
 
         // Track subtractive forms
@@ -1162,22 +1066,9 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
             debug_printf("'%s' is subtractive\n", bH->orderPtr[order]);
         }
 
-        // Tally characters for B (to be subtracted)
-        for (i = 0; i < bH->orderLen[order]; i++)
-        {
-            if (bH->orderPtr[order][i] == x10)
-            {
-                bX10Count++;
-            }
-            else if (bH->orderPtr[order][i] == x5)
-            {
-                bX5Count++;
-            }
-            else if (bH->orderPtr[order][i] == x1)
-            {
-                bX1Count++;
-            }
-        }
+        // Tally characters in current order of magnitude in first string
+        tallyChar(bH, order, &bX1Count, &bX5Count, &bX10Count);
+
         debug_printf("post B tally x10 = %d, x5 = %d, x1 = %d, sub = %d\n", bX10Count, bX5Count, bX1Count, bSub);
 
         // Convert subtractive forms into non-subtractive forms to simplify subtraction
@@ -1325,14 +1216,14 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
             debug_printf("output should be '");
             if (aX5Count == 1)
             {
-                debug_printf("%c", x5);
-                strncat(cStr, &x5, 1);
+                debug_printf("%c", base_numerals[order][X5]);
+                strncat(cStr, &(base_numerals[order][X5]), 1);
             }
 
             for (i = 0; i < aX1Count; i++)
             {
-                debug_printf("%c", x1);
-                strncat(cStr, &x1, 1);
+                debug_printf("%c", base_numerals[order][X1]);
+                strncat(cStr, &(base_numerals[order][X1]), 1);
             }
             debug_printf("'\n");
         }
@@ -1341,20 +1232,20 @@ bool subOrder(StrHolder *aH, StrHolder *bH, char *cStr, OrderType order, bool bo
             debug_printf("output should be '");
             if (aX1Count == 1)
             {
-                debug_printf("%c", x1);
-                strncat(cStr, &x1, 1);
+                debug_printf("%c", base_numerals[order][X1]);
+                strncat(cStr, &(base_numerals[order][X1]), 1);
             }
 
             if (aX10Count == 1)
             {
-                debug_printf("%c", x10);
-                strncat(cStr, &x10, 1);
+                debug_printf("%c", base_numerals[order][X10]);
+                strncat(cStr, &(base_numerals[order][X10]), 1);
             }
 
             if (aX5Count == 1)
             {
-                debug_printf("%c", x5);
-                strncat(cStr, &x5, 1);
+                debug_printf("%c", base_numerals[order][X5]);
+                strncat(cStr, &(base_numerals[order][X5]), 1);
             }
             debug_printf("'\n");
         }
@@ -1536,4 +1427,29 @@ char *prependStr(char *str, char c)
     }
     str[0] = c;
     return str;
+}
+
+//////
+//  tallyChar() counts the number of base characters of a particular order of magnitude
+//  a string. Base characters are the x1, x5 and x10 in an order eg. for ones that would
+//  be x1=I, x5=V and x10=X.
+//////
+void tallyChar(StrHolder *sH, OrderType order, int *x1Count, int *x5Count, int *x10Count)
+{
+    // Tally characters in first string
+    for (int i = 0; i < sH->orderLen[order]; i++)
+    {
+        if (sH->orderPtr[order][i] == base_numerals[order][X10])
+        {
+            (*x10Count)++;
+        }
+        else if (sH->orderPtr[order][i] == base_numerals[order][X5])
+        {
+            (*x5Count)++;
+        }
+        else if (sH->orderPtr[order][i] == base_numerals[order][X1])
+        {
+            (*x1Count)++;
+        }
+    }
 }

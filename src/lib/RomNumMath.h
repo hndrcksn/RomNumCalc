@@ -6,6 +6,7 @@
 
 // Enums, structs and consts.
 typedef enum {ONES = 0, TENS, HUNS, THOU, NUM_ORDERS} OrderType;
+typedef enum {X1 = 0, X5, X10, NUM_BASES} BaseType;
 typedef struct StrHolder StrHolder;
 static const int BUFRSIZE = 32;
 
@@ -31,5 +32,6 @@ int romStrCmpSH(StrHolder *aH, StrHolder *bH, OrderType order);
 int romStrCmp(const char *as, const char *bs);
 int romNumRelVal(const char *str, int length, OrderType order);
 char *prependStr(char *str, char c);
+void tallyChar(StrHolder *sH, OrderType order, int *x1Count, int *x5Count, int *x10Count);
 
 #endif /* ROMNUMMATH_H */
